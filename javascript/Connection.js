@@ -6,7 +6,6 @@ import '/node_modules/clipboard/dist/clipboard.js';
 export class Connection extends EventEmitter {
   constructor (configuration = {}) {
     super();
-
     this.configuration = {};
 
     // Merge the default configuration with the given configuration.

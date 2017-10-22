@@ -85,19 +85,19 @@ export class EasyP2P extends EventEmitter {
    */
   attachDataChannel () {
     this.dataChannel.onopen = () => {
-      this.emit('started');
+      this.emit('started', ...arguments);
     };
 
     this.dataChannel.onmessage = () => {
-      console.log('message')
+      this.emit('message', ...arguments);
     };
 
     this.dataChannel.onclose = () => {
-      console.log('close')
+      this.emit('close', ...arguments);
     };
 
     this.dataChannel.onerror = () => {
-      console.log('error')
+      this.emit('error', ...arguments);
     };
   }
 }
