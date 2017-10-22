@@ -1,16 +1,21 @@
 import {EventEmitter} from '/javascript/EventEmitter.js';
 import {settings} from '/settings.js';
 import {EasyP2P} from '/javascript/EasyP2P.js';
+import '/node_modules/clipboard/dist/clipboard.js';
 
 export class Connection extends EventEmitter {
   constructor (configuration = {}) {
     super();
+
     this.configuration = {};
 
     // Merge the default configuration with the given configuration.
     this.configuration = Object.assign(this.configuration, configuration);
 
     let webrtcAnswerTextarea = document.querySelector('#webrtc-answer');
+
+    // Initiate the clipboard.
+    new Clipboard('.clipboard');
 
     this.easyP2P = new EasyP2P({
       // WebRTC signaling is asymmetric, we have to tell what role this person has.
