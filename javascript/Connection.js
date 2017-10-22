@@ -41,9 +41,16 @@ export class Connection extends EventEmitter {
       }, 300);
     });
 
+    document.querySelector('.copy-answer').addEventListener('click', () => {
+      // Work around for the clipboard, it does not copy hidden things.
+      setTimeout(() => {
+        document.body.dataset.webrtcState = 'answer-copied';
+      }, 300);
+    });
+
     // If we are the initiator, create the url to sent and attach to the textarea so we can accept the connection.
     this.easyP2P.on('offer-ready', (offerSdp) => {
-      urlInput.value = location.href + '#sdp=' + encodeURI(offerSdp);
+      urlInput.value = location.origin + '/#sdp=' + encodeURI(offerSdp);
 
       pasteAnswerInput.addEventListener('change', () => {
         this.easyP2P.acceptAnswer(atob(pasteAnswerInput.value));
@@ -52,14 +59,14 @@ export class Connection extends EventEmitter {
 
     // If we are the answerer, put the answer in the textarea so the user can copy it to the other user.
     this.easyP2P.on('answer-ready', (answerSdp) => {
-      location.hash = '';
+      // Remove the hash from the url. location.hash leaves a #.
+      history.pushState('', document.title, window.location.pathname + window.location.search);
       copyAnswerInput.value = btoa(answerSdp);
     });
 
     // Connection is started.
     this.easyP2P.on('started', () => {
       document.body.dataset.webrtcRole = 'started';
-
       this.emit('started');
     });
   }
