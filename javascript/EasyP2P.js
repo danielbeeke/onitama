@@ -4,7 +4,7 @@
 export class EasyP2P {
 
   /**
-   * @param configuration, may hold iceServers.
+   * @param configuration, must hold iceServers so have server to do turn and stun with.
    * @constructor
    */
   constructor (configuration = {}) {
@@ -13,12 +13,19 @@ export class EasyP2P {
       iceServers: []
     };
 
+    // Merge the default configuration with the given configuration.
     this.configuration = Object.assign(this.configuration, configuration);
+
+    // Initiate the p2p channel.
     this.RtcPeerConnection = new RTCPeerConnection(Object.assign({}, this.configuration.iceServers));
 
+    // Start EasyP2P in the right user role: initiator or answerer.
     this[this.configuration.role + 'Init']();
   }
 
+  /**
+   * Creates the initial offer.
+   */
   initiatorInit () {
     // Subscribe to the ICE candidates and when all are finished call our offerReady callback.
     this.RtcPeerConnection.onicecandidate = (event) => {
@@ -35,6 +42,9 @@ export class EasyP2P {
     .catch(() => console.log('Error while creating an offer'));
   }
 
+  /**
+   * Creates the answer.
+   */
   answererInit () {
     if (!this.configuration.initialOffer) { throw 'Connection failed, please let the initiator try again'; }
 
@@ -58,14 +68,23 @@ export class EasyP2P {
     .catch(() => console.log('Error while creating an answer'));
   }
 
+  /**
+   * Accepts the answer so the connection can be set up.
+   * @param sdp
+   */
   acceptAnswer (sdp) {
     let answer = new RTCSessionDescription({ type: 'answer', sdp: sdp });
     this.RtcPeerConnection.setRemoteDescription(answer);
   }
 
+  /**
+   * Attach callbacks to the dataChannel, is the same for both the initiator and the answerer.
+   */
   attachDataChannel () {
     this.dataChannel.onopen = () => {
-      console.log('open')
+      if (typeof this.configuration.started === 'function') {
+        this.configuration.started();
+      }
     };
 
     this.dataChannel.onmessage = () => {
