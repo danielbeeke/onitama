@@ -12,7 +12,11 @@ export class Connection extends EventEmitter {
     // Merge the default configuration with the given configuration.
     this.configuration = Object.assign(this.configuration, configuration);
 
-    let webrtcAnswerTextarea = document.querySelector('#webrtc-answer');
+    let urlInput = document.querySelector('#webrtc-offer-url');
+    let pasteAnswerInput = document.querySelector('#webrtc-paste-answer');
+    let copyAnswerInput = document.querySelector('#webrtc-copy-answer');
+
+    document.body.dataset.webrtcState = 'initial';
 
     // Initiate the clipboard.
     new Clipboard('.clipboard');
@@ -28,25 +32,34 @@ export class Connection extends EventEmitter {
       initialOffer: location.hash.substr(0, 4) === '#sdp' ? decodeURI(location.hash.substr(5)) : null
     });
 
+    document.body.dataset.webrtcRole = this.easyP2P.configuration.role;
+
+    document.querySelector('.copy-offer-url').addEventListener('click', () => {
+      // Work around for the clipboard, it does not copy hidden things.
+      setTimeout(() => {
+        document.body.dataset.webrtcState = 'offer-copied';
+      }, 300);
+    });
+
     // If we are the initiator, create the url to sent and attach to the textarea so we can accept the connection.
     this.easyP2P.on('offer-ready', (offerSdp) => {
-      let url = location.href + '#sdp=' + encodeURI(offerSdp);
-      console.log(url);
+      urlInput.value = location.href + '#sdp=' + encodeURI(offerSdp);
 
-      webrtcAnswerTextarea.addEventListener('change', () => {
-        this.easyP2P.acceptAnswer(atob(webrtcAnswerTextarea.value));
+      pasteAnswerInput.addEventListener('change', () => {
+        this.easyP2P.acceptAnswer(atob(pasteAnswerInput.value));
       });
     });
 
     // If we are the answerer, put the answer in the textarea so the user can copy it to the other user.
     this.easyP2P.on('answer-ready', (answerSdp) => {
       location.hash = '';
-      webrtcAnswerTextarea.value = btoa(answerSdp);
+      copyAnswerInput.value = btoa(answerSdp);
     });
 
     // Connection is started.
     this.easyP2P.on('started', () => {
-      webrtcAnswerTextarea.remove();
+      document.body.dataset.webrtcRole = 'started';
+
       this.emit('started');
     });
   }

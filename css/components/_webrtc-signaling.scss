@@ -1,0 +1,21 @@
+#webrtc-copy-answer,
+#webrtc-offer-url {
+  width: 0;
+  height: 0;
+  position: fixed;
+  left: -10px;
+}
+
+[data-webrtc-state="initial"][data-webrtc-role="initiator"] .step-2,
+[data-webrtc-state="offer-copied"][data-webrtc-role="initiator"] .step-1,
+[data-webrtc-state="started"],
+.webrtc-signaling-initiator,
+.webrtc-signaling-answerer {
+  display: none;
+}
+
+[data-webrtc-role="initiator"] .webrtc-signaling-initiator,
+[data-webrtc-role="answerer"] .webrtc-signaling-answerer {
+  display: block;
+}
+

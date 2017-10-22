@@ -10,8 +10,24 @@
 
     <body>
 
-        <textarea id="webrtc-answer"></textarea>
-        <button class="clipboard" data-clipboard-target="#webrtc-answer">Copy</button>
+    <div class="webrtc-signaling-initiator">
+        <div class="step step-1">
+            <textarea id="webrtc-offer-url"></textarea>
+            <button class="clipboard copy-offer-url" data-clipboard-target="#webrtc-offer-url">Copy url</button>
+        </div>
+
+        <div class="step step-2">
+            <textarea id="webrtc-paste-answer"></textarea>
+            <button>Connect</button>
+        </div>
+    </div>
+
+    <div class="webrtc-signaling-answerer">
+        <div class="step step-1">
+            <textarea id="webrtc-copy-answer"></textarea>
+            <button class="clipboard" data-clipboard-target="#webrtc-copy-answer">Copy connection key</button>
+        </div>
+    </div>
 
     </body>
 </html>
