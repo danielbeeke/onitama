@@ -59,7 +59,7 @@ export class EasyP2P {
   }
 
   acceptAnswer (sdp) {
-    let answer = new RTCSessionDescription({ type: 'offer', sdp: sdp });
+    let answer = new RTCSessionDescription({ type: 'answer', sdp: sdp });
     this.RtcPeerConnection.setRemoteDescription(answer);
   }
 
