@@ -1,13 +1,16 @@
+import {EventEmitter} from '/javascript/EventEmitter.js';
+
 /**
  * EasyP2P helps settings up a WebRTC connection.
  */
-export class EasyP2P {
+export class EasyP2P extends EventEmitter {
 
   /**
    * @param configuration, must hold iceServers so have server to do turn and stun with.
    * @constructor
    */
   constructor (configuration = {}) {
+    super();
     this.configuration = {
       role: 'initiator',
       iceServers: []
@@ -29,8 +32,8 @@ export class EasyP2P {
   initiatorInit () {
     // Subscribe to the ICE candidates and when all are finished call our offerReady callback.
     this.RtcPeerConnection.onicecandidate = (event) => {
-      if (!event.candidate && typeof this.configuration.offerReady === 'function') {
-        this.configuration.offerReady(this.RtcPeerConnection.localDescription.toJSON().sdp);
+      if (!event.candidate) {
+        this.emit('offer-ready', this.RtcPeerConnection.localDescription.toJSON().sdp);
       }
     };
 
@@ -50,8 +53,8 @@ export class EasyP2P {
 
     // Subscribe to the ICE candidates and when all are finished call our offerReady callback.
     this.RtcPeerConnection.onicecandidate = (event) => {
-      if (!event.candidate && typeof this.configuration.answerReady === 'function') {
-        this.configuration.answerReady(this.RtcPeerConnection.localDescription.toJSON().sdp);
+      if (!event.candidate) {
+        this.emit('answer-ready', this.RtcPeerConnection.localDescription.toJSON().sdp);
       }
     };
 
@@ -82,9 +85,7 @@ export class EasyP2P {
    */
   attachDataChannel () {
     this.dataChannel.onopen = () => {
-      if (typeof this.configuration.started === 'function') {
-        this.configuration.started();
-      }
+      this.emit('started');
     };
 
     this.dataChannel.onmessage = () => {
