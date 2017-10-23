@@ -1,6 +1,6 @@
-import {EventEmitter} from '/javascript/EventEmitter.js';
+import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {settings} from '/settings.js';
-import {EasyP2P} from '/javascript/EasyP2P.js';
+import {EasyP2P} from '/javascript/connection/EasyP2P.js';
 import '/node_modules/clipboard/dist/clipboard.js';
 
 export class Connection extends EventEmitter {

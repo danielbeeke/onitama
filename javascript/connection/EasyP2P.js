@@ -1,4 +1,4 @@
-import {EventEmitter} from '/javascript/EventEmitter.js';
+import {EventEmitter} from '/javascript/core/EventEmitter.js';
 
 /**
  * EasyP2P helps settings up a WebRTC connection.

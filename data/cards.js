@@ -1,118 +1,134 @@
-{
-  "Rabbit": {
-    "allowed_sets": [
+export const cards = [
+  {
+    "name": "Rabbit",
+    "sets": [
       { "x": 1, "y": 1 },
       { "x": 2, "y": 0 },
       { "x": -1, "y": -1 }
     ]
   },
-  "Frog": {
-    "allowed_sets": [
+  {
+    "name": "Frog",
+    "sets": [
       { "x": -2, "y": 0 },
       { "x": -1, "y": 1 },
       { "x": 1, "y": -1 }
     ]
   },
-  "Mantis": {
-    "allowed_sets": [
+  {
+    "name": "Mantis",
+    "sets": [
       { "x": -1, "y": 1 },
       { "x": 1, "y": 1 },
       { "x": 0, "y": -1 }
     ]
   },
-  "Boar": {
-    "allowed_sets": [
+  {
+    "name": "Boar",
+    "sets": [
       { "x": 0, "y": 1 },
       { "x": -1, "y": 0 },
       { "x": 1, "y": 0 }
     ]
   },
-  "Crane": {
-    "allowed_sets": [
+  {
+    "name": "Crane",
+    "sets": [
       { "x": 0, "y": 1 },
       { "x": -1, "y": -1 },
       { "x": 1, "y": -1 }
     ]
   },
-  "Tiger": {
-    "allowed_sets": [
+  {
+    "name": "Tiger",
+    "sets": [
       { "x": 0, "y": 2 },
       { "x": 0, "y": -1 }
     ]
   },
-  "Horse": {
-    "allowed_sets": [
+  {
+    "name": "Horse",
+    "sets": [
       { "x": 0, "y": 1 },
       { "x": 0, "y": -1 },
       { "x": -1, "y": 0 }
     ]
   },
-  "Rooster": {
-    "allowed_sets": [
+  {
+    "name": "Rooster",
+    "sets": [
       { "x": 1, "y": 1 },
       { "x": 0, "y": 0 },
       { "x": -1, "y": 0 },
       { "x": -1, "y": -1 }
     ]
   },
-  "Ox": {
-    "allowed_sets": [
+  {
+    "name": "Ox",
+    "sets": [
       { "x": 0, "y": 1 },
       { "x": 1, "y": 0 },
       { "x": 0, "y": -1 }
     ]
   },
-  "Dragon": {
-    "allowed_sets": [
+  {
+    "name": "Dragon",
+    "sets": [
       { "x": -2, "y": 1 },
       { "x": 2, "y": 1 },
       { "x": -1, "y": -1 },
       { "x": 1, "y": -1 }
     ]
   },
-  "Cobra": {
-    "allowed_sets": [
+  {
+    "name": "Cobra",
+    "sets": [
       { "x": 1, "y": 1 },
       { "x": -1, "y": 0 },
       { "x": 1, "y": -1 }
     ]
   },
-  "Monkey": {
-    "allowed_sets": [
+  {
+    "name": "Monkey",
+    "sets": [
       { "x": -1, "y": 1 },
       { "x": 1, "y": 1 },
       { "x": 1, "y": -1 },
       { "x": -1, "y": -1 }
     ]
   },
-  "Elephant": {
-    "allowed_sets": [
+  {
+    "name": "Elephant",
+    "sets": [
       { "x": -1, "y": -1 },
       { "x": 1, "y": 1 },
       { "x": 1, "y": 0 },
       { "x": -1, "y": 0 }
     ]
   },
-  "Crab": {
-    "allowed_sets": [
+  {
+    "name": "Crab",
+    "sets": [
       { "x": 0, "y": 1 },
       { "x": -2, "y": 0 },
       { "x": 2, "y": 0 }
     ]
   },
-  "Eel": {
-    "allowed_sets": [
+  {
+    "name": "Eel",
+    "sets": [
       { "x": -1, "y": 1 },
       { "x": 1, "y": 0 },
       { "x": -1, "y": -1 }
     ]
   },
-  "Goose": {
-    "allowed_sets": [
+  {
+    "name": "Goose",
+    "sets": [
       { "x": -1, "y": 1 },
       { "x": -1, "y": 0 },
       { "x": 1, "y": 0 },
       { "x": 1, "y": -0 }
     ]
   }
-}
+];
