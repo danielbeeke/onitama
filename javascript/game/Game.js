@@ -41,24 +41,25 @@ export class Game extends EventEmitter {
     this.swapCard = this.cards.slice(0, 1);
 
     // Initiate players.
-    this.player1 = new Player(1, {
-      monk1: new Piece('monk', 1),
-      monk2: new Piece('monk', 2),
-      master: new Piece('master', 3),
-      monk3: new Piece('monk', 4),
-      monk4: new Piece('monk', 5),
-    }, this.cards.slice(0, 2));
+    this.player1 = new Player(1, [
+      new Piece('monk', 1),
+      new Piece('monk', 2),
+      new Piece('master', 3),
+      new Piece('monk', 4),
+      new Piece('monk', 5)
+    ], this.cards.slice(0, 2));
 
-    this.player2 = new Player(2, {
-      monk1: new Piece('monk', 21),
-      monk2: new Piece('monk', 22),
-      master: new Piece('master', 23),
-      monk3: new Piece('monk', 24),
-      monk4: new Piece('monk', 25),
-    }, this.cards.slice(0, 2));
+    this.player2 = new Player(2, [
+      new Piece('monk', 21),
+      new Piece('monk', 22),
+      new Piece('master', 23),
+      new Piece('monk', 24),
+      new Piece('monk', 25)
+    ], this.cards.slice(0, 2));
   }
 
   transition (definition) {
-    this['player' + definition.player].piece(definition.piece).setTile(definition.tile);
+    console.log(definition.card)
+    this['player' + definition.player].pieces[definition.piece].setTile(definition.tile);
   }
 }

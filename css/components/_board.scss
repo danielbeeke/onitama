@@ -1,0 +1,16 @@
+.board {
+  width: 600px;
+  height: 600px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 3px;
+
+  .tile {
+    background-color: rgba(blue, .3);
+  }
+
+  [data-tile="3"], [data-tile="23"] {
+    background-color: rgba(green, .3);
+  }
+}

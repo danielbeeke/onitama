@@ -14,7 +14,7 @@ let game = new Game();
 
 game.transition({
   player: 2,
-  piece: 'monk2',
+  piece: 3,
   card: 'Boar',
   tile: 16
 });
