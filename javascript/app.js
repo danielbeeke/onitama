@@ -8,3 +8,15 @@ connection.on('started', () => {
 });
 */
 
+import {Game} from '/javascript/game/Game.js';
+
+let game = new Game();
+
+game.transition({
+  player: 2,
+  piece: 'monk2',
+  card: 'Boar',
+  tile: 16
+});
+
+console.log(game)
