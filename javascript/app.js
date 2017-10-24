@@ -15,8 +15,7 @@ let game = new Game();
 game.transition({
   player: 2,
   piece: 3,
-  card: 'Boar',
-  tile: 16
+  card: game.player2.cards[0].name,
+  x: 3,
+  y: 3
 });
-
-console.log(game)

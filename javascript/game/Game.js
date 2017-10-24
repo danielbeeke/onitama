@@ -32,6 +32,10 @@ export class Game extends EventEmitter {
     }
   }
 
+  getCard (cardName) {
+    return this.cards.filter((card) => card.name === cardName)[0];
+  }
+
   init () {
     // Sort cards.
     this.shuffleCards(cards);
@@ -42,24 +46,33 @@ export class Game extends EventEmitter {
 
     // Initiate players.
     this.player1 = new Player(1, [
-      new Piece('monk', 1),
-      new Piece('monk', 2),
-      new Piece('master', 3),
-      new Piece('monk', 4),
-      new Piece('monk', 5)
+      new Piece('monk', 1, 1),
+      new Piece('monk', 2, 1),
+      new Piece('master', 3, 1),
+      new Piece('monk', 4, 1),
+      new Piece('monk', 5, 1)
     ], this.cards.slice(0, 2));
 
     this.player2 = new Player(2, [
-      new Piece('monk', 21),
-      new Piece('monk', 22),
-      new Piece('master', 23),
-      new Piece('monk', 24),
-      new Piece('monk', 25)
+      new Piece('monk', 1, 5),
+      new Piece('monk', 2, 5),
+      new Piece('master', 3, 5),
+      new Piece('monk', 4, 5),
+      new Piece('monk', 5, 5)
     ], this.cards.slice(0, 2));
   }
 
   transition (definition) {
-    console.log(definition.card)
-    this['player' + definition.player].pieces[definition.piece].setTile(definition.tile);
+    let piece = this['player' + definition.player].pieces[definition.piece];
+    let currentX = piece.x;
+    let currentY = piece.y;
+
+    let sets = this.getCard(definition.card).sets;
+
+    sets.forEach((set) => {
+      console.log(set)
+    });
+
+    this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
   }
 }

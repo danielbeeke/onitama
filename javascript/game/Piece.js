@@ -1,10 +1,12 @@
 export class Piece {
-  constructor (type, tile) {
+  constructor (type, x, y) {
     this.type = type;
-    this.tile = tile;
+    this.x = x;
+    this.y = y;
   }
 
-  setTile(tile) {
-    this.tile = tile;
+  setPosition(x, y) {
+    this.x = x;
+    this.y = y;
   }
 }
