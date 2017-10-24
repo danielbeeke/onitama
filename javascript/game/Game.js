@@ -1,6 +1,5 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {cards} from '/data/cards.js';
-import {Piece} from '/javascript/game/Piece.js';
 import {Card} from '/javascript/game/Card.js';
 import {Player} from '/javascript/game/Player.js';
 
@@ -12,8 +11,6 @@ export class Game extends EventEmitter {
 
   /**
    * Fisher-Yates (aka Knuth) Shuffle.
-   * @param array
-   * @returns {*}
    */
   shuffleCards (array) {
     let currentIndex = array.length, temporaryValue, randomIndex;
@@ -32,36 +29,47 @@ export class Game extends EventEmitter {
     }
   }
 
+  /**
+   * Returns a card by name.
+   */
   getCard (cardName) {
     return this.cards.filter((card) => card.name === cardName)[0];
   }
 
+  /**
+   * Starts a new clean game.
+   */
   init () {
     // Sort cards.
     this.shuffleCards(cards);
 
     // Pick five cards.
-    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData));
+    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets));
     this.swapCard = this.cards.slice(0, 1);
 
     // Initiate players.
-    this.player1 = new Player(1, [
-      new Piece('monk', 1, 1),
-      new Piece('monk', 2, 1),
-      new Piece('master', 3, 1),
-      new Piece('monk', 4, 1),
-      new Piece('monk', 5, 1)
-    ], this.cards.slice(0, 2));
+    this.player1 = new Player(1, this.cards.slice(0, 2), this);
+    this.player1.addPieces([
+      { type: 'monk', x: 1, y: 1 },
+      { type: 'monk', x: 2, y: 1 },
+      { type: 'master', x: 3, y: 1 },
+      { type: 'monk', x: 4, y: 1 },
+      { type: 'monk', x: 5, y: 1 },
+    ]);
 
-    this.player2 = new Player(2, [
-      new Piece('monk', 1, 5),
-      new Piece('monk', 2, 5),
-      new Piece('master', 3, 5),
-      new Piece('monk', 4, 5),
-      new Piece('monk', 5, 5)
-    ], this.cards.slice(0, 2));
+    this.player2 = new Player(2, this.cards.slice(0, 2), this);
+    this.player2.addPieces([
+      { type: 'monk', x: 1, y: 5 },
+      { type: 'monk', x: 2, y: 5 },
+      { type: 'master', x: 3, y: 5 },
+      { type: 'monk', x: 4, y: 5 },
+      { type: 'monk', x: 5, y: 5 },
+    ]);
   }
 
+  /**
+   * Triggered by a player action.
+   */
   transition (definition) {
     let piece = this['player' + definition.player].pieces[definition.piece];
     let currentX = piece.x;
@@ -69,10 +77,19 @@ export class Game extends EventEmitter {
 
     let sets = this.getCard(definition.card).sets;
 
+    let transitionIsValid = false;
+
     sets.forEach((set) => {
-      console.log(set)
+      let setX = currentX + set.x;
+      let setY = currentY + set.y;
+
+      if (setX === definition.x && setY === definition.y) {
+        transitionIsValid = true;
+      }
     });
 
-    this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
+    if (transitionIsValid) {
+      this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
+    }
   }
 }

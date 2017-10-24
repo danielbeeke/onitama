@@ -1,6 +1,6 @@
 export class Card {
-  constructor (cardData) {
-    this.name = cardData.name;
-    this.sets = cardData.sets;
+  constructor (name, sets) {
+    this.name = name;
+    this.sets = sets;
   }
 }

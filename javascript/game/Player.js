@@ -1,11 +1,16 @@
+import {Piece} from '/javascript/game/Piece.js';
+
 export class Player {
-  constructor (id, pieces, cards) {
+  constructor (id, cards, board) {
     this.id = id;
-    this.pieces = pieces;
     this.cards = cards;
+    this.board = board;
+    this.pieces = [];
   }
 
-  piece (name) {
-    return this.pieces[name];
+  addPieces (pieces) {
+    pieces.forEach((piece) => {
+      this.pieces.push(new Piece(piece.type, piece.x, piece.y, this))
+    });
   }
 }

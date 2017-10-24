@@ -17,5 +17,5 @@ game.transition({
   piece: 3,
   card: game.player2.cards[0].name,
   x: 3,
-  y: 3
+  y: 4
 });
