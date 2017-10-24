@@ -4,42 +4,10 @@ import {Card} from '/javascript/game/Card.js';
 import {Player} from '/javascript/game/Player.js';
 
 export class Game extends EventEmitter {
-  constructor () {
+  constructor (selector) {
     super();
-    this.init();
-  }
+    this.element = document.querySelector(selector);
 
-  /**
-   * Fisher-Yates (aka Knuth) Shuffle.
-   */
-  shuffleCards (array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-  }
-
-  /**
-   * Returns a card by name.
-   */
-  getCard (cardName) {
-    return this.cards.filter((card) => card.name === cardName)[0];
-  }
-
-  /**
-   * Starts a new clean game.
-   */
-  init () {
     // Sort cards.
     this.shuffleCards(cards);
 
@@ -65,6 +33,18 @@ export class Game extends EventEmitter {
       { type: 'monk', x: 4, y: 5 },
       { type: 'monk', x: 5, y: 5 },
     ]);
+
+
+    for (let y = 1; y < 6; y++) {
+      for (let x = 1; x < 6; x++) {
+        let tile = document.createElement('div');
+        tile.dataset.x = x;
+        tile.dataset.y = y;
+        tile.classList.add('tile');
+        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
+        this.element.appendChild(tile);
+      }
+    }
   }
 
   /**
@@ -92,4 +72,32 @@ export class Game extends EventEmitter {
       this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
     }
   }
+
+  /**
+   * Fisher-Yates Shuffle.
+   */
+  shuffleCards (array) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  }
+
+  /**
+   * Returns a card by name.
+   */
+  getCard (cardName) {
+    return this.cards.filter((card) => card.name === cardName)[0];
+  }
+
 }

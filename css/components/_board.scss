@@ -5,12 +5,28 @@
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
   grid-gap: 3px;
+  align-items: center;
+  justify-items: center;
 
   .tile {
+    width: 100%;
+    height: 100%;
     background-color: rgba(blue, .3);
   }
 
-  [data-tile="3"], [data-tile="23"] {
+  [data-x="3"][data-y="1"], [data-x="3"][data-y="5"] {
     background-color: rgba(green, .3);
+  }
+
+  .piece {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    z-index: 2;
+    background-color: rgba(red, .3);
+
+    &.master {
+      background-color: rgba(red, .8);
+    }
   }
 }

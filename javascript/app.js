@@ -10,7 +10,7 @@ connection.on('started', () => {
 
 import {Game} from '/javascript/game/Game.js';
 
-let game = new Game();
+let game = new Game('#board');
 
 game.transition({
   player: 2,
