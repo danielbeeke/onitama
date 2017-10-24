@@ -8,11 +8,25 @@ export class Game extends EventEmitter {
     super();
     this.element = document.querySelector(selector);
 
+    this.desk1 = document.createElement('div');
+    this.desk1.classList.add('desk');
+    this.desk1.classList.add('player1');
+    this.element.appendChild(this.desk1);
+
+    this.board = document.createElement('div');
+    this.board.classList.add('board-grid');
+    this.element.appendChild(this.board);
+
+    this.desk2 = document.createElement('div');
+    this.desk2.classList.add('desk');
+    this.desk2.classList.add('player2');
+    this.element.appendChild(this.desk2);
+
     // Sort cards.
     this.shuffleCards(cards);
 
     // Pick five cards.
-    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets));
+    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
     this.swapCard = this.cards.slice(0, 1);
 
     // Initiate players.
@@ -42,7 +56,7 @@ export class Game extends EventEmitter {
         tile.dataset.y = y;
         tile.classList.add('tile');
         tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-        this.element.appendChild(tile);
+        this.board.appendChild(tile);
       }
     }
   }

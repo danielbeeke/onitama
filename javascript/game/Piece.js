@@ -1,10 +1,10 @@
 export class Piece {
-  constructor (type, x, y, player, board) {
+  constructor (type, x, y, player, game) {
     this.type = type;
     this.x = x;
     this.y = y;
     this.player = player;
-    this.board = board;
+    this.game = game;
 
     this.element = document.createElement('div');
     this.element.dataset.x = x;
@@ -12,7 +12,15 @@ export class Piece {
     this.element.classList.add('piece');
     this.element.classList.add(this.type);
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-    this.board.element.appendChild(this.element);
+    this.game.board.appendChild(this.element);
+
+    this.element.addEventListener('mouseenter', () => {
+      // console.log('enter')
+    });
+
+    this.element.addEventListener('mouseleave', () => {
+      // console.log('leave')
+    });
   }
 
   setPosition(x, y) {

@@ -1,3 +1,7 @@
+$speed: .4s;
+$easing: ease-in-out;
+
 @import 'base/elements';
 @import 'components/webrtc-signaling';
 @import 'components/board';
+@import 'components/card';

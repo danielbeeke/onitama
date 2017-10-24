@@ -12,6 +12,7 @@ import {Game} from '/javascript/game/Game.js';
 
 let game = new Game('#board');
 
+/*
 game.transition({
   player: 2,
   piece: 3,
@@ -19,3 +20,4 @@ game.transition({
   x: 3,
   y: 4
 });
+*/
