@@ -1,13 +1,14 @@
 /*
-import {Connection} from '/javascript/Connection.js';
+import {Connection} from '/javascript/connection/Connection.js';
 
 let connection = new Connection();
 
 connection.on('started', () => {
   console.log('woop woop');
 });
-*/
 
+
+*/
 import {Game} from '/javascript/game/Game.js';
 
 let game = new Game('#board');

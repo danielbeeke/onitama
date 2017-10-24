@@ -8,26 +8,17 @@ export class Game extends EventEmitter {
     super();
     this.element = document.querySelector(selector);
 
-    this.desk1 = document.createElement('div');
-    this.desk1.classList.add('desk');
-    this.desk1.classList.add('player1');
-    this.element.appendChild(this.desk1);
-
     this.board = document.createElement('div');
     this.board.classList.add('board-grid');
     this.element.appendChild(this.board);
-
-    this.desk2 = document.createElement('div');
-    this.desk2.classList.add('desk');
-    this.desk2.classList.add('player2');
-    this.element.appendChild(this.desk2);
 
     // Sort cards.
     this.shuffleCards(cards);
 
     // Pick five cards.
     this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
-    this.swapCard = this.cards.slice(0, 1);
+    this.swapCard = this.cards.slice(4, 5)[0];
+    this.swapCard.setOwner(false);
 
     // Initiate players.
     this.player1 = new Player(1, this.cards.slice(0, 2), this);
@@ -39,7 +30,7 @@ export class Game extends EventEmitter {
       { type: 'monk', x: 5, y: 1 },
     ]);
 
-    this.player2 = new Player(2, this.cards.slice(0, 2), this);
+    this.player2 = new Player(2, this.cards.slice(2, 4), this);
     this.player2.addPieces([
       { type: 'monk', x: 1, y: 5 },
       { type: 'monk', x: 2, y: 5 },
@@ -47,7 +38,6 @@ export class Game extends EventEmitter {
       { type: 'monk', x: 4, y: 5 },
       { type: 'monk', x: 5, y: 5 },
     ]);
-
 
     for (let y = 1; y < 6; y++) {
       for (let x = 1; x < 6; x++) {

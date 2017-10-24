@@ -4,6 +4,11 @@ export class Player {
   constructor (id, cards, board) {
     this.id = id;
     this.cards = cards;
+
+    this.cards.forEach((card) => {
+      card.setOwner(this);
+    });
+
     this.board = board;
     this.pieces = [];
   }
