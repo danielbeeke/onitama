@@ -8,6 +8,8 @@ export class Game extends EventEmitter {
     super();
     this.element = document.querySelector(selector);
 
+    this.tiles = {};
+
     this.board = document.createElement('div');
     this.board.classList.add('board-grid');
     this.element.appendChild(this.board);
@@ -47,6 +49,7 @@ export class Game extends EventEmitter {
         tile.classList.add('tile');
         tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
         this.board.appendChild(tile);
+        this.tiles[x + '-' + y] = tile;
       }
     }
   }

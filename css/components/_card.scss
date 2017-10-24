@@ -31,6 +31,10 @@
     }
   }
 
+  &.selected {
+    border: 4px solid red;
+  }
+
   &[data-owner="1"][data-delta="0"] {
     grid-area: 1 / 2 / 2 / 3;
   }

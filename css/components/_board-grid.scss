@@ -11,6 +11,10 @@
     width: 100%;
     height: 100%;
     background-color: rgba(blue, .3);
+
+    &.hover {
+      background-color: rgba(orange, .5);
+    }
   }
 
   [data-x="3"][data-y="1"], [data-x="3"][data-y="5"] {

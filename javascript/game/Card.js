@@ -3,7 +3,8 @@ export class Card {
     this.name = name;
     this.sets = sets;
     this.game = game;
-    this.owner = false;
+    this.ownerId = false;
+    this.delta = false;
 
     this.element = document.createElement('div');
     let inner = `<h3 class="title">${this.name}</h3><div class="mini-board"><div class="self" style="grid-area: 3 / 3 / 3 / 3;"></div>`;
@@ -33,6 +34,19 @@ export class Card {
         miniBoard.appendChild(tile);
       }
     }
+
+    this.element.addEventListener('click', () => {
+      if (this.ownerId) {
+        this.game['player' + this.ownerId].cards.forEach((card) => {
+          if (card.name !== this.name) {
+            card.element.classList.remove('selected');
+          }
+        });
+
+        this.game['player' + this.ownerId].activeCard = this;
+        this.element.classList.add('selected');
+      }
+    });
   }
 
   setOwner (owner = false) {
