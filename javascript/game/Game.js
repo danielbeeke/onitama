@@ -10,6 +10,8 @@ export class Game extends EventEmitter {
 
     this.tiles = {};
 
+    this.activePlayer = 2;
+
     this.board = document.createElement('div');
     this.board.classList.add('board-grid');
     this.element.appendChild(this.board);
