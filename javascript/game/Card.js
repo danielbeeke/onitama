@@ -36,15 +36,25 @@ export class Card {
     }
 
     this.element.addEventListener('click', () => {
-      if (this.ownerId) {
+      // Only if the cards is owned the local player.
+      if (this.ownerId === 2) {
         this.game['player' + this.ownerId].cards.forEach((card) => {
           if (card.name !== this.name) {
             card.element.classList.remove('selected');
           }
         });
 
-        this.game['player' + this.ownerId].activeCard = this;
-        this.element.classList.add('selected');
+        // Clicking to deselect.
+        if (this.game['player' + this.ownerId].activeCard === this) {
+          this.element.classList.remove('selected');
+          this.game['player' + this.ownerId].activeCard = false;
+        }
+
+        // Selected a new card.
+        else {
+          this.game['player' + this.ownerId].activeCard = this;
+          this.element.classList.add('selected');
+        }
       }
     });
   }
