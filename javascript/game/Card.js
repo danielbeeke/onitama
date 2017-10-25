@@ -59,17 +59,19 @@ export class Card {
     });
   }
 
+  setDelta (delta = false) {
+    this.delta = delta;
+    this.element.dataset.delta = this.delta;
+  }
+
   setOwner (owner = false) {
     if (owner) {
       this.ownerId = owner.id;
-      this.delta = owner.cards.findIndex(card => card.name === this.name);
     }
     else {
       this.ownerId = false;
-      this.delta = false;
     }
 
-    this.element.dataset.delta = this.delta;
     this.element.dataset.owner = this.ownerId;
   }
 }

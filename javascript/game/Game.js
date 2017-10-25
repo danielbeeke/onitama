@@ -21,8 +21,7 @@ export class Game extends EventEmitter {
 
     // Pick five cards.
     this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
-    this.swapCard = this.cards.slice(4, 5)[0];
-    this.swapCard.setOwner(false);
+    this.cards.slice(4, 5)[0].setOwner(false);
 
     // Initiate players.
     this.player1 = new Player(1, this.cards.slice(0, 2), this);
@@ -83,6 +82,21 @@ export class Game extends EventEmitter {
     if (transitionIsValid) {
       this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
     }
+  }
+
+  swapCard (cardToSwap) {
+    let oldOwner = cardToSwap.ownerId;
+    let oldDelta = cardToSwap.delta;
+
+    this.cards.forEach((card) => {
+      if (!card.ownerId) {
+        card.setOwner(this['player' + oldOwner]);
+        card.setDelta(oldDelta);
+      }
+    });
+
+    cardToSwap.setOwner(false);
+    cardToSwap.setDelta(false);
   }
 
   /**

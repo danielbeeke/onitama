@@ -84,6 +84,10 @@ export class Piece {
     this.x = x;
     this.y = y;
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
+    this.removeHoverAndHighlights();
+    this.player.activeCard.element.classList.remove('selected');
+    this.game.swapCard(this.player.activeCard);
+    this.player.activeCard = false;
   }
 
   highlightCard (card) {

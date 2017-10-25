@@ -5,8 +5,9 @@ export class Player {
     this.id = id;
     this.cards = cards;
 
-    this.cards.forEach((card) => {
+    this.cards.forEach((card, delta) => {
       card.setOwner(this);
+      card.setDelta(delta);
     });
 
     this.board = board;
