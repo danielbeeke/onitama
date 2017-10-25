@@ -1,10 +1,11 @@
 export class Piece {
-  constructor (type, x, y, player, game) {
+  constructor (type, x, y, player, game, index) {
     this.type = type;
     this.x = x;
     this.y = y;
     this.player = player;
     this.game = game;
+    this.index = index;
 
     this.element = document.createElement('div');
     this.element.dataset.x = x;
@@ -13,6 +14,25 @@ export class Piece {
     this.element.classList.add(this.type);
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
     this.game.board.appendChild(this.element);
+
+    this.game.on('tile-click', (tile) => {
+      if (this.player.activePiece === this && this.player.activeCard) {
+        this.player.activeCard.sets.forEach((set) => {
+          let x = this.x + set.x;
+          let y = this.y + set.y;
+
+          if (parseInt(tile.dataset.x) === x && parseInt(tile.dataset.y) === y) {
+            this.game.transition({
+              player: this.player.id,
+              piece: this.index,
+              card: this.player.activeCard.name,
+              x: x,
+              y: y
+            });
+          }
+        });
+      }
+    });
 
     this.element.addEventListener('mouseenter', () => {
       if (this.game.activePlayer !== player.id) { return; }

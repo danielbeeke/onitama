@@ -14,8 +14,8 @@ export class Player {
   }
 
   addPieces (pieces) {
-    pieces.forEach((piece) => {
-      this.pieces.push(new Piece(piece.type, piece.x, piece.y, this, this.board));
+    pieces.forEach((piece, delta) => {
+      this.pieces.push(new Piece(piece.type, piece.x, piece.y, this, this.board, delta));
     });
   }
 }

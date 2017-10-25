@@ -51,6 +51,9 @@ export class Game extends EventEmitter {
         tile.classList.add('tile');
         tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
         this.board.appendChild(tile);
+        tile.addEventListener('click', (event) => {
+          this.emit('tile-click', tile);
+        });
         this.tiles[x + '-' + y] = tile;
       }
     }
