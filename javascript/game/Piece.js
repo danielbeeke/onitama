@@ -17,6 +17,7 @@ export class Piece {
     this.element.addEventListener('mouseenter', () => {
       if (this.game.activePlayer !== player.id) { return; }
 
+      // Hover actions while having no selected piece but a selected card.
       if (!this.player.activePiece && this.player.activeCard) {
         this.highlightCard(this.player.activeCard);
       }
@@ -29,26 +30,34 @@ export class Piece {
     });
 
     this.element.addEventListener('click', () => {
+      // Click to remove selection.
       if (this.player.activePiece && this.player.activePiece === this) {
-        this.player.activePiece.element.classList.remove('selected');
-        this.player.activePiece = false;
-        this.removeHoverAndHighlights();
+        this.clickToRemoveSelection();
       }
       else {
+        // Clean up dangling highlights.
         this.removeHoverAndHighlights();
 
         if (this.player.activeCard) {
           this.highlightCard(this.player.activeCard);
         }
 
+        // Cleaning up old active piece.
         if (this.player.activePiece) {
           this.player.activePiece.element.classList.remove('selected');
         }
 
+        // Setting the new context.
         this.player.activePiece = this;
         this.element.classList.add('selected');
       }
     });
+  }
+
+  clickToRemoveSelection () {
+    this.player.activePiece.element.classList.remove('selected');
+    this.player.activePiece = false;
+    this.removeHoverAndHighlights();
   }
 
   setPosition(x, y) {
@@ -69,7 +78,6 @@ export class Piece {
         this.game.tiles[x + '-' + y].classList.add('highlight');
       }
     });
-
   }
 
   removeHoverAndHighlights() {

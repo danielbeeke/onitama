@@ -1,0 +1,22 @@
+.mini-board {
+  width: 100px;
+  height: 100px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 1px;
+
+  .tile {
+    background-color: #ddd;
+  }
+
+  .set {
+    background-color: gray;
+    z-index: 1;
+  }
+
+  .self {
+    background-color: black;
+    z-index: 1;
+  }
+}
