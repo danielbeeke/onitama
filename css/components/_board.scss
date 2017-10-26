@@ -1,11 +1,13 @@
 .board {
   display: grid;
   grid-template-columns: 1fr 300px 300px 300px 1fr;
-  grid-template-rows: 150px 600px 150px;
+  grid-template-rows: 1fr 150px 600px 150px 1fr;
   grid-gap: 10px;
   align-items: stretch;
   justify-content: stretch;
   position: relative;
   width: 100%;
   height: 100%;
+  max-width: 940px;
+  margin: 0 auto;
 }

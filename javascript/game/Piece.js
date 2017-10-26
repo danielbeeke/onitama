@@ -88,6 +88,8 @@ export class Piece {
     this.player.activeCard.element.classList.remove('selected');
     this.game.swapCard(this.player.activeCard);
     this.player.activeCard = false;
+    this.player.activePiece.element.classList.remove('selected');
+    this.player.activePiece = false;
   }
 
   highlightCard (card) {
