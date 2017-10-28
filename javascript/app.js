@@ -7,18 +7,18 @@ let game;
 connection.on('started', () => {
   if (connection.role === 'initiator') {
     game = new Game('#board');
-    let cardNames = game.cards.map((card) => card.name);
+
     connection.sendMessage('startGame', {
-      cardNames: cardNames
+      state: game.serialize()
     });
   }
 });
 
 let commands = {
   startGame: (options) => {
-    new Game('#board', {
-      cardNames: options.cardNames
-    });
+    game = new Game('#board', {
+      state: options.state
+  });
   }
 };
 

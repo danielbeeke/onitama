@@ -10,28 +10,41 @@ export class Game extends EventEmitter {
 
     this.tiles = {};
 
-    this.activePlayer = 2;
-
     this.board = document.createElement('div');
     this.board.classList.add('board-grid');
     this.element.appendChild(this.board);
 
+    for (let y = 1; y < 6; y++) {
+      for (let x = 1; x < 6; x++) {
+        let tile = document.createElement('div');
+        tile.dataset.x = x;
+        tile.dataset.y = y;
+        tile.classList.add('tile');
+        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
+        this.board.appendChild(tile);
+        tile.addEventListener('click', (event) => {
+          this.emit('tile-click', tile);
+        });
+        this.tiles[x + '-' + y] = tile;
+      }
+    }
+
+    if (options.state) {
+      this.deserialize(options.state);
+    }
+    else {
+      this.newGame();
+    }
+  }
+
+  newGame () {
     // Sort cards.
     this.shuffleCards(cards);
 
-    // Pick five cards.
-    if (options.cardNames) {
-      this.cards = cards
-      .filter((cardData) => options.cardNames.includes(cardData.name))
-      .map((cardData) => new Card(cardData.name, cardData.sets, this));
-
-      console.log(this.cards)
-    }
-    else {
-      this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
-    }
-
+    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
     this.cards.slice(4, 5)[0].setOwner(false);
+
+    this.activePlayer = 2;
 
     // Initiate players.
     this.player1 = new Player(1, this.cards.slice(0, 2), this);
@@ -51,21 +64,6 @@ export class Game extends EventEmitter {
       { type: 'monk', x: 4, y: 5 },
       { type: 'monk', x: 5, y: 5 },
     ]);
-
-    for (let y = 1; y < 6; y++) {
-      for (let x = 1; x < 6; x++) {
-        let tile = document.createElement('div');
-        tile.dataset.x = x;
-        tile.dataset.y = y;
-        tile.classList.add('tile');
-        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-        this.board.appendChild(tile);
-        tile.addEventListener('click', (event) => {
-          this.emit('tile-click', tile);
-        });
-        this.tiles[x + '-' + y] = tile;
-      }
-    }
   }
 
   /**
@@ -92,6 +90,81 @@ export class Game extends EventEmitter {
     if (transitionIsValid) {
       this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
     }
+  }
+
+  /**
+   * Serializes the game state into an object.
+   */
+  serialize () {
+    let state = {};
+
+    state.activePlayer = this.activePlayer;
+
+    this.cards.forEach((card) => {
+      if (!card.ownerId) {
+        state.houseCard = card.name;
+      }
+    });
+
+    state.player1 = {
+      card1: this.player1.cards[0].name,
+      card2: this.player1.cards[1].name,
+      pieces: []
+    };
+
+    this.player1.pieces.forEach((piece) => {
+      state.player1.pieces.push({
+        type: piece.type,
+        x: piece.x,
+        y: piece.y,
+        index: piece.index,
+      });
+    });
+
+    state.player2 = {
+      card1: this.player2.cards[0].name,
+      card2: this.player2.cards[1].name,
+      pieces: []
+    };
+
+    this.player2.pieces.forEach((piece) => {
+      state.player2.pieces.push({
+        type: piece.type,
+        x: piece.x,
+        y: piece.y,
+        index: piece.index,
+      });
+    });
+
+    return state;
+  }
+
+  /**
+   * Deserialize the game state.
+   */
+  deserialize (state) {
+    this.cards = [];
+    let cardData1 = cards.filter((cardData) => cardData.name === state.player1.card1)[0];
+    let cardData2 = cards.filter((cardData) => cardData.name === state.player1.card2)[0];
+    let cardData3 = cards.filter((cardData) => cardData.name === state.player2.card1)[0];
+    let cardData4 = cards.filter((cardData) => cardData.name === state.player2.card2)[0];
+    let cardData5 = cards.filter((cardData) => cardData.name === state.houseCard)[0];
+
+    this.cards.push(new Card(cardData1.name, cardData1.sets, this));
+    this.cards.push(new Card(cardData2.name, cardData2.sets, this));
+    this.cards.push(new Card(cardData3.name, cardData3.sets, this));
+    this.cards.push(new Card(cardData4.name, cardData4.sets, this));
+    this.cards.push(new Card(cardData5.name, cardData5.sets, this));
+
+    this.cards.slice(4, 5)[0].setOwner(false);
+    this.activePlayer = state.activePlayer;
+
+    // Initiate players.
+    this.player1 = new Player(1, this.cards.slice(0, 2), this);
+    this.player1.addPieces(state.player1.pieces);
+
+    this.player2 = new Player(2, this.cards.slice(2, 4), this);
+    this.player2.addPieces(state.player2.pieces);
   }
 
   swapCard (cardToSwap) {
