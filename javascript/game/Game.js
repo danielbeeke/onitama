@@ -4,7 +4,7 @@ import {Card} from '/javascript/game/Card.js';
 import {Player} from '/javascript/game/Player.js';
 
 export class Game extends EventEmitter {
-  constructor (selector) {
+  constructor (selector, options = {}) {
     super();
     this.element = document.querySelector(selector);
 
@@ -20,7 +20,17 @@ export class Game extends EventEmitter {
     this.shuffleCards(cards);
 
     // Pick five cards.
-    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
+    if (options.cardNames) {
+      this.cards = cards
+      .filter((cardData) => options.cardNames.includes(cardData.name))
+      .map((cardData) => new Card(cardData.name, cardData.sets, this));
+
+      console.log(this.cards)
+    }
+    else {
+      this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
+    }
+
     this.cards.slice(4, 5)[0].setOwner(false);
 
     // Initiate players.

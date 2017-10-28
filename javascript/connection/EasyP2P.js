@@ -88,8 +88,8 @@ export class EasyP2P extends EventEmitter {
       this.emit('started', ...arguments);
     };
 
-    this.dataChannel.onmessage = () => {
-      this.emit('message', ...arguments);
+    this.dataChannel.onmessage = (message) => {
+      this.emit('message', message.data);
     };
 
     this.dataChannel.onclose = () => {
@@ -99,5 +99,12 @@ export class EasyP2P extends EventEmitter {
     this.dataChannel.onerror = () => {
       this.emit('error', ...arguments);
     };
+  }
+
+  sendMessage (command, options) {
+    this.dataChannel.send(JSON.stringify({
+      command: command,
+      options: options
+    }));
   }
 }

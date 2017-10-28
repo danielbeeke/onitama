@@ -1,24 +1,29 @@
-/*
 import {Connection} from '/javascript/connection/Connection.js';
-
-let connection = new Connection();
-
-connection.on('started', () => {
-  console.log('woop woop');
-});
-
-
-*/
 import {Game} from '/javascript/game/Game.js';
 
-let game = new Game('#board');
+let connection = new Connection();
+let game;
 
-/*
-game.transition({
-  player: 2,
-  piece: 3,
-  card: game.player2.cards[0].name,
-  x: 3,
-  y: 4
+connection.on('started', () => {
+  if (connection.role === 'initiator') {
+    game = new Game('#board');
+    let cardNames = game.cards.map((card) => card.name);
+    connection.sendMessage('startGame', {
+      cardNames: cardNames
+    });
+  }
 });
-*/
+
+let commands = {
+  startGame: (options) => {
+    new Game('#board', {
+      cardNames: options.cardNames
+    });
+  }
+};
+
+connection.on('message', (message) => {
+  if (message.command && message.options && commands[message.command]) {
+    commands[message.command](message.options);
+  }
+});

@@ -31,6 +31,8 @@ export class Connection extends EventEmitter {
       initialOffer: location.hash.substr(0, 4) === '#sdp' ? decodeURI(location.hash.substr(5)) : null
     });
 
+    this.role = this.easyP2P.configuration.role;
+
     document.body.dataset.webrtcRole = this.easyP2P.configuration.role;
 
     document.querySelector('.copy-offer-url').addEventListener('click', () => {
@@ -68,5 +70,15 @@ export class Connection extends EventEmitter {
       document.body.dataset.webrtcRole = 'started';
       this.emit('started');
     });
+
+    // Connection is started.
+    this.easyP2P.on('message', (jsonMessage) => {
+      let message = JSON.parse(jsonMessage);
+      this.emit('message', message);
+    });
+  }
+
+  sendMessage (command, options) {
+    this.easyP2P.sendMessage(command, options);
   }
 }
