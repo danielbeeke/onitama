@@ -85,11 +85,16 @@ export class Piece {
     this.y = y;
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
     this.removeHoverAndHighlights();
-    this.player.activeCard.element.classList.remove('selected');
-    this.game.swapCard(this.player.activeCard);
-    this.player.activeCard = false;
-    this.player.activePiece.element.classList.remove('selected');
-    this.player.activePiece = false;
+    if (this.player.activeCard) {
+      this.player.activeCard.element.classList.remove('selected');
+      this.game.swapCard(this.player.activeCard);
+      this.player.activeCard = false;
+    }
+
+    if (this.player.activePiece) {
+      this.player.activePiece.element.classList.remove('selected');
+      this.player.activePiece = false;
+    }
   }
 
   highlightCard (card) {

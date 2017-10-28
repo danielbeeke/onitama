@@ -88,7 +88,13 @@ export class Game extends EventEmitter {
     });
 
     if (transitionIsValid) {
+      this['player' + definition.player].activeCard = this.getCard(definition.card);
+      this['player' + definition.player].activePiece = piece;
       this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
+      this.emit('transition', definition);
+    }
+    else {
+      console.log('invalid definition', definition)
     }
   }
 
