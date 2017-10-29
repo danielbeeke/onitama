@@ -1,7 +1,6 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {settings} from '/settings.js';
 import {EasyP2P} from '/javascript/connection/EasyP2P.js';
-import '/node_modules/clipboard/dist/clipboard.js';
 
 export class Connection extends EventEmitter {
   constructor (configuration = {}) {
@@ -16,9 +15,6 @@ export class Connection extends EventEmitter {
     let copyAnswerInput = document.querySelector('#webrtc-copy-answer');
 
     document.body.dataset.webrtcState = 'initial';
-
-    // Initiate the clipboard.
-    new Clipboard('.clipboard');
 
     this.easyP2P = new EasyP2P({
       // WebRTC signaling is asymmetric, we have to tell what role this person has.
@@ -36,17 +32,15 @@ export class Connection extends EventEmitter {
     document.body.dataset.webrtcRole = this.easyP2P.configuration.role;
 
     document.querySelector('.copy-offer-url').addEventListener('click', () => {
-      // Work around for the clipboard, it does not copy hidden things.
-      setTimeout(() => {
-        document.body.dataset.webrtcState = 'offer-copied';
-      }, 300);
+      urlInput.select();
+      document.execCommand('copy');
+      document.body.dataset.webrtcState = 'offer-copied';
     });
 
     document.querySelector('.copy-answer').addEventListener('click', () => {
-      // Work around for the clipboard, it does not copy hidden things.
-      setTimeout(() => {
-        document.body.dataset.webrtcState = 'answer-copied';
-      }, 300);
+      copyAnswerInput.select();
+      document.execCommand('copy');
+      document.body.dataset.webrtcState = 'answer-copied';
     });
 
     // If we are the initiator, create the url to sent and attach to the textarea so we can accept the connection.
