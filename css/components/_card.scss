@@ -13,10 +13,6 @@
     border: 4px solid red;
   }
 
-  &[data-owner="2"] {
-    cursor: pointer;
-  }
-
   &[data-owner="1"][data-delta="0"] {
     grid-area: 2 / 2 / 3 / 3;
   }
@@ -37,4 +33,9 @@
     grid-area: 3 / 4 / 3 / 4;
     align-self: center;
   }
+}
+
+[data-active-player="1"] .card[data-owner="1"],
+[data-active-player="2"] .card[data-owner="2"] {
+  cursor: pointer;
 }

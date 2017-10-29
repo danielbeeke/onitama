@@ -37,7 +37,7 @@ export class Card {
 
     this.element.addEventListener('click', () => {
       // Only if the cards is owned the local player.
-      if (this.ownerId === 2) {
+      if (this.ownerId === this.game.activePlayer) {
         this.game['player' + this.ownerId].cards.forEach((card) => {
           if (card.name !== this.name) {
             card.element.classList.remove('selected');

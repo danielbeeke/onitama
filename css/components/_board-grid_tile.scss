@@ -3,6 +3,13 @@
   height: 100%;
   background-color: rgba(blue, .3);
 
+  &:after {
+    content: attr(data-x) ", " attr(data-y);
+    color: rgba(black, .4);
+    padding: 4px;
+    float: left;
+  }
+
   &[data-x="3"][data-y="1"], &[data-x="3"][data-y="5"] {
     background-color: rgba(green, .3);
   }
@@ -15,3 +22,9 @@
     background-color: rgba(black, .7) !important;
   }
 }
+
+// 3,5 -> 2,4
+// 3,1 -> 4,2
+
+// 5,5 -> 5,4
+// 1,1 -> 1,2

@@ -45,15 +45,16 @@ export class Game extends EventEmitter {
     this.cards.slice(4, 5)[0].setOwner(false);
 
     this.activePlayer = 2;
+    document.body.dataset.activePlayer = this.activePlayer;
 
     // Initiate players.
     this.player1 = new Player(1, this.cards.slice(0, 2), this);
     this.player1.addPieces([
-      { type: 'monk', x: 1, y: 1 },
-      { type: 'monk', x: 2, y: 1 },
-      { type: 'master', x: 3, y: 1 },
-      { type: 'monk', x: 4, y: 1 },
       { type: 'monk', x: 5, y: 1 },
+      { type: 'monk', x: 4, y: 1 },
+      { type: 'master', x: 3, y: 1 },
+      { type: 'monk', x: 2, y: 1 },
+      { type: 'monk', x: 1, y: 1 },
     ]);
 
     this.player2 = new Player(2, this.cards.slice(2, 4), this);
@@ -66,21 +67,47 @@ export class Game extends EventEmitter {
     ]);
   }
 
+  mirrorCoordinate (coordinate) {
+    switch (coordinate) {
+      case 1:
+        coordinate = 5;
+        break;
+      case 2:
+        coordinate = 4;
+        break;
+      case 4:
+        coordinate = 2;
+        break;
+      case 5:
+        coordinate = 1;
+        break;
+    }
+
+    return coordinate;
+  }
+
   /**
    * Triggered by a player action.
    */
   transition (definition) {
+    console.log(definition.player, this);
+
     let piece = this['player' + definition.player].pieces[definition.piece];
     let currentX = piece.x;
     let currentY = piece.y;
 
     let sets = this.getCard(definition.card).sets;
 
-    let transitionIsValid = false;
+    let transitionIsValid = true;
 
     sets.forEach((set) => {
       let setX = currentX + set.x;
       let setY = currentY + set.y;
+
+      if (definition.player === 1) {
+        setX = this.mirrorCoordinate(setX);
+        setY = this.mirrorCoordinate(setY);
+      }
 
       if (setX === definition.x && setY === definition.y) {
         transitionIsValid = true;
@@ -91,10 +118,13 @@ export class Game extends EventEmitter {
       this['player' + definition.player].activeCard = this.getCard(definition.card);
       this['player' + definition.player].activePiece = piece;
       this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
+      this.activePlayer = this.activePlayer === 2 ? 1 : 2;
+      document.body.dataset.activePlayer = this.activePlayer;
       this.emit('transition', definition);
     }
     else {
-      console.log('invalid definition', definition)
+      console.log('invalid definition', definition);
+      console.log(piece);
     }
   }
 
@@ -164,6 +194,7 @@ export class Game extends EventEmitter {
 
     this.cards.slice(4, 5)[0].setOwner(false);
     this.activePlayer = state.activePlayer;
+    document.body.dataset.activePlayer = this.activePlayer;
 
     // Initiate players.
     this.player1 = new Player(1, this.cards.slice(0, 2), this);

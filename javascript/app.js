@@ -6,7 +6,11 @@ let game;
 
 let onTransition = function (definition) {
   if (!definition.isReceived) {
-    // definition.player = definition.player === 1 ? 2 : 1;
+    // We need to flip al the player things.
+    definition.player = definition.player === 1 ? 2 : 1;
+    definition.x = game.mirrorCoordinate(definition.x);
+    definition.y = game.mirrorCoordinate(definition.y);
+
     connection.sendMessage('transition', definition);
   }
 };
@@ -16,11 +20,18 @@ connection.on('started', () => {
     game = new Game('#board');
 
     let state = game.serialize();
-    // let player2 = state.player1;
-    // let player1 = state.player2;
-    //
-    // state.player1 = player1;
-    // state.player2 = player2;
+
+    // We need to flip al the player things.
+    let player2Card1 = state.player1.card1;
+    let player2Card2 = state.player1.card2;
+
+    state.player1.card1 = state.player2.card1;
+    state.player1.card2 = state.player2.card2;
+
+    state.player2.card1 = player2Card1;
+    state.player2.card2 = player2Card2;
+
+    state.activePlayer = state.activePlayer === 2 ? 1 : 2;
 
     game.on('transition', (definition) => {
       onTransition(definition);
