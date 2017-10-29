@@ -3,12 +3,14 @@
   height: 100%;
   background-color: rgba(blue, .3);
 
+  /* Visual helper for debugging.
   &:after {
     content: attr(data-x) ", " attr(data-y);
     color: rgba(black, .4);
     padding: 4px;
     float: left;
   }
+  */
 
   &[data-x="3"][data-y="1"], &[data-x="3"][data-y="5"] {
     background-color: rgba(green, .3);
