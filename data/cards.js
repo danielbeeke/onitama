@@ -5,7 +5,8 @@ export const cards = [
       { "x": 1, "y": -1 },
       { "x": 2, "y": 0 },
       { "x": -1, "y": 1 }
-    ]
+    ],
+    "color": "green"
   },
   {
     "name": "Frog",
@@ -13,7 +14,8 @@ export const cards = [
       { "x": -2, "y": 0 },
       { "x": -1, "y": -1 },
       { "x": 1, "y": 1 }
-    ]
+    ],
+    "color": "green"
   },
   {
     "name": "Mantis",
@@ -21,7 +23,8 @@ export const cards = [
       { "x": -1, "y": -1 },
       { "x": 1, "y": -1 },
       { "x": 0, "y": 1 }
-    ]
+    ],
+    "color": "green"
   },
   {
     "name": "Boar",
@@ -29,7 +32,8 @@ export const cards = [
       { "x": 0, "y": -1 },
       { "x": -1, "y": 0 },
       { "x": 1, "y": 0 }
-    ]
+    ],
+    "color": "green"
   },
   {
     "name": "Crane",
@@ -37,14 +41,16 @@ export const cards = [
       { "x": 0, "y": -1 },
       { "x": -1, "y": 1 },
       { "x": 1, "y": 1 }
-    ]
+    ],
+    "color": "green"
   },
   {
     "name": "Tiger",
     "sets": [
       { "x": 0, "y": -2 },
       { "x": 0, "y": 1 }
-    ]
+    ],
+    "color": "red"
   },
   {
     "name": "Horse",
@@ -52,7 +58,8 @@ export const cards = [
       { "x": 0, "y": -1 },
       { "x": 0, "y": 1 },
       { "x": -1, "y": 0 }
-    ]
+    ],
+    "color": "red"
   },
   {
     "name": "Rooster",
@@ -60,7 +67,8 @@ export const cards = [
       { "x": 1, "y": -1 },
       { "x": -1, "y": 0 },
       { "x": -1, "y": 1 }
-    ]
+    ],
+    "color": "red"
   },
   {
     "name": "Ox",
@@ -68,7 +76,8 @@ export const cards = [
       { "x": 0, "y": -1 },
       { "x": 1, "y": 0 },
       { "x": 0, "y": 1 }
-    ]
+    ],
+    "color": "red"
   },
   {
     "name": "Dragon",
@@ -77,7 +86,8 @@ export const cards = [
       { "x": 2, "y": -1 },
       { "x": -1, "y": 1 },
       { "x": 1, "y": 1 }
-    ]
+    ],
+    "color": "red"
   },
   {
     "name": "Cobra",
@@ -85,7 +95,8 @@ export const cards = [
       { "x": 1, "y": -1 },
       { "x": -1, "y": 0 },
       { "x": 1, "y": 1 }
-    ]
+    ],
+    "color": "red"
   },
   {
     "name": "Monkey",
@@ -94,7 +105,8 @@ export const cards = [
       { "x": 1, "y": -1 },
       { "x": 1, "y": 1 },
       { "x": -1, "y": 1 }
-    ]
+    ],
+    "color": "blue"
   },
   {
     "name": "Elephant",
@@ -103,7 +115,8 @@ export const cards = [
       { "x": 1, "y": -1 },
       { "x": 1, "y": 0 },
       { "x": -1, "y": 0 }
-    ]
+    ],
+    "color": "blue"
   },
   {
     "name": "Crab",
@@ -111,7 +124,8 @@ export const cards = [
       { "x": 0, "y": -1 },
       { "x": -2, "y": 0 },
       { "x": 2, "y": 0 }
-    ]
+    ],
+    "color": "blue"
   },
   {
     "name": "Eel",
@@ -119,15 +133,16 @@ export const cards = [
       { "x": -1, "y": -1 },
       { "x": 1, "y": 0 },
       { "x": -1, "y": 1 }
-    ]
+    ],
+    "color": "blue"
   },
   {
     "name": "Goose",
     "sets": [
       { "x": -1, "y": -1 },
       { "x": -1, "y": 0 },
-      { "x": 1, "y": 0 },
       { "x": 1, "y": 0 }
-    ]
+    ],
+    "color": "blue"
   }
 ];

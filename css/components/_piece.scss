@@ -10,7 +10,19 @@
     background-color: rgba(yellow, .8);
   }
 
-  &.selected {
-    border: 4px solid black;
+  &[data-owner="1"] {
+    border: 2px solid red;
+
+    &.selected {
+      border: 6px solid red;
+    }
+  }
+
+  &[data-owner="2"] {
+    border: 2px solid blue;
+
+    &.selected {
+      border: 6px solid blue;
+    }
   }
 }

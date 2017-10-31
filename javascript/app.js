@@ -10,7 +10,6 @@ let onTransition = function (definition) {
     definition.player = definition.player === 1 ? 2 : 1;
     definition.x = game.mirrorCoordinate(definition.x);
     definition.y = game.mirrorCoordinate(definition.y);
-
     connection.sendMessage('transition', definition);
   }
 };
@@ -20,18 +19,7 @@ connection.on('started', () => {
     game = new Game('#board');
 
     let state = game.serialize();
-
-    // We need to flip al the player things.
-    let player2Card1 = state.player1.card1;
-    let player2Card2 = state.player1.card2;
-
-    state.player1.card1 = state.player2.card1;
-    state.player1.card2 = state.player2.card2;
-
-    state.player2.card1 = player2Card1;
-    state.player2.card2 = player2Card2;
-
-    state.activePlayer = state.activePlayer === 2 ? 1 : 2;
+    game.flipState(state);
 
     game.on('transition', (definition) => {
       onTransition(definition);

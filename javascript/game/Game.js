@@ -41,7 +41,7 @@ export class Game extends EventEmitter {
     // Sort cards.
     this.shuffleCards(cards);
 
-    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, this));
+    this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, cardData.color, this));
     this.cards.slice(4, 5)[0].setOwner(false);
 
     this.activePlayer = 2;
@@ -90,8 +90,6 @@ export class Game extends EventEmitter {
    * Triggered by a player action.
    */
   transition (definition) {
-    console.log(definition.player, this);
-
     let piece = this['player' + definition.player].pieces[definition.piece];
     let currentX = piece.x;
     let currentY = piece.y;
@@ -118,13 +116,18 @@ export class Game extends EventEmitter {
       this['player' + definition.player].activeCard = this.getCard(definition.card);
       this['player' + definition.player].activePiece = piece;
       this['player' + definition.player].pieces[definition.piece].setPosition(definition.x, definition.y);
+
+      let otherPlayer = definition.player === 2 ? 1 : 2;
+
+      this['player' + otherPlayer].pieces.forEach((piece) => {
+        if (piece.x === definition.x && piece.y === definition.y) {
+          piece.capture();
+        }
+      });
+
       this.activePlayer = this.activePlayer === 2 ? 1 : 2;
       document.body.dataset.activePlayer = this.activePlayer;
       this.emit('transition', definition);
-    }
-    else {
-      console.log('invalid definition', definition);
-      console.log(piece);
     }
   }
 
@@ -176,6 +179,23 @@ export class Game extends EventEmitter {
   }
 
   /**
+   * Flips the players needed for network play.
+   */
+  flipState (state) {
+    // We need to flip al the player things.
+    let player2Card1 = state.player1.card1;
+    let player2Card2 = state.player1.card2;
+
+    state.player1.card1 = state.player2.card1;
+    state.player1.card2 = state.player2.card2;
+
+    state.player2.card1 = player2Card1;
+    state.player2.card2 = player2Card2;
+
+    state.activePlayer = state.activePlayer === 2 ? 1 : 2;
+  }
+
+  /**
    * Deserialize the game state.
    */
   deserialize (state) {
@@ -186,11 +206,11 @@ export class Game extends EventEmitter {
     let cardData4 = cards.filter((cardData) => cardData.name === state.player2.card2)[0];
     let cardData5 = cards.filter((cardData) => cardData.name === state.houseCard)[0];
 
-    this.cards.push(new Card(cardData1.name, cardData1.sets, this));
-    this.cards.push(new Card(cardData2.name, cardData2.sets, this));
-    this.cards.push(new Card(cardData3.name, cardData3.sets, this));
-    this.cards.push(new Card(cardData4.name, cardData4.sets, this));
-    this.cards.push(new Card(cardData5.name, cardData5.sets, this));
+    this.cards.push(new Card(cardData1.name, cardData1.sets, cardData1.color, this));
+    this.cards.push(new Card(cardData2.name, cardData2.sets, cardData2.color, this));
+    this.cards.push(new Card(cardData3.name, cardData3.sets, cardData3.color, this));
+    this.cards.push(new Card(cardData4.name, cardData4.sets, cardData4.color, this));
+    this.cards.push(new Card(cardData5.name, cardData5.sets, cardData5.color, this));
 
     this.cards.slice(4, 5)[0].setOwner(false);
     this.activePlayer = state.activePlayer;

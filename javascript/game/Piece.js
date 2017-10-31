@@ -12,26 +12,12 @@ export class Piece {
     this.element.dataset.y = y;
     this.element.classList.add('piece');
     this.element.classList.add(this.type);
+    this.element.dataset.owner = this.player.id;
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
     this.game.board.appendChild(this.element);
 
     this.game.on('tile-click', (tile) => {
-      if (this.player.activePiece === this && this.player.activeCard) {
-        this.player.activeCard.sets.forEach((set) => {
-          let x = this.x + set.x;
-          let y = this.y + set.y;
-
-          if (parseInt(tile.dataset.x) === x && parseInt(tile.dataset.y) === y) {
-            this.game.transition({
-              player: this.player.id,
-              piece: this.index,
-              card: this.player.activeCard.name,
-              x: x,
-              y: y
-            });
-          }
-        });
-      }
+      this.tileClick(tile);
     });
 
     this.element.addEventListener('mouseenter', () => {
@@ -50,28 +36,67 @@ export class Piece {
     });
 
     this.element.addEventListener('click', () => {
-      // Click to remove selection.
-      if (this.player.activePiece && this.player.activePiece === this) {
-        this.clickToRemoveSelection();
+      this.pieceClick();
+    });
+  }
+
+  pieceClick () {
+    // Click to remove selection.
+    if (this.player.activePiece && this.player.activePiece === this) {
+      this.clickToRemoveSelection();
+    }
+    else {
+      // Clean up dangling highlights.
+      this.removeHoverAndHighlights();
+
+      if (this.player.activeCard) {
+        this.highlightCard(this.player.activeCard);
+      }
+
+      // Cleaning up old active piece.
+      if (this.player.activePiece) {
+        this.player.activePiece.element.classList.remove('selected');
+      }
+
+      // Setting the new context.
+      this.player.activePiece = this;
+      this.element.classList.add('selected');
+    }
+  }
+
+  tileClick (tile) {
+    if (this.player.activePiece === this && this.player.activeCard) {
+      this.player.activeCard.sets.forEach((set) => {
+        let x = this.x + set.x;
+        let y = this.y + set.y;
+
+        if (parseInt(tile.dataset.x) === x && parseInt(tile.dataset.y) === y) {
+          this.game.transition({
+            player: this.player.id,
+            piece: this.index,
+            card: this.player.activeCard.name,
+            x: x,
+            y: y
+          });
+        }
+      });
+    }
+  }
+
+  capture () {
+    this.x = -1;
+    this.y = -1;
+    this.element.style = 'display: none;';
+
+    if (this.type === 'master') {
+      if (this.player.id === 1) {
+        alert('You have won')
       }
       else {
-        // Clean up dangling highlights.
-        this.removeHoverAndHighlights();
-
-        if (this.player.activeCard) {
-          this.highlightCard(this.player.activeCard);
-        }
-
-        // Cleaning up old active piece.
-        if (this.player.activePiece) {
-          this.player.activePiece.element.classList.remove('selected');
-        }
-
-        // Setting the new context.
-        this.player.activePiece = this;
-        this.element.classList.add('selected');
+        alert('You have lost')
       }
-    });
+
+    }
   }
 
   clickToRemoveSelection () {
@@ -101,12 +126,32 @@ export class Piece {
     this.game.tiles[this.x + '-' + this.y].classList.add('hover');
 
     card.sets.forEach((set) => {
-      let x = this.x + set.x;
-      let y = this.y + set.y;
+      let setX = this.x + set.x;
+      let setY = this.y + set.y;
+
+      if (this.player.id === 1) {
+        setX = this.game.mirrorCoordinate(setX);
+        setY = this.game.mirrorCoordinate(setY);
+      }
 
       // When on the board.
-      if (x > 0 && y > 0 && x < 6 && y < 6) {
-        this.game.tiles[x + '-' + y].classList.add('highlight');
+      if (setX > 0 && setY > 0 && setX < 6 && setY < 6) {
+        let isValid = true;
+        this.game.player1.pieces.forEach((piece) => {
+          if (piece.x === setX && piece.y === setY  && this.player.id === 1) {
+            isValid = false;
+          }
+        });
+
+        this.game.player2.pieces.forEach((piece) => {
+          if (piece.x === setX && piece.y === setY && this.player.id === 2) {
+            isValid = false;
+          }
+        });
+
+        if (isValid) {
+          this.game.tiles[setX + '-' + setY].classList.add('highlight');
+        }
       }
     });
   }

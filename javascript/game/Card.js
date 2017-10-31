@@ -1,13 +1,16 @@
 export class Card {
-  constructor (name, sets, game) {
+  constructor (name, sets, color, game) {
     this.name = name;
     this.sets = sets;
+    this.color = color;
     this.game = game;
     this.ownerId = false;
     this.delta = false;
 
     this.element = document.createElement('div');
     let inner = `<h3 class="title">${this.name}</h3><div class="mini-board"><div class="self" style="grid-area: 3 / 3 / 3 / 3;"></div>`;
+
+    this.element.classList.add(this.color);
 
     this.sets.forEach((set) => {
       let x = set.x + 3;
