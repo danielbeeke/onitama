@@ -57,6 +57,10 @@ export class Card {
         else {
           this.game['player' + this.ownerId].activeCard = this;
           this.element.classList.add('selected');
+
+          if (this.game['player' + this.ownerId].activePiece) {
+            this.game['player' + this.ownerId].activePiece.highlightCard(this.game['player' + this.ownerId].activeCard);
+          }
         }
       }
     });
