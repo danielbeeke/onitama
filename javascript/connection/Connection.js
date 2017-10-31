@@ -1,5 +1,5 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
-import {settings} from '/settings.js';
+import {settings} from '/webrtc.js';
 import {EasyP2P} from '/javascript/connection/EasyP2P.js';
 
 export class Connection extends EventEmitter {
