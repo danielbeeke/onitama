@@ -24,7 +24,7 @@ export class Connection extends EventEmitter {
       iceServers: settings.iceServers,
 
       // If we are the answerer set the initial offer.
-      initialOffer: location.hash.substr(0, 4) === '#sdp' ? decodeURI(location.hash.substr(5)) : null
+      initialOffer: location.hash.substr(0, 4) === '#sdp' ? atob(location.hash.substr(5)) : null
     });
 
     this.role = this.easyP2P.configuration.role;
@@ -45,7 +45,7 @@ export class Connection extends EventEmitter {
 
     // If we are the initiator, create the url to sent and attach to the textarea so we can accept the connection.
     this.easyP2P.on('offer-ready', (offerSdp) => {
-      urlInput.value = location.origin + '/#sdp=' + encodeURI(offerSdp);
+      urlInput.value = location.origin + '/#sdp=' + btoa(offerSdp);
 
       pasteAnswerInput.addEventListener('change', () => {
         this.easyP2P.acceptAnswer(atob(pasteAnswerInput.value));
