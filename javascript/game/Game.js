@@ -14,6 +14,19 @@ export class Game extends EventEmitter {
     this.board.classList.add('board-grid');
     this.element.appendChild(this.board);
 
+    this.turn = document.createElement('h4');
+    this.turn.innerText = 'Your turn';
+    this.turn.classList.add('turn-text');
+    this.turn.classList.add('player2');
+    this.element.appendChild(this.turn);
+
+    this.turn = document.createElement('h4');
+    this.turn.innerText = 'Opponents turn';
+    this.turn.classList.add('turn-text');
+    this.turn.classList.add('player1');
+    this.element.appendChild(this.turn);
+
+
     for (let y = 1; y < 6; y++) {
       for (let x = 1; x < 6; x++) {
         let tile = document.createElement('div');

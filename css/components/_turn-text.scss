@@ -1,0 +1,24 @@
+.turn-text {
+  align-self: center;
+  padding-left: $padding;
+  transition: opacity $speed $easing;
+  opacity: 0;
+  font-size: 20px;
+  font-style: italic;
+
+  &.player1 {
+    grid-area: 2 / 4 / 2 / 4;
+  }
+
+  &.player2 {
+    grid-area: 4 / 4 / 4 / 4;
+  }
+}
+
+[data-active-player="1"] .turn-text.player1 {
+  opacity: 1;
+}
+
+[data-active-player="2"] .turn-text.player2 {
+  opacity: 1;
+}
