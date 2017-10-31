@@ -16,6 +16,8 @@ export class Piece {
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
     this.game.board.appendChild(this.element);
 
+    this.game.tiles[this.x + '-' + this.y].classList.add('has-piece');
+
     if (this.player.id === 2) {
       this.element.addEventListener('mouseenter', () => {
         if (this.game.activePlayer !== player.id) { return; }
@@ -108,6 +110,8 @@ export class Piece {
   }
 
   setPosition(x, y) {
+    this.game.tiles[this.x + '-' + this.y].classList.remove('has-piece');
+
     this.x = x;
     this.y = y;
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;

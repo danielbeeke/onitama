@@ -3,6 +3,8 @@
   height: 100%;
   background-color: rgba(gray, .3);
   border: 3px solid rgba(gray, 0);
+  transition: all $speed $easing;
+
   /* Visual helper for debugging.
   &:after {
     content: attr(data-x) ", " attr(data-y);
@@ -13,15 +15,16 @@
   */
 
   &[data-x="3"][data-y="1"] {
-    background-color: rgba(red, .3);
+    background-color: rgba($player2, .2);
   }
 
   &[data-x="3"][data-y="5"] {
-    background-color: rgba(blue, .3);
+    background-color: rgba($player1, .2);
   }
 
   &.highlight {
     background-color: rgba(orange, .5) !important;
+    cursor: pointer;
   }
 
   &.hover {
@@ -29,8 +32,6 @@
   }
 }
 
-// 3,5 -> 2,4
-// 3,1 -> 4,2
-
-// 5,5 -> 5,4
-// 1,1 -> 1,2
+[data-active-player="2"] .board-grid .tile.has-piece:hover {
+  border-color: gray;
+}
