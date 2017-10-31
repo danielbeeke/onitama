@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Onitama</title>
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <link href="css/styles.css" rel="stylesheet" />
+        <script type="module" src="javascript/app.js"></script>
+    </head>
+
+    <body>
+
+        <div class="board" id="board">
+            <div class="webrtc-signaling initiator">
+    <div class="step step-1">
+        <h2>Step 1 of 2.</h2>
+        <h4>Click to copy the url for your buddy.</h4>
+        <input type="text" id="webrtc-offer-url">
+        <button class="button copy-offer-url">Copy url</button>
+    </div>
+
+    <div class="step step-2">
+        <h2>Step 2 of 2.</h2>
+        <h4>The url is copied to your clipboard. Send it to your buddy and paste his/her connection key.</h4>
+        <textarea id="webrtc-paste-answer"></textarea>
+        <button class="button">Connect</button>
+    </div>
+</div>
+            <div class="webrtc-signaling answerer">
+    <div class="step step-1">
+        <h2>Step 1 of 2.</h2>
+        <h4>Copy the connection key and send it to your buddy.</h4>
+        <textarea id="webrtc-copy-answer"></textarea>
+        <button class="button copy-answer">Copy connection key</button>
+    </div>
+
+    <div class="step step-2">
+        <h2>Step 2 of 2.</h2>
+        <h4>Just wait...</h4>
+    </div>
+</div>
+
+        </div>
+
+    </body>
+</html>
+
