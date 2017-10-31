@@ -1,5 +1,6 @@
 $speed: .4s;
 $easing: ease-in-out;
+$padding: 20px;
 
 @import 'base/elements';
 @import 'components/webrtc-signaling';
@@ -9,3 +10,4 @@ $easing: ease-in-out;
 @import 'components/mini-board';
 @import 'components/piece';
 @import 'components/board-grid_tile';
+@import 'components/button';

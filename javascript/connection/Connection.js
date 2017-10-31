@@ -14,6 +14,9 @@ export class Connection extends EventEmitter {
     let pasteAnswerInput = document.querySelector('#webrtc-paste-answer');
     let copyAnswerInput = document.querySelector('#webrtc-copy-answer');
 
+    // Clean up browser cache.
+    pasteAnswerInput.value = '';
+
     document.body.dataset.webrtcState = 'initial';
 
     this.easyP2P = new EasyP2P({
@@ -61,8 +64,11 @@ export class Connection extends EventEmitter {
 
     // Connection is started.
     this.easyP2P.on('started', () => {
-      document.body.dataset.webrtcRole = 'started';
+      document.body.dataset.webrtc = 'started';
       this.emit('started');
+      Array.from(document.querySelectorAll('.webrtc-signaling')).forEach((signalingPopup) => {
+        signalingPopup.remove();
+      });
     });
 
     // Connection is started.

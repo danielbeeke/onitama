@@ -3,30 +3,9 @@
   width: 50px;
   height: 50px;
   z-index: 2;
-  background-color: rgba(red, .3);
 
   [data-owner="2"] {
     cursor: pointer;
-  }
-
-  &.master {
-    background-color: rgba(yellow, .8);
-  }
-
-  &[data-owner="1"] {
-    border: 2px solid red;
-
-    &.selected {
-      border: 6px solid red;
-    }
-  }
-
-  &[data-owner="2"] {
-    border: 2px solid blue;
-
-    &.selected {
-      border: 6px solid blue;
-    }
   }
 }
 
@@ -36,4 +15,34 @@
 
 [data-active-player="2"] [data-owner="1"] {
   pointer-events: none;
+}
+
+[data-webrtc-role="answerer"] .piece[data-owner="1"],
+[data-webrtc-role="initiator"] .piece[data-owner="2"] {
+  border: 2px solid red;
+  background-color: rgba(red, .3);
+
+  &.master {
+    border: 4px solid red;
+    background-color: rgba(red, .6);
+  }
+
+  &.selected {
+    border: 6px solid red;
+  }
+}
+
+[data-webrtc-role="answerer"] .piece[data-owner="2"],
+[data-webrtc-role="initiator"] .piece[data-owner="1"] {
+  border: 2px solid blue;
+  background-color: rgba(blue, .3);
+
+  &.master {
+    border: 4px solid blue;
+    background-color: rgba(blue, .6);
+  }
+
+  &.selected {
+    border: 6px solid blue;
+  }
 }

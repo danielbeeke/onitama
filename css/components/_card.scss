@@ -4,6 +4,16 @@
   padding: 0 20px;
   background-color: white;
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+
+  .mini-board {
+    flex: 0 0 100px;
+  }
+
+  .title {
+    flex: 1 1 auto;
+  }
 
   &.red {
     .set {
@@ -33,10 +43,14 @@
 
   &[data-owner="1"][data-delta="0"] {
     grid-area: 2 / 2 / 3 / 3;
+    transform-origin: center center;
+    transform: rotate(180deg);
   }
 
   &[data-owner="1"][data-delta="1"] {
     grid-area: 2 / 3 / 3 / 4;
+    transform-origin: center center;
+    transform: rotate(180deg);
   }
 
   &[data-owner="2"][data-delta="0"] {
@@ -51,6 +65,11 @@
     grid-area: 3 / 4 / 3 / 4;
     align-self: center;
   }
+}
+
+[data-active-player="1"] .card[data-owner="false"] {
+  transform-origin: center center;
+  transform: rotate(180deg);
 }
 
 .card[data-owner="2"] {
