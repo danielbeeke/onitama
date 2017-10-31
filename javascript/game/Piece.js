@@ -16,27 +16,29 @@ export class Piece {
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
     this.game.board.appendChild(this.element);
 
+    if (this.player.id === 2) {
+      this.element.addEventListener('mouseenter', () => {
+        if (this.game.activePlayer !== player.id) { return; }
+
+        // Hover actions while having no selected piece but a selected card.
+        if (!this.player.activePiece && this.player.activeCard) {
+          this.highlightCard(this.player.activeCard);
+        }
+      });
+
+      this.element.addEventListener('mouseleave', () => {
+        if (!this.player.activePiece) {
+          this.removeHoverAndHighlights();
+        }
+      });
+
+      this.element.addEventListener('click', () => {
+        this.pieceClick();
+      });
+    }
+
     this.game.on('tile-click', (tile) => {
       this.tileClick(tile);
-    });
-
-    this.element.addEventListener('mouseenter', () => {
-      if (this.game.activePlayer !== player.id) { return; }
-
-      // Hover actions while having no selected piece but a selected card.
-      if (!this.player.activePiece && this.player.activeCard) {
-        this.highlightCard(this.player.activeCard);
-      }
-    });
-
-    this.element.addEventListener('mouseleave', () => {
-      if (!this.player.activePiece) {
-        this.removeHoverAndHighlights();
-      }
-    });
-
-    this.element.addEventListener('click', () => {
-      this.pieceClick();
     });
   }
 

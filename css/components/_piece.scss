@@ -4,7 +4,10 @@
   height: 50px;
   z-index: 2;
   background-color: rgba(red, .3);
-  cursor: pointer;
+
+  [data-owner="2"] {
+    cursor: pointer;
+  }
 
   &.master {
     background-color: rgba(yellow, .8);
@@ -25,4 +28,12 @@
       border: 6px solid blue;
     }
   }
+}
+
+[data-active-player="1"] [data-owner="2"] {
+  pointer-events: none;
+}
+
+[data-active-player="2"] [data-owner="1"] {
+  pointer-events: none;
 }

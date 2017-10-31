@@ -53,7 +53,6 @@
   }
 }
 
-[data-active-player="1"] .card[data-owner="1"],
-[data-active-player="2"] .card[data-owner="2"] {
+.card[data-owner="2"] {
   cursor: pointer;
 }
