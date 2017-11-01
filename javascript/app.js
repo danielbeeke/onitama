@@ -1,7 +1,9 @@
 import {Connection} from '/javascript/connection/Connection.js';
 import {Game} from '/javascript/game/Game.js';
 
-let connection = new Connection();
+let connection = new Connection({
+  type: 'websockets'
+});
 let game;
 
 let onTransition = function (definition) {

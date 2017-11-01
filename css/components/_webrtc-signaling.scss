@@ -32,3 +32,9 @@
     height: 140px;
   }
 }
+
+[data-connection="websockets"] {
+  .webrtc-signaling {
+    display: none;
+  }
+}

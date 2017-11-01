@@ -1,15 +1,113 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
-import {settings} from '/settings.js';
+import {settings} from '/webrtc.js';
 import {EasyP2P} from '/javascript/connection/EasyP2P.js';
 
 export class Connection extends EventEmitter {
   constructor (configuration = {}) {
     super();
-    this.configuration = {};
+    this.configuration = {
+      type: 'manual'
+    };
+
+    this.myGuid = this.guid();
 
     // Merge the default configuration with the given configuration.
     this.configuration = Object.assign(this.configuration, configuration);
+    document.body.dataset.connection = this.configuration.type;
 
+    if (typeof this[this.configuration.type] === 'function') {
+      this[this.configuration.type](() => {
+
+        this.role = this.easyP2P.configuration.role;
+        document.body.dataset.webrtcRole = this.easyP2P.configuration.role;
+
+        // Connection is started.
+        this.easyP2P.on('started', () => {
+          this.ws.close();
+
+          document.body.dataset.webrtc = 'started';
+          this.emit('started');
+          Array.from(document.querySelectorAll('.webrtc-signaling')).forEach((signalingPopup) => {
+            signalingPopup.remove();
+          });
+        });
+
+        // Connection is started.
+        this.easyP2P.on('message', (jsonMessage) => {
+          let message = JSON.parse(jsonMessage);
+          this.emit('message', message);
+        });
+
+      });
+    }
+  }
+
+  websockets (done) {
+    this.ws = new WebSocket('wss://connect.opengroup.io' + location.pathname);
+
+    this.ws.onopen = () => {
+      this.ws.send(JSON.stringify({
+        command: 'identify',
+        uuid: this.myGuid
+      }));
+    };
+
+    this.ws.onmessage = (event) => {
+      let message = JSON.parse(event.data);
+      if (message.command === 'create-offer') {
+        this.easyP2P = new EasyP2P({
+          role: 'initiator',
+          iceServers: settings.iceServers,
+        });
+
+        this.easyP2P.on('offer-ready', (offerSdp) => {
+          this.ws.send(JSON.stringify({
+            command: 'pass-offer',
+            uuid: this.myGuid,
+            toUuid: message.uuid,
+            offer: btoa(offerSdp)
+          }));
+        });
+
+        done();
+      }
+
+      if (message.command === 'create-answer') {
+        this.easyP2P = new EasyP2P({
+          role: 'answerer',
+          iceServers: settings.iceServers,
+          initialOffer: atob(message.offer),
+        });
+
+        this.easyP2P.on('answer-ready', (answerSdp) => {
+          this.ws.send(JSON.stringify({
+            command: 'pass-answer',
+            uuid: this.myGuid,
+            toUuid: message.uuid,
+            answer: btoa(answerSdp)
+          }));
+        });
+
+        done();
+      }
+
+      if (message.command === 'accept-answer') {
+        this.easyP2P.acceptAnswer(atob(message.answer));
+      }
+    };
+  }
+
+  guid() {
+    let s4 = function () {
+      return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+    };
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  }
+
+  manual (done) {
     let urlInput = document.querySelector('#webrtc-offer-url');
     let pasteAnswerInput = document.querySelector('#webrtc-paste-answer');
     let copyAnswerInput = document.querySelector('#webrtc-copy-answer');
@@ -29,10 +127,6 @@ export class Connection extends EventEmitter {
       // If we are the answerer set the initial offer.
       initialOffer: location.hash.substr(0, 4) === '#sdp' ? atob(location.hash.substr(5)) : null
     });
-
-    this.role = this.easyP2P.configuration.role;
-
-    document.body.dataset.webrtcRole = this.easyP2P.configuration.role;
 
     document.querySelector('.copy-offer-url').addEventListener('click', () => {
       urlInput.select();
@@ -62,20 +156,7 @@ export class Connection extends EventEmitter {
       copyAnswerInput.value = btoa(answerSdp);
     });
 
-    // Connection is started.
-    this.easyP2P.on('started', () => {
-      document.body.dataset.webrtc = 'started';
-      this.emit('started');
-      Array.from(document.querySelectorAll('.webrtc-signaling')).forEach((signalingPopup) => {
-        signalingPopup.remove();
-      });
-    });
-
-    // Connection is started.
-    this.easyP2P.on('message', (jsonMessage) => {
-      let message = JSON.parse(jsonMessage);
-      this.emit('message', message);
-    });
+    done();
   }
 
   sendMessage (command, options) {
