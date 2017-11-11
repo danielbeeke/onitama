@@ -1,5 +1,6 @@
 import {Connection} from '/javascript/connection/Connection.js';
 import {Game} from '/javascript/game/Game.js';
+import {Helpers} from '/javascript/core/Helpers.js';
 
 let connection = new Connection({
   type: 'websockets'
@@ -10,8 +11,8 @@ let onTransition = function (definition) {
   if (!definition.isReceived) {
     // We need to flip al the player things.
     definition.player = definition.player === 1 ? 2 : 1;
-    definition.x = game.mirrorCoordinate(definition.x);
-    definition.y = game.mirrorCoordinate(definition.y);
+    definition.x = Helpers.flipCoordinate(definition.x);
+    definition.y = Helpers.flipCoordinate(definition.y);
     connection.sendMessage('transition', definition);
   }
 };

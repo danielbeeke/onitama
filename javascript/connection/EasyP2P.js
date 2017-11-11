@@ -28,8 +28,6 @@ export class EasyP2P extends EventEmitter {
     this.configuration = Object.assign(this.configuration, configuration);
     this.webRTCOptions = Object.assign({}, this.configuration.webRTCOptions);
 
-    console.log(this.webRTCOptions )
-
     // Initiate the p2p channel.
     this.RtcPeerConnection = new RTCPeerConnection(this.webRTCOptions);
 
