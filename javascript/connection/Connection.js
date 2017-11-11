@@ -57,7 +57,9 @@ export class Connection extends EventEmitter {
       if (message.command === 'create-offer') {
         this.easyP2P = new EasyP2P({
           role: 'initiator',
-          iceServers: settings.iceServers,
+          webRTCOptions: {
+            iceServers: settings.iceServers,
+          }
         });
 
         this.easyP2P.on('offer-ready', (offerSdp) => {
@@ -75,7 +77,9 @@ export class Connection extends EventEmitter {
       if (message.command === 'create-answer') {
         this.easyP2P = new EasyP2P({
           role: 'answerer',
-          iceServers: settings.iceServers,
+          webRTCOptions: {
+            iceServers: settings.iceServers,
+          },
           initialOffer: atob(message.offer),
         });
 

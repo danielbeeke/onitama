@@ -1,0 +1,60 @@
+@startuml
+
+class Helpers {
++ fisherYatesShuffle(items)
++ flipCoordinates(x, y)
++ guid()
+}
+
+class Connection {
++ easyP2P
+}
+
+class Card {
+- name
+- description
+- color
+- sets[]
+}
+
+class Piece {
+- x
+- y
+- player
++ hover()
++ click()
+}
+
+class State {
+- player1
+- player2
+- selectedCards[]
++ serialize()
++ deserialize(state)
++ swapCard(card, newOwner)
++ highlightCardSets(piece, card)
++ movePiece(piece, card, x, y)
+}
+
+class Tile {
+- x
+- y
++ hover()
++ click()
+}
+
+class Game {
+- allCards[]
+- state
+- tiles[]
++ newGame()
++ flipState(state)
+}
+
+class Player {
+- card1
+- card2
+- pieces[]
+}
+
+@enduml

@@ -1,7 +1,15 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 
 /**
- * EasyP2P helps settings up a WebRTC connection.
+ * EasyP2P helps setting up a WebRTC connection.
+ *
+ * The WebRTC flow is asymmetric.
+ *
+ * Initiator:
+ * - Create offer, send offer, receive answer, accept answer.
+ *
+ * Answerer:
+ * - Receive offer, create answer, send answer.
  */
 export class EasyP2P extends EventEmitter {
 
@@ -18,12 +26,20 @@ export class EasyP2P extends EventEmitter {
 
     // Merge the default configuration with the given configuration.
     this.configuration = Object.assign(this.configuration, configuration);
+    this.webRTCOptions = Object.assign({}, this.configuration.webRTCOptions);
+
+    console.log(this.webRTCOptions )
 
     // Initiate the p2p channel.
-    this.RtcPeerConnection = new RTCPeerConnection(Object.assign({}, this.configuration.iceServers));
+    this.RtcPeerConnection = new RTCPeerConnection(this.webRTCOptions);
 
     // Start EasyP2P in the right user role: initiator or answerer.
-    this[this.configuration.role + 'Init']();
+    if (typeof this[this.configuration.role + 'Init'] === 'function') {
+      this[this.configuration.role + 'Init']();
+    }
+    else {
+      throw 'The role is wrong and therefor EasyP2P could not initiate.';
+    }
   }
 
   /**
