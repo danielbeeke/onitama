@@ -2,6 +2,7 @@ import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {cards} from '/data/cards.js';
 import {Card} from '/javascript/game/Card.js';
 import {Player} from '/javascript/game/Player.js';
+import {Tile} from '/javascript/game/Tile.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Game extends EventEmitter {
@@ -27,19 +28,9 @@ export class Game extends EventEmitter {
     this.turn.classList.add('player1');
     this.element.appendChild(this.turn);
 
-
     for (let y = 1; y < 6; y++) {
       for (let x = 1; x < 6; x++) {
-        let tile = document.createElement('div');
-        tile.dataset.x = x;
-        tile.dataset.y = y;
-        tile.classList.add('tile');
-        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-        this.board.appendChild(tile);
-        tile.addEventListener('click', (event) => {
-          this.emit('tile-click', tile);
-        });
-        this.tiles[x + '-' + y] = tile;
+        this.tiles[x + '-' + y] = new Tile(x, y, this);
       }
     }
 
