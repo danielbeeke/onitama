@@ -1,0 +1,10 @@
+.waiting-screen {
+  grid-area: 3 / 2 / 4 / 5;
+  padding: $padding;
+  box-shadow: 0 5px 10px rgba(black, .6);
+  background-color: white;
+}
+
+[data-webrtc="started"] .waiting-screen {
+  display: none;
+}
