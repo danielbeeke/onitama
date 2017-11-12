@@ -1,3 +1,5 @@
+import {Helpers} from '/javascript/core/Helpers.js';
+
 export class Piece {
   constructor (type, x, y, player, game, index) {
     this.type = type;
@@ -16,7 +18,7 @@ export class Piece {
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
     this.game.board.appendChild(this.element);
 
-    this.game.tiles[this.x + '-' + this.y].classList.add('has-piece');
+    this.game.tiles[this.x + '-' + this.y].hasPiece = true;
 
     if (this.player.id === 2) {
       this.element.addEventListener('mouseenter', () => {
@@ -110,7 +112,7 @@ export class Piece {
   }
 
   setPosition(x, y) {
-    this.game.tiles[this.x + '-' + this.y].classList.remove('has-piece');
+    this.game.tiles[this.x + '-' + this.y].hasPiece = false;
 
     this.x = x;
     this.y = y;
@@ -129,15 +131,15 @@ export class Piece {
   }
 
   highlightCard (card) {
-    this.game.tiles[this.x + '-' + this.y].classList.add('hover');
+    this.game.tiles[this.x + '-' + this.y].hasHover = true;
 
     card.sets.forEach((set) => {
       let setX = this.x + set.x;
       let setY = this.y + set.y;
 
       if (this.player.id === 1) {
-        setX = this.game.mirrorCoordinate(setX);
-        setY = this.game.mirrorCoordinate(setY);
+        setX = Helpers.flipCoordinate(setX);
+        setY = Helpers.flipCoordinate(setY);
       }
 
       // When on the board.
@@ -156,7 +158,7 @@ export class Piece {
         });
 
         if (isValid) {
-          this.game.tiles[setX + '-' + setY].classList.add('highlight');
+          this.game.tiles[setX + '-' + setY].hasHighlight = true;
         }
       }
     });
@@ -166,8 +168,8 @@ export class Piece {
     let tiles = this.game.board.querySelectorAll('.tile');
 
     Array.from(tiles).forEach((tile) => {
-      tile.classList.remove('hover');
-      tile.classList.remove('highlight');
+      tile.hasHover = false;
+      tile.hasHighlight = false;
     })
   }
 }

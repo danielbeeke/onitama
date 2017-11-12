@@ -2,6 +2,8 @@ import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {cards} from '/data/cards.js';
 import {Card} from '/javascript/game/Card.js';
 import {Player} from '/javascript/game/Player.js';
+import {Tile} from '/javascript/game/Tile.js';
+import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Game extends EventEmitter {
   constructor (selector, options = {}) {
@@ -26,19 +28,9 @@ export class Game extends EventEmitter {
     this.turn.classList.add('player1');
     this.element.appendChild(this.turn);
 
-
     for (let y = 1; y < 6; y++) {
       for (let x = 1; x < 6; x++) {
-        let tile = document.createElement('div');
-        tile.dataset.x = x;
-        tile.dataset.y = y;
-        tile.classList.add('tile');
-        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-        this.board.appendChild(tile);
-        tile.addEventListener('click', (event) => {
-          this.emit('tile-click', tile);
-        });
-        this.tiles[x + '-' + y] = tile;
+        this.tiles[x + '-' + y] = new Tile(x, y, this);
       }
     }
 
@@ -52,7 +44,7 @@ export class Game extends EventEmitter {
 
   newGame () {
     // Sort cards.
-    this.shuffleCards(cards);
+    Helpers.fisherYatesShuffle(cards);
 
     this.cards = cards.slice(0, 5).map((cardData) => new Card(cardData.name, cardData.sets, cardData.color, this));
     this.cards.slice(4, 5)[0].setOwner(false);
@@ -80,24 +72,6 @@ export class Game extends EventEmitter {
     ]);
   }
 
-  mirrorCoordinate (coordinate) {
-    switch (coordinate) {
-      case 1:
-        coordinate = 5;
-        break;
-      case 2:
-        coordinate = 4;
-        break;
-      case 4:
-        coordinate = 2;
-        break;
-      case 5:
-        coordinate = 1;
-        break;
-    }
-
-    return coordinate;
-  }
 
   /**
    * Triggered by a player action.
@@ -116,8 +90,8 @@ export class Game extends EventEmitter {
       let setY = currentY + set.y;
 
       if (definition.player === 1) {
-        setX = this.mirrorCoordinate(setX);
-        setY = this.mirrorCoordinate(setY);
+        setX = Helpers.flipCoordinate(setX);
+        setY = Helpers.flipCoordinate(setY);
       }
 
       if (setX === definition.x && setY === definition.y) {
@@ -250,26 +224,6 @@ export class Game extends EventEmitter {
 
     cardToSwap.setOwner(false);
     cardToSwap.setDelta(false);
-  }
-
-  /**
-   * Fisher-Yates Shuffle.
-   */
-  shuffleCards (array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
   }
 
   /**

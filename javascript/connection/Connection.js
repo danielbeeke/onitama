@@ -1,6 +1,7 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {settings} from '/webrtc.js';
 import {EasyP2P} from '/javascript/connection/EasyP2P.js';
+import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Connection extends EventEmitter {
   constructor (configuration = {}) {
@@ -9,7 +10,7 @@ export class Connection extends EventEmitter {
       type: 'manual'
     };
 
-    this.myGuid = this.guid();
+    this.myGuid = Helpers.guid();
 
     // Merge the default configuration with the given configuration.
     this.configuration = Object.assign(this.configuration, configuration);
@@ -57,7 +58,9 @@ export class Connection extends EventEmitter {
       if (message.command === 'create-offer') {
         this.easyP2P = new EasyP2P({
           role: 'initiator',
-          iceServers: settings.iceServers,
+          webRTCOptions: {
+            iceServers: settings.iceServers,
+          }
         });
 
         this.easyP2P.on('offer-ready', (offerSdp) => {
@@ -75,7 +78,9 @@ export class Connection extends EventEmitter {
       if (message.command === 'create-answer') {
         this.easyP2P = new EasyP2P({
           role: 'answerer',
-          iceServers: settings.iceServers,
+          webRTCOptions: {
+            iceServers: settings.iceServers,
+          },
           initialOffer: atob(message.offer),
         });
 
@@ -95,16 +100,6 @@ export class Connection extends EventEmitter {
         this.easyP2P.acceptAnswer(atob(message.answer));
       }
     };
-  }
-
-  guid() {
-    let s4 = function () {
-      return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-    };
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 
   manual (done) {
