@@ -115,10 +115,7 @@ export class EasyP2P extends EventEmitter {
     };
   }
 
-  sendMessage (command, options) {
-    this.dataChannel.send(JSON.stringify({
-      command: command,
-      options: options
-    }));
+  sendMessage (message) {
+    this.dataChannel.send(message);
   }
 }

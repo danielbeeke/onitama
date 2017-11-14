@@ -12,37 +12,32 @@ export class Tile extends EventEmitter {
     this.element.dataset.y = y;
     this.element.classList.add('tile');
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
+
     this.element.addEventListener('click', (event) => {
-      this.game.emit('tile-click', this.element);
+      this.game.emit('tile.click', this);
     });
 
     this.board.appendChild(this.element);
   }
 
-  set hasPiece (boolean) {
-    if (boolean) {
-      this.element.classList.add('has-piece');
+  setStateClass (key, value) {
+    if (value) {
+      this.element.classList.add(key);
     }
     else {
-      this.element.classList.remove('has-piece');
+      this.element.classList.remove(key);
     }
+  }
+
+  set hasPiece (boolean) {
+    this.setStateClass('has-piece', boolean);
   }
 
   set hasHover (boolean) {
-    if (boolean) {
-      this.element.classList.add('hover');
-    }
-    else {
-      this.element.classList.remove('hover');
-    }
+    this.setStateClass('hover', boolean);
   }
 
   set hasHighlight (boolean) {
-    if (boolean) {
-      this.element.classList.add('highlight');
-    }
-    else {
-      this.element.classList.remove('highlight');
-    }
+    this.setStateClass('highlight', boolean);
   }
 }
