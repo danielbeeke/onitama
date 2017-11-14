@@ -1,10 +1,3 @@
-import {Helpers} from '/javascript/core/Helpers.js';
-import {Board} from '/javascript/game/Board.js';
-import {State} from '/javascript/game/State.js';
+import {Game} from '/javascript/game/Game.js';
 
-let board = new Board('#board');
-let emptyState = new State();
-
-console.log(emptyState)
-
-board.setState(emptyState);
+let game = new Game('#game');

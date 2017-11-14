@@ -51,7 +51,7 @@ export class State extends EventEmitter {
 			});
 
 			return piecesMap;
-		}
+		};
 
 		let player1PiecesMap = convertPlayerPieces(player1Pieces);
 		let player2PiecesMap = convertPlayerPieces(player2Pieces);

@@ -52,4 +52,11 @@ export class Helpers {
 
     return coordinate;
   }
+
+  static tileNumberToXandY (number) {
+    return {
+      x: ((number - 1) % 5) + 1,
+      y: Math.ceil(number / 5)
+    }
+  }
 }
