@@ -1,6 +1,5 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {cards} from '/data/cards.js';
-import {Card} from '/javascript/game/Card.js';
 
 export class State extends EventEmitter {
 
@@ -13,8 +12,9 @@ export class State extends EventEmitter {
 	 * The character 5 from the left are reserved for the spare card.
 	 * After that the pieces come.
 	 * They come in blocks of 10 for each player, first player 1 and than player 2.
+   * The last number is the player that has the turn.
 	 */
-	constructor (onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx') {
+	constructor (onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx.1') {
 		super();
 		let parsedState = this.parseNotation(onitamaStringNotation);
 		Object.assign(this, parsedState);
@@ -29,12 +29,7 @@ export class State extends EventEmitter {
 			.replace(/ /g, '');
 
 		let cardCharacters = onitamaStringNotation.substr(0, 5).split('');
-		let selectedCardItems = cards.filter(card => cardCharacters.includes(card.id));
-		let selectedCards = [];
-
-		selectedCardItems.forEach((cardData) => {
-			selectedCards.push(new Card(cardData));
-		});
+		let selectedCards = cards.filter(card => cardCharacters.includes(card.id));
 
 		let player1Pieces = onitamaStringNotation.substr(5, 10);
 		let player2Pieces = onitamaStringNotation.substr(15, 10);
@@ -45,7 +40,7 @@ export class State extends EventEmitter {
 			
 			chunks.forEach((chunk) => {
 				let tileNumber = chunk.charCodeAt(0) - 96;
-				let pieceChar = chunk.substr(1)
+				let pieceChar = chunk.substr(1);
 				let pieceType = pieceChar === pieceChar.toUpperCase() ? 'master' : 'monk';
 				piecesMap.set(tileNumber, pieceType);
 			});
@@ -55,8 +50,10 @@ export class State extends EventEmitter {
 
 		let player1PiecesMap = convertPlayerPieces(player1Pieces);
 		let player2PiecesMap = convertPlayerPieces(player2Pieces);
-		
+		let turnPlayerId = onitamaStringNotation.substr(25, 1);
+
 		return {
+      turnPlayer: parseInt(turnPlayerId),
 			player1: {
 				cards: selectedCards.slice(0, 2),
 				pieces: player1PiecesMap
