@@ -10,6 +10,7 @@ export class Player extends EventEmitter {
   }
 
   addPiece (type, x = false, y = false) {
-    this.pieces.push(new Piece(type, x, y, this.board, this));
+    let piece = new Piece(type, x, y, this.board, this);
+    this.pieces.push(piece);
   }
 }

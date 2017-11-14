@@ -13,7 +13,7 @@ export class Tile extends EventEmitter {
 
 	    ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
 		    this.element.addEventListener(eventName, (event) => {
-			    this.emit(eventName, this);
+          this.board.emit('tile.' + eventName, this);
 		    });
 	    });
 
