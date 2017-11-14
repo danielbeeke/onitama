@@ -1,0 +1,36 @@
+.piece {
+  border-radius: 50%;
+  z-index: 2;
+  position: relative;
+
+  &:after {
+    content: '';
+    display: block;
+    height: 50%;
+    width: 50%;
+    transition: all $speed $easing;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+
+  &.master:after {
+    border-radius: 0;
+  }
+}
+
+.piece.owner-1:after {
+  border: 2px solid $player1;
+  background-color: rgba($player1, .3);
+}
+
+.piece.owner-2:after {
+  border: 2px solid $player2;
+  background-color: rgba($player2, .3);
+}
+
+.piece.selected:after {
+  border-width: 6px !important;
+}

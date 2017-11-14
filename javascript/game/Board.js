@@ -11,8 +11,8 @@ export class Board extends EventEmitter {
 		this.element = element;
 		this.element.classList.add('board');
 		this.createTiles();
-		this.player1 = new Player(1);
-    this.player2 = new Player(2);
+		this.player1 = new Player(1, this);
+    this.player2 = new Player(2, this);
 	}
 
 	createTiles () {
@@ -29,7 +29,7 @@ export class Board extends EventEmitter {
 		let initPlayer = (data, id) => {
       data.pieces.forEach((pieceType, pieceTile) => {
         let tileCoordinates = Helpers.tileNumberToXandY(pieceTile);
-        this.player1.addPiece(pieceType, tileCoordinates.x, tileCoordinates.y);
+        this['player' + id].addPiece(pieceType, tileCoordinates.x, tileCoordinates.y);
 
       });
     };

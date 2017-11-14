@@ -46,7 +46,7 @@ export class State extends EventEmitter {
 			chunks.forEach((chunk) => {
 				let tileNumber = chunk.charCodeAt(0) - 96;
 				let pieceChar = chunk.substr(1)
-				let pieceType = pieceChar === pieceChar.toUpperCase() ? 'Master' : 'Monk';
+				let pieceType = pieceChar === pieceChar.toUpperCase() ? 'master' : 'monk';
 				piecesMap.set(tileNumber, pieceType);
 			});
 
