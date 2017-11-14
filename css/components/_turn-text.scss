@@ -5,6 +5,8 @@
   opacity: 0;
   font-size: 20px;
   font-style: italic;
+  position: absolute;
+  display: none;
 
   &.player1 {
     grid-area: 2 / 4 / 2 / 4;

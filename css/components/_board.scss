@@ -1,12 +1,16 @@
 .board {
   display: grid;
-  grid-template-columns: 1fr 300px 300px 300px 1fr;
-  grid-template-rows: 1fr 150px 600px 150px 1fr;
-  grid-gap: 10px;
+  grid-template-columns: 1fr 100vmin 1fr;
+  grid-template-rows: 1fr 100vmin 1fr;
   align-items: stretch;
   justify-content: stretch;
-  position: relative;
   width: 100%;
   height: 100%;
-  margin: 0 auto;
+}
+
+@media all and (min-width: $breakpoint) {
+  .board {
+    grid-template-columns: 1fr 300px 300px 300px 1fr;
+    grid-template-rows: 1fr 150px 600px 150px 1fr;
+  }
 }

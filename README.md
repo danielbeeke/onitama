@@ -2,6 +2,7 @@
 - npm install -g harp
 - npm install
 - harp server
+- browser-sync start --proxy 'localhost:9000' --files 'public/**/*.scss'
 
 # How to deploy
 - harp compile
