@@ -2,9 +2,7 @@ import {Connection} from '/javascript/connection/Connection.js';
 import {Game} from '/javascript/game/Game.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
-let connection = new Connection({
-  type: 'websockets'
-});
+let connection = new Connection();
 let game;
 
 let onTransition = function (definition) {

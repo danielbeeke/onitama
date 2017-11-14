@@ -11,32 +11,38 @@ class Connection {
 }
 
 class Card {
+- game
 - name
 - description
 - color
+- owner
 - sets[]
++ swap()
 }
 
 class Piece {
+- game
 - x
 - y
 - player
 + hover()
 + click()
++ moveOffBoard()
 }
 
 class State {
+- game
 - player1
 - player2
 - selectedCards[]
 + serialize()
 + deserialize(state)
-+ swapCard(card, newOwner)
 + highlightCardSets(piece, card)
 + movePiece(piece, card, x, y)
 }
 
 class Tile {
+- game
 - x
 - y
 + hover()
@@ -52,6 +58,7 @@ class Game {
 }
 
 class Player {
+- game
 - card1
 - card2
 - pieces[]

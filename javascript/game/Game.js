@@ -6,33 +6,22 @@ import {Tile} from '/javascript/game/Tile.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Game extends EventEmitter {
+
+  /**
+   * With a div to build the game in and options we start a game.
+   * @param selector
+   * @param options
+   */
   constructor (selector, options = {}) {
     super();
     this.element = document.querySelector(selector);
-
-    this.tiles = {};
 
     this.board = document.createElement('div');
     this.board.classList.add('board-grid');
     this.element.appendChild(this.board);
 
-    this.turn = document.createElement('h4');
-    this.turn.innerText = 'Your turn';
-    this.turn.classList.add('turn-text');
-    this.turn.classList.add('player2');
-    this.element.appendChild(this.turn);
-
-    this.turn = document.createElement('h4');
-    this.turn.innerText = 'Opponents turn';
-    this.turn.classList.add('turn-text');
-    this.turn.classList.add('player1');
-    this.element.appendChild(this.turn);
-
-    for (let y = 1; y < 6; y++) {
-      for (let x = 1; x < 6; x++) {
-        this.tiles[x + '-' + y] = new Tile(x, y, this);
-      }
-    }
+    this.createTurnTexts();
+    this.createTiles();
 
     if (options.state) {
       this.deserialize(options.state);
@@ -42,6 +31,38 @@ export class Game extends EventEmitter {
     }
   }
 
+  /**
+   * Create the texts that display who turn it is.
+   */
+  createTurnTexts () {
+    this.turn1 = document.createElement('h4');
+    this.turn1.innerText = 'Your turn';
+    this.turn1.classList.add('turn-text');
+    this.turn1.classList.add('player2');
+    this.element.appendChild(this.turn1);
+
+    this.turn2 = document.createElement('h4');
+    this.turn2.innerText = 'Opponents turn';
+    this.turn2.classList.add('turn-text');
+    this.turn2.classList.add('player1');
+    this.element.appendChild(this.turn2);
+  }
+
+  /**
+   * The tiles on the board have their events and methods.
+   */
+  createTiles () {
+    this.tiles = {};
+    for (let y = 1; y < 6; y++) {
+      for (let x = 1; x < 6; x++) {
+        this.tiles[x + '-' + y] = new Tile(x, y, this);
+      }
+    }
+  }
+
+  /**
+   * Start a new game. One of the players have to do this, after that the state is serialized and send to the opponent.
+   */
   newGame () {
     // Sort cards.
     Helpers.fisherYatesShuffle(cards);
@@ -211,6 +232,10 @@ export class Game extends EventEmitter {
     this.player2.addPieces(state.player2.pieces);
   }
 
+  /**
+   * Swaps a selected card to the empty space.
+   * @param cardToSwap
+   */
   swapCard (cardToSwap) {
     let oldOwner = cardToSwap.ownerId;
     let oldDelta = cardToSwap.delta;

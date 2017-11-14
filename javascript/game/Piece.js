@@ -41,8 +41,8 @@ export class Piece {
       });
     }
 
-    this.game.on('tile-click', (tile) => {
-      this.tileClick(tile);
+    this.game.on('tile.click', (tile) => {
+      this.tileClick(tile.element);
     });
   }
 
@@ -165,9 +165,8 @@ export class Piece {
   }
 
   removeHoverAndHighlights() {
-    let tiles = this.game.board.querySelectorAll('.tile');
-
-    Array.from(tiles).forEach((tile) => {
+    Object.keys(this.game.tiles).forEach((tileKey) => {
+      let tile = this.game.tiles[tileKey];
       tile.hasHover = false;
       tile.hasHighlight = false;
     })
