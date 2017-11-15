@@ -1,0 +1,12 @@
+.board-wrapper {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  height: 100%;
+}
+
+@media (orientation: portrait) {
+  .board-wrapper {
+    flex-direction: column;
+  }
+}

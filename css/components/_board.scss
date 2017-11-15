@@ -3,11 +3,17 @@
   grid-gap: 4px;
   align-items: stretch;
   justify-items: stretch;
-
-  width: 80vmin;
-  height: 80vmin;
+  margin: 0 10px;
+  width: calc(100vmin - 20px);
+  height: calc(100vmin - 20px);
 
   .tile {
-    background-color: #bebebe;
+    background-color: #cecece;
+  }
+}
+
+@media (orientation: landscape) {
+  .board {
+    margin: 10px 0;
   }
 }

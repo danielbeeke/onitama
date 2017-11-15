@@ -19,17 +19,21 @@ export class Board extends EventEmitter {
 		this.player1 = new Player(1, this);
     this.player2 = new Player(2, this);
 
+    this.createDecks();
+
+    this.cards = [];
+  }
+
+  createDecks () {
+    this.player2Deck = document.createElement('div');
+    this.player2Deck.classList.add('deck');
+    this.player2Deck.classList.add('player2');
+    this.gameElement.insertBefore(this.player2Deck, this.gameElement.firstChild);
+
     this.player1Deck = document.createElement('div');
     this.player1Deck.classList.add('deck');
     this.player1Deck.classList.add('player1');
     this.gameElement.appendChild(this.player1Deck);
-
-    this.player2Deck = document.createElement('div');
-    this.player2Deck.classList.add('deck');
-    this.player2Deck.classList.add('player2');
-    this.gameElement.appendChild(this.player2Deck);
-
-    this.cards = [];
   }
 
 	createTiles () {

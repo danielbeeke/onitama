@@ -1,0 +1,20 @@
+.deck {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px;
+  border: 1px solid #bebebe;
+  padding: 10px;
+  border-radius: 5px;
+
+  &.player2 {
+    transform: rotate(180deg);
+  }
+}
+
+@media (orientation: landscape) {
+  .deck {
+    flex-direction: column;
+  }
+}

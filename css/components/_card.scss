@@ -1,0 +1,39 @@
+.card {
+  box-shadow: 0 0 5px rgba(black, .3);
+  border-radius: 5px;
+  background-color: white;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  border: 5px solid white;
+
+  .title {
+    margin: 10px;
+    text-align: center;
+  }
+
+  &[data-swap="true"] {
+    border: 5px solid #ebebeb;
+
+    .title {
+      color: #dcdcdc;
+    }
+  }
+}
+
+@media (orientation: portrait) {
+  .card {
+    width: 30%;
+    height: 100%;
+    max-width: 13vh;
+  }
+}
+
+@media (orientation: landscape) {
+  .card {
+    width: 100%;
+    max-width: 13vw;
+    height: 30%;
+  }
+}
+

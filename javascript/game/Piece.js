@@ -8,11 +8,10 @@ export class Piece extends EventEmitter {
 
 		this.type = type;
 		this.board = board;
-		this.player = player;
     this.element = document.createElement('div');
+    this.player = player;
     this.element.classList.add('piece');
     this.element.classList.add(this.type);
-    this.element.classList.add('owner-' + this.player.id);
     this.x = x;
     this.y = y;
 
@@ -24,6 +23,15 @@ export class Piece extends EventEmitter {
 
     this.board.element.appendChild(this.element);
 	}
+
+	set player (player) {
+	  this.data.player = player;
+    this.element.classList.add('owner-' + this.player.id);
+  }
+
+  get player () {
+	  return this.data.player;
+  }
 
 	set x (x) {
     this.data.x = x;
