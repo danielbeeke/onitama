@@ -6,18 +6,33 @@
   justify-content: space-around;
   flex-direction: column;
   border: 5px solid white;
+  transition: border $speed $easing;
 
   .title {
-    margin: 10px;
+    margin: 5px;
     text-align: center;
+    font-size: 12px;
   }
 
   &[data-swap="true"] {
     border: 5px solid #ebebeb;
+    opacity: .7;
 
     .title {
       color: #dcdcdc;
     }
+  }
+
+  &[data-owner="1"]:not([data-swap="true"]) {
+    cursor: pointer;
+  }
+
+  &:hover {
+    border-color: #f6f8cf;
+  }
+
+  &[data-selected="true"] {
+    border-color: #f8e269;
   }
 }
 
@@ -37,3 +52,10 @@
   }
 }
 
+@media (min-width: 450px) {
+  .card {
+    .title {
+      font-size: 16px;
+    }
+  }
+}

@@ -33,13 +33,33 @@ export class Piece extends EventEmitter {
 	  return this.data.player;
   }
 
+  get x () {
+	  return this.data.x;
+  }
+
 	set x (x) {
     this.data.x = x;
     this.element.style = `grid-area: ${this.data.y} / ${this.data.x} / ${this.data.y} / ${this.data.x};`;
   }
 
+  get y () {
+    return this.data.y;
+  }
+
   set y (y) {
     this.data.y = y;
     this.element.style = `grid-area: ${this.data.y} / ${this.data.x} / ${this.data.y} / ${this.data.x};`;
+  }
+
+  select () {
+	  this.player.activePiece = this;
+    this.data.selected = true;
+    this.element.dataset.selected = true;
+  }
+
+  deselect () {
+    this.player.activePiece = false;
+    this.data.selected = false;
+    this.element.dataset.selected = false;
   }
 }

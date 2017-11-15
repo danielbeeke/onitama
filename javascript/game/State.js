@@ -31,8 +31,8 @@ export class State extends EventEmitter {
 		let cardCharacters = onitamaStringNotation.substr(0, 5).split('');
 		let selectedCards = cards.filter(card => cardCharacters.includes(card.id));
 
-		let player1Pieces = onitamaStringNotation.substr(5, 10);
-		let player2Pieces = onitamaStringNotation.substr(15, 10);
+		let player1Pieces = onitamaStringNotation.substr(15, 10);
+		let player2Pieces = onitamaStringNotation.substr(5, 10);
 
 		let convertPlayerPieces = (onitamaStringNotationPlayerPart) => {
 			let piecesMap = new Map();

@@ -9,11 +9,22 @@
 
   .tile {
     background-color: #cecece;
+
+    &.highlight {
+      background-color: #b7ce7c;
+    }
   }
 }
 
 @media (orientation: landscape) {
   .board {
     margin: 10px 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .board {
+    width: 700px;
+    height: 700px;
   }
 }

@@ -19,4 +19,14 @@ export class Tile extends EventEmitter {
 
 	    this.board.element.appendChild(this.element);
 	}
+
+	highlight () {
+	  this.highlighted = true;
+    this.element.classList.add('highlight');
+  }
+
+  dim () {
+    this.highlighted = false;
+    this.element.classList.remove('highlight');
+  }
 }

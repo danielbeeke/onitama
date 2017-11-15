@@ -53,10 +53,16 @@ export class Card extends EventEmitter {
     let oppositePlayerId = this.player.id === 1 ? 2 : 1;
     this.player = this.board['player' + oppositePlayerId];
     this.element.dataset.swap = true;
+    this.data.swap = true;
 
     this.board.cards.forEach((card) => {
-      if (card !== this) {
+      if (card.id !== this.id) {
         card.element.dataset.swap = false;
+        card.data.swap = false;
+      }
+      else {
+        card.element.dataset.swap = true;
+        card.data.swap = true;
       }
     });
   }
@@ -64,11 +70,22 @@ export class Card extends EventEmitter {
 	set player (player) {
 	  this.data.player = player;
     this.element.dataset.owner = this.player.id;
-
     this.board['player' + this.player.id + 'Deck'].insertBefore(this.element, this.board['player' + this.player.id + 'Deck'].firstChild);
   }
 
   get player () {
 	  return this.data.player;
+  }
+
+  select () {
+	  this.player.activeCard = this;
+    this.data.selected = true;
+    this.element.dataset.selected = true;
+  }
+
+  deselect () {
+    this.player.activeCard = false;
+	  this.data.selected = false;
+    this.element.dataset.selected = false;
   }
 }

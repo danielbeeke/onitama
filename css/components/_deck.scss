@@ -7,6 +7,7 @@
   border: 1px solid #bebebe;
   padding: 10px;
   border-radius: 5px;
+  flex-direction: row-reverse;
 
   &.player2 {
     transform: rotate(180deg);
@@ -16,5 +17,14 @@
 @media (orientation: landscape) {
   .deck {
     flex-direction: column;
+  }
+}
+
+@media (min-width: 1280px) and (orientation: landscape) {
+  .deck {
+    height: 700px;
+    margin: 20px 100px;
+    padding: 20px;
+    flex: 0 1 200px;
   }
 }

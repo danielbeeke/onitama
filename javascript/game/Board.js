@@ -47,6 +47,7 @@ export class Board extends EventEmitter {
 	}
 
 	setState (state) {
+	  this.emit('state.change', state);
 		let initPlayer = (data, id) => {
       data.pieces.forEach((pieceType, pieceTile) => {
         let tileCoordinates = Helpers.tileNumberToXandY(pieceTile);
