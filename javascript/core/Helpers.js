@@ -34,6 +34,9 @@ export class Helpers {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 
+  /**
+   * Flips a coordinate on the board.
+   */
   static flipCoordinate (coordinate) {
     switch (coordinate) {
       case 1:
@@ -53,6 +56,9 @@ export class Helpers {
     return coordinate;
   }
 
+  /**
+   * Returns the coordinates for a tile.
+   */
   static tileNumberToXandY (number) {
     return {
       x: ((number - 1) % 5) + 1,
@@ -60,7 +66,9 @@ export class Helpers {
     }
   }
 
-
+  /**
+   * Returns the tile number for coordinates.
+   */
   static xAndYToTileNumber (x, y) {
     return ((y - 1) * 5) + x;
   }

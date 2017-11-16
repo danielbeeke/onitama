@@ -38,6 +38,9 @@ export class Game {
         this.state.player1.activeCard.swap();
         this.state.player1.activeCard.deselect();
 
+        this.state.player1.activeCard = false;
+        this.state.player1.activePiece = false;
+        
         this.updateHighLights();
       }
     });

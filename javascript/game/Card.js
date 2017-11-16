@@ -7,10 +7,10 @@ export class Card {
 		Object.assign(this, data);
     this.element = document.createElement('div');
     this.element.classList.add('card');
+    this.element.classList.add(this.color);
     this.element.classList.add(this.name.toLowerCase());
 
     let inner = `<div class="mini-board"><div class="self" style="grid-area: 3 / 3 / 3 / 3;"></div>`;
-    this.element.classList.add(this.color);
 
     this.sets.forEach((set) => {
       let x = set.x + 3;
@@ -18,23 +18,11 @@ export class Card {
       inner += `<div class="set" data-x="${x}" data-y="${y}" style="grid-area: ${y} / ${x} / ${y} / ${x};"></div>`;
     });
 
-    inner += `</div><h4 class="title">${this.name}</h4>`;
+    inner += `</div>`;
+    inner += `<h4 class="title">${this.name}</h4>`;
     this.element.innerHTML = inner;
 
-
-    let miniBoard = this.element.querySelector('.mini-board');
-
-    for (let y = 1; y < 6; y++) {
-      for (let x = 1; x < 6; x++) {
-        let tile = document.createElement('div');
-        tile.dataset.x = x;
-        tile.dataset.y = y;
-        tile.classList.add('tile');
-        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-        miniBoard.appendChild(tile);
-      }
-    }
-
+    this.createMiniBoard();
     this.state = state;
 
     this.data = {};
@@ -47,6 +35,24 @@ export class Card {
       });
     });
 	}
+
+  /**
+   * Creates the tiles for displaying the possible sets.
+   */
+	createMiniBoard () {
+    let miniBoard = this.element.querySelector('.mini-board');
+
+    for (let y = 1; y < 6; y++) {
+      for (let x = 1; x < 6; x++) {
+        let tile = document.createElement('div');
+        tile.dataset.x = x;
+        tile.dataset.y = y;
+        tile.classList.add('tile');
+        tile.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
+        miniBoard.appendChild(tile);
+      }
+    }
+  }
 
   /**
    * When a card is played the card gets swapped to the other player.
