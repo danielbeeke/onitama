@@ -7,7 +7,7 @@ export class Game {
    * Start a new game with a div selector and an outside emitter.
    * This way we can recycle the emitter for all things inside this app.
    */
-  constructor (selector, emitter) {
+  constructor (selector, emitter, onitamaStringNotation = null) {
     this.emitter = emitter;
     this.element = document.querySelector(selector);
     if (!this.element) { throw 'No element found for the onitama game'; }
@@ -16,9 +16,13 @@ export class Game {
     this.element.appendChild(this.boardElement);
     this.board = new Board(this.boardElement, this.emitter);
 
-    let emptyState = new State(this.board, this.emitter);
-    this.board.setState(emptyState);
-    this.state = emptyState;
+    if (onitamaStringNotation) {
+      this.state = new State(this.board, this.emitter, onitamaStringNotation);
+    }
+    else {
+      this.state = new State(this.board, this.emitter);
+    }
+    this.board.setState(this.state);
 
     this.attachEvents();
   }
@@ -40,7 +44,9 @@ export class Game {
 
         this.state.player1.activeCard = false;
         this.state.player1.activePiece = false;
-        
+
+        this.state.turnPlayer = this.state.turnPlayer === 1 ? 2 : 1;
+
         this.updateHighLights();
       }
     });

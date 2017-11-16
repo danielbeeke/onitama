@@ -27,7 +27,7 @@
     cursor: pointer;
   }
 
-  &:not([data-swap="true"]):hover {
+  &[data-owner="1"]:not([data-swap="true"]):hover {
     border-color: #f6f8cf;
   }
 

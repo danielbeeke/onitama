@@ -18,48 +18,13 @@ export class State {
 	constructor (board, emitter, onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx.1') {
 		this.emitter = emitter;
 		this.board = board;
-		let parsedState = this.parseNotation(onitamaStringNotation);
-		this.applyStateObject(parsedState);
+		this.deserialize(onitamaStringNotation);
 	}
-
-  /**
-   * Apply the state object to initiated classes.
-   * @param stateObject
-   */
-	applyStateObject (stateObject) {
-    Object.assign(this, stateObject);
-    this.cards = [];
-
-    this.player1 = new Player(1, this);
-    this.player2 = new Player(2, this);
-
-    let initPlayer = (data, id) => {
-      data.pieces.forEach((pieceType, pieceTile) => {
-        let tileCoordinates = Helpers.tileNumberToXandY(pieceTile);
-        this['player' + id].addPiece(pieceType, tileCoordinates.x, tileCoordinates.y);
-      });
-
-      data.cards.forEach((cardData) => {
-        let card = this['player' + id].addCard(cardData);
-        this.cards.push(card);
-      });
-    };
-
-    initPlayer(stateObject.player1, 1);
-    initPlayer(stateObject.player2, 2);
-
-    let oppositeTurnPlayerId = stateObject.turnPlayer === 1 ? 2 : 1;
-    let swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
-
-    this.cards.push(swapCard);
-    // TODO maybe imporve this with two functions, setSwapped and swap.
-    swapCard.swap();
-  }
 
 	/**
 	 * Parses an onitama string notation.
 	 */
-	parseNotation (onitamaStringNotation) {
+	deserialize (onitamaStringNotation) {
 		onitamaStringNotation = onitamaStringNotation
 			.replace(/\./g, '')
 			.replace(/ /g, '');
@@ -88,7 +53,7 @@ export class State {
 		let player2PiecesMap = convertPlayerPieces(player2Pieces);
 		let turnPlayerId = onitamaStringNotation.substr(25, 1);
 
-		return {
+		let stateObject = {
       turnPlayer: parseInt(turnPlayerId),
 			player1: {
 				cards: selectedCards.slice(0, 2),
@@ -99,7 +64,35 @@ export class State {
 				pieces: player2PiecesMap
 			},
 			swapCard: selectedCards.slice(4)[0],
-		}
+		};
+
+    Object.assign(this, stateObject);
+    this.cards = [];
+
+    this.player1 = new Player(1, this);
+    this.player2 = new Player(2, this);
+
+    let initPlayer = (data, id) => {
+      data.pieces.forEach((pieceType, pieceTile) => {
+        let tileCoordinates = Helpers.tileNumberToXandY(pieceTile);
+        this['player' + id].addPiece(pieceType, tileCoordinates.x, tileCoordinates.y);
+      });
+
+      data.cards.forEach((cardData) => {
+        let card = this['player' + id].addCard(cardData);
+        this.cards.push(card);
+      });
+    };
+
+    initPlayer(stateObject.player1, 1);
+    initPlayer(stateObject.player2, 2);
+
+    let oppositeTurnPlayerId = stateObject.turnPlayer === 1 ? 2 : 1;
+    let swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
+
+    this.cards.push(swapCard);
+    // TODO maybe improve this with two functions, setSwapped and swap.
+    swapCard.swap();
 	}
 
 
@@ -107,13 +100,13 @@ export class State {
    * Serializes the game state into an object.
    */
   serialize () {
-    let state = {};
+    let stateObject = {};
 
-    state.turnPlayer = this.turnPlayer;
+    stateObject.turnPlayer = this.turnPlayer;
 
     this.cards.forEach((card) => {
-      if (!card.player) {
-        state.swapCard = card.id;
+      if (card.data.swap) {
+        stateObject.swapCard = card.id;
       }
     });
 
@@ -130,9 +123,27 @@ export class State {
       }
     };
 
-    state.player1 = convertPlayer(this.player1);
-    state.player2 = convertPlayer(this.player2);
+    stateObject.player1 = convertPlayer(this.player1);
+    stateObject.player2 = convertPlayer(this.player2);
 
-    return state;
+    let onitamaStringNotation = stateObject.player1.cards[0] + stateObject.player1.cards[1];
+    onitamaStringNotation += stateObject.player2.cards[0] + stateObject.player2.cards[1];
+    onitamaStringNotation += stateObject.swapCard + '.';
+
+    let createPlayerString = (player) => {
+      let playerString = '';
+
+      player.pieces.forEach((type, tile) => {
+        let typeChar = type === 'master' ? 'X' : 'x';
+        playerString += String.fromCharCode(96 + tile) + typeChar;
+      });
+
+      return playerString;
+    };
+
+    onitamaStringNotation += createPlayerString(stateObject.player2) + '.';
+    onitamaStringNotation += createPlayerString(stateObject.player1) + '.' + stateObject.turnPlayer;
+
+    return onitamaStringNotation;
   }
 }

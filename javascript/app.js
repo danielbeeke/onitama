@@ -5,9 +5,7 @@ import {Connection} from '/javascript/connection/Connection.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
 let emitter = new EventEmitter();
-let game = new Game('#game', emitter);
 
-/*
 let connection = new Connection();
 let game = null;
 
@@ -23,28 +21,26 @@ let onTransition = function (definition) {
 
 connection.on('started', () => {
   if (connection.role === 'initiator') {
-    game = new Game('#game');
+    game = new Game('#game', emitter);
 
-    let state = game.state.serialize();
-    game.flipState(state);
+    let onitamaNotation = game.state.serialize();
 
-    game.on('transition', (definition) => {
+    emitter.on('transition', (definition) => {
       onTransition(definition);
     });
 
-    // connection.sendMessage('startGame', {
-    //   state: state
-    // });
+    connection.sendMessage('startGame', {
+      state: onitamaNotation
+    });
   }
 });
 
 let commands = {
   startGame: (options) => {
-    game = new Game('#board', {
-      state: options.state
-    });
+    console.log(options)
 
-    game.on('transition', onTransition);
+    game = new Game('#game', emitter, options.state);
+    emitter.on('transition', onTransition);
   },
   transition: (definition) => {
     definition.isReceived = true;
@@ -57,5 +53,3 @@ connection.on('message', (message) => {
     commands[message.command](message.options);
   }
 });
-
-*/
