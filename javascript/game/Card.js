@@ -44,7 +44,7 @@ export class Card extends EventEmitter {
 
     ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
       this.element.addEventListener(eventName, (event) => {
-        this.board.emit('card.' + eventName, this);
+        this.state.board.emit('card.' + eventName, this);
       });
     });
 	}

@@ -27,12 +27,12 @@ export class Game extends EventEmitter {
     // Tiles.
     this.board.on('tile.click', (tile) => {
       if (tile.highlighted === true) {
-        this.board.player1.activePiece.y = tile.y;
-        this.board.player1.activePiece.x = tile.x;
+        this.state.player1.activePiece.y = tile.y;
+        this.state.player1.activePiece.x = tile.x;
 
-        this.board.player1.activePiece.deselect();
-        this.board.player1.activeCard.swap();
-        this.board.player1.activeCard.deselect();
+        this.state.player1.activePiece.deselect();
+        this.state.player1.activeCard.swap();
+        this.state.player1.activeCard.deselect();
 
         this.updateHighLights();
       }
@@ -49,7 +49,7 @@ export class Game extends EventEmitter {
     // Pieces.
     this.board.on('piece.click', (piece) => {
       if (this.state.turnPlayer === 1 && piece.player.id === 1) {
-        this.board.player1.pieces.forEach((innerPiece) => {
+        this.state.player1.pieces.forEach((innerPiece) => {
           if (innerPiece !== piece) { innerPiece.deselect() }
         });
         piece.data.selected === true ? piece.deselect() : piece.select();
@@ -59,8 +59,8 @@ export class Game extends EventEmitter {
 
     this.board.on('piece.mouseenter', (piece) => {
       if (this.state.turnPlayer === 1 && piece.player.id === 1) {
-        if (!this.board.player1.activePiece) {
-          this.board.player1.activePiece = piece;
+        if (!this.state.player1.activePiece) {
+          this.state.player1.activePiece = piece;
         }
         this.updateHighLights();
       }
@@ -68,8 +68,8 @@ export class Game extends EventEmitter {
 
     this.board.on('piece.mouseleave', (piece) => {
       if (this.state.turnPlayer === 1 && piece.player.id === 1) {
-        if (this.board.player1.activePiece === piece && !piece.data.selected) {
-          this.board.player1.activePiece = false;
+        if (this.state.player1.activePiece === piece && !piece.data.selected) {
+          this.state.player1.activePiece = false;
         }
         this.updateHighLights();
       }
@@ -78,7 +78,7 @@ export class Game extends EventEmitter {
     // Cards.
     this.board.on('card.click', (card) => {
       if (this.state.turnPlayer === 1 && card.player.id === 1 && !card.data.swap) {
-        this.board.cards.forEach((innerCard) => {
+        this.state.cards.forEach((innerCard) => {
           if (innerCard !== card) { innerCard.deselect() }
         });
         card.data.selected === true ? card.deselect() : card.select();
@@ -88,16 +88,16 @@ export class Game extends EventEmitter {
 
     this.board.on('card.mouseenter', (card) => {
       if (this.state.turnPlayer === 1 && card.player.id === 1 && !card.data.swap) {
-        if (!this.board.player1.activeCard) {
-          this.board.player1.activeCard = card;
+        if (!this.state.player1.activeCard) {
+          this.state.player1.activeCard = card;
         }
         this.updateHighLights();
       }
     });
 
     this.board.on('card.mouseleave', (card) => {
-      if (this.board.player1.activeCard === card && !card.data.selected) {
-        this.board.player1.activeCard = false;
+      if (this.state.player1.activeCard === card && !card.data.selected) {
+        this.state.player1.activeCard = false;
       }
       this.updateHighLights();
     });
@@ -110,8 +110,8 @@ export class Game extends EventEmitter {
       }
     });
 
-    if (this.board.player1.activePiece && this.board.player1.activeCard) {
-      let tilesToHighLight = this.getHighlightTilesByPieceAndCard(this.board.player1.activePiece, this.board.player1.activeCard);
+    if (this.state.player1.activePiece && this.state.player1.activeCard) {
+      let tilesToHighLight = this.getHighlightTilesByPieceAndCard(this.state.player1.activePiece, this.state.player1.activeCard);
 
       tilesToHighLight.forEach((tile) => {
         tile.highlight();
@@ -129,7 +129,7 @@ export class Game extends EventEmitter {
       // When on the board.
       if (setX > 0 && setY > 0 && setX < 6 && setY < 6) {
         let isValid = true;
-        this.board.player1.pieces.forEach((piece) => {
+        this.state.player1.pieces.forEach((piece) => {
           if (piece.x === setX && piece.y === setY) {
             isValid = false;
           }

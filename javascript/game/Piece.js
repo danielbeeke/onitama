@@ -17,11 +17,9 @@ export class Piece extends EventEmitter {
 
     ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
       this.element.addEventListener(eventName, (event) => {
-        this.state.emit('piece.' + eventName, this);
+        this.state.board.emit('piece.' + eventName, this);
       });
     });
-
-    console.log(this.state)
 
     this.state.board.element.appendChild(this.element);
 	}
