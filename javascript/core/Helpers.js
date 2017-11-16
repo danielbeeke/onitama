@@ -34,6 +34,11 @@ export class Helpers {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 
+  static flipPlayerInNotation (onitamaNotation) {
+    console.log(onitamaNotation)
+    return onitamaNotation;
+  }
+
   /**
    * Flips a coordinate on the board.
    */

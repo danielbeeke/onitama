@@ -9,14 +9,18 @@ let emitter = new EventEmitter();
 let connection = new Connection();
 let game = null;
 
-let onTransition = function (definition) {
-  if (!definition.isReceived) {
-    // We need to flip al the player things.
-    definition.player = definition.player === 1 ? 2 : 1;
-    definition.x = Helpers.flipCoordinate(definition.x);
-    definition.y = Helpers.flipCoordinate(definition.y);
-    connection.sendMessage('transition', definition);
-  }
+let onTurn = function () {
+  // if (!definition.isReceived) {
+  //   // We need to flip al the player things.
+  //   definition.player = definition.player === 1 ? 2 : 1;
+  //   definition.x = Helpers.flipCoordinate(definition.x);
+  //   definition.y = Helpers.flipCoordinate(definition.y);
+  // }
+
+  // connection.sendMessage('transition', definition);
+
+  console.log('yo')
+
 };
 
 connection.on('started', () => {
@@ -25,8 +29,10 @@ connection.on('started', () => {
 
     let onitamaNotation = game.state.serialize();
 
-    emitter.on('transition', (definition) => {
-      onTransition(definition);
+    onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
+
+    emitter.on('turn', (definition) => {
+      onTurn(definition);
     });
 
     connection.sendMessage('startGame', {
@@ -37,10 +43,8 @@ connection.on('started', () => {
 
 let commands = {
   startGame: (options) => {
-    console.log(options)
-
     game = new Game('#game', emitter, options.state);
-    emitter.on('transition', onTransition);
+    emitter.on('turn', onTurn);
   },
   transition: (definition) => {
     definition.isReceived = true;

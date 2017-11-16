@@ -46,8 +46,9 @@ export class Game {
         this.state.player1.activePiece = false;
 
         this.state.turnPlayer = this.state.turnPlayer === 1 ? 2 : 1;
-
         this.updateHighLights();
+
+        this.emitter.emit('turn');
       }
     });
 
