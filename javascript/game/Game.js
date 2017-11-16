@@ -1,31 +1,35 @@
-import {EventEmitter} from '/javascript/core/EventEmitter.js';
-import {Helpers} from '/javascript/core/Helpers.js';
 import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
 
-export class Game extends EventEmitter {
-  constructor (selector) {
-    super();
+export class Game {
 
+  /**
+   * Start a new game with a div selector and an outside emitter.
+   * This way we can recycle the emitter for all things inside this app.
+   */
+  constructor (selector, emitter) {
+    this.emitter = emitter;
     this.element = document.querySelector(selector);
     if (!this.element) { throw 'No element found for the onitama game'; }
     this.element.classList.add('onitama');
-
     this.boardElement = document.createElement('div');
     this.element.appendChild(this.boardElement);
-    this.board = new Board(this.boardElement);
+    this.board = new Board(this.boardElement, this.emitter);
 
-    let emptyState = new State(this.board);
+    let emptyState = new State(this.board, this.emitter);
     this.board.setState(emptyState);
     this.state = emptyState;
 
     this.attachEvents();
   }
 
+  /**
+   * Reacts on the emitter. This is the main game logic.
+   */
   attachEvents () {
 
     // Tiles.
-    this.board.on('tile.click', (tile) => {
+    this.emitter.on('tile.click', (tile) => {
       if (tile.highlighted === true) {
         this.state.player1.activePiece.y = tile.y;
         this.state.player1.activePiece.x = tile.x;
@@ -38,16 +42,16 @@ export class Game extends EventEmitter {
       }
     });
 
-    this.board.on('tile.mouseenter', (tile) => {
+    this.emitter.on('tile.mouseenter', (tile) => {
       // console.log(tile)
     });
 
-    this.board.on('tile.mouseleave', (tile) => {
+    this.emitter.on('tile.mouseleave', (tile) => {
       // console.log(tile)
     });
 
     // Pieces.
-    this.board.on('piece.click', (piece) => {
+    this.emitter.on('piece.click', (piece) => {
       if (this.state.turnPlayer === 1 && piece.player.id === 1) {
         this.state.player1.pieces.forEach((innerPiece) => {
           if (innerPiece !== piece) { innerPiece.deselect() }
@@ -57,7 +61,7 @@ export class Game extends EventEmitter {
       }
     });
 
-    this.board.on('piece.mouseenter', (piece) => {
+    this.emitter.on('piece.mouseenter', (piece) => {
       if (this.state.turnPlayer === 1 && piece.player.id === 1) {
         if (!this.state.player1.activePiece) {
           this.state.player1.activePiece = piece;
@@ -66,7 +70,7 @@ export class Game extends EventEmitter {
       }
     });
 
-    this.board.on('piece.mouseleave', (piece) => {
+    this.emitter.on('piece.mouseleave', (piece) => {
       if (this.state.turnPlayer === 1 && piece.player.id === 1) {
         if (this.state.player1.activePiece === piece && !piece.data.selected) {
           this.state.player1.activePiece = false;
@@ -76,7 +80,7 @@ export class Game extends EventEmitter {
     });
 
     // Cards.
-    this.board.on('card.click', (card) => {
+    this.emitter.on('card.click', (card) => {
       if (this.state.turnPlayer === 1 && card.player.id === 1 && !card.data.swap) {
         this.state.cards.forEach((innerCard) => {
           if (innerCard !== card) { innerCard.deselect() }
@@ -86,7 +90,7 @@ export class Game extends EventEmitter {
       }
     });
 
-    this.board.on('card.mouseenter', (card) => {
+    this.emitter.on('card.mouseenter', (card) => {
       if (this.state.turnPlayer === 1 && card.player.id === 1 && !card.data.swap) {
         if (!this.state.player1.activeCard) {
           this.state.player1.activeCard = card;
@@ -95,7 +99,7 @@ export class Game extends EventEmitter {
       }
     });
 
-    this.board.on('card.mouseleave', (card) => {
+    this.emitter.on('card.mouseleave', (card) => {
       if (this.state.player1.activeCard === card && !card.data.selected) {
         this.state.player1.activeCard = false;
       }
@@ -103,6 +107,9 @@ export class Game extends EventEmitter {
     });
   }
 
+  /**
+   * This gets called a lot after events, it updates the highlighted tiles.
+   */
   updateHighLights () {
     this.board.tiles.forEach((tile) => {
       if (tile.highlighted === true) {
@@ -119,6 +126,9 @@ export class Game extends EventEmitter {
     }
   }
 
+  /**
+   * A card has possible moves. This returns the tiles that need to be highlighted by a card.
+   */
   getHighlightTilesByPieceAndCard (piece, card) {
     let highlightTiles = [];
 

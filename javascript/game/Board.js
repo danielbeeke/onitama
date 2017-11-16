@@ -1,13 +1,11 @@
-import {EventEmitter} from '/javascript/core/EventEmitter.js';
-import {State} from '/javascript/game/State.js';
 import {Tile} from '/javascript/game/Tile.js';
-import {Helpers} from '/javascript/core/Helpers.js';
-import {Player} from '/javascript/game/Player.js';
 
-export class Board extends EventEmitter {
-	constructor (element) {
-		super();
-
+export class Board {
+  /**
+   * A board holds the physical together. It makes the tiles and lets them emit to the main emitter.
+   */
+	constructor (element, emitter) {
+		this.emitter = emitter;
 		this.gameElement = element;
     this.gameElement.classList.add('board-wrapper');
 
@@ -16,10 +14,12 @@ export class Board extends EventEmitter {
     this.gameElement.appendChild(this.element);
 
 		this.createTiles();
-
     this.createDecks();
   }
 
+  /**
+   * Create the divs that hold the player cards.
+   */
   createDecks () {
     this.player2Deck = document.createElement('div');
     this.player2Deck.classList.add('deck');
@@ -32,6 +32,9 @@ export class Board extends EventEmitter {
     this.gameElement.appendChild(this.player1Deck);
   }
 
+  /**
+   * Create the tiles.
+   */
 	createTiles () {
 		this.tiles = new Map();
 	    for (let y = 1; y < 6; y++) {
@@ -42,8 +45,11 @@ export class Board extends EventEmitter {
 		}
 	}
 
+  /**
+   * Attach the state to the board.
+   */
   setState (state) {
     this.state = state;
-    this.emit('state.change', state);
+    this.emitter.emit('state.change', state);
   }
 }

@@ -1,8 +1,11 @@
 import {Game} from '/javascript/game/Game.js';
+import {EventEmitter} from '/javascript/core/EventEmitter.js';
+
 import {Connection} from '/javascript/connection/Connection.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
-let game = new Game('#game');
+let emitter = new EventEmitter();
+let game = new Game('#game', emitter);
 
 /*
 let connection = new Connection();

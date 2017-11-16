@@ -1,14 +1,13 @@
-import {EventEmitter} from '/javascript/core/EventEmitter.js';
+export class Card {
 
-export class Card extends EventEmitter {
-
+  /**
+   * A card must be initiated with the data out of cards.js. It has possible sets.
+   */
 	constructor (data, state, player) {
-		super();
 		Object.assign(this, data);
     this.element = document.createElement('div');
     this.element.classList.add('card');
     this.element.classList.add(this.name.toLowerCase());
-
 
     let inner = `<div class="mini-board"><div class="self" style="grid-area: 3 / 3 / 3 / 3;"></div>`;
     this.element.classList.add(this.color);
@@ -44,11 +43,14 @@ export class Card extends EventEmitter {
 
     ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
       this.element.addEventListener(eventName, (event) => {
-        this.state.board.emit('card.' + eventName, this);
+        this.state.emitter.emit('card.' + eventName, this);
       });
     });
 	}
 
+  /**
+   * When a card is played the card gets swapped to the other player.
+   */
 	swap () {
     let oppositePlayerId = this.player.id === 1 ? 2 : 1;
     this.player = this.state['player' + oppositePlayerId];
@@ -67,6 +69,9 @@ export class Card extends EventEmitter {
     });
   }
 
+  /**
+   * Sets the owner of this card.
+   */
 	set player (player) {
 	  this.data.player = player;
     this.element.dataset.owner = this.player.id;
@@ -74,16 +79,25 @@ export class Card extends EventEmitter {
     deck.insertBefore(this.element, deck.firstChild);
   }
 
+  /**
+   * Returns the owner of this card.
+   */
   get player () {
 	  return this.data.player;
   }
 
+  /**
+   * Selects the card and updates that state to the player.
+   */
   select () {
 	  this.player.activeCard = this;
     this.data.selected = true;
     this.element.dataset.selected = true;
   }
 
+  /**
+   * Deselects the card and updates that state to the player.
+   */
   deselect () {
     this.player.activeCard = false;
 	  this.data.selected = false;

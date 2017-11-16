@@ -1,9 +1,8 @@
-import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {cards} from '/data/cards.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 import {Player} from '/javascript/game/Player.js';
 
-export class State extends EventEmitter {
+export class State {
 
 	/**
 	 * You can initiate a state with a correct ontima string notation. If so it gets validated, else it will be a blank board.
@@ -16,13 +15,17 @@ export class State extends EventEmitter {
 	 * They come in blocks of 10 for each player, first player 1 and than player 2.
    * The last number is the player that has the turn.
 	 */
-	constructor (board, onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx.1') {
-		super();
+	constructor (board, emitter, onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx.1') {
+		this.emitter = emitter;
 		this.board = board;
 		let parsedState = this.parseNotation(onitamaStringNotation);
 		this.applyStateObject(parsedState);
 	}
 
+  /**
+   * Apply the state object to initiated classes.
+   * @param stateObject
+   */
 	applyStateObject (stateObject) {
     Object.assign(this, stateObject);
     this.cards = [];
@@ -47,8 +50,10 @@ export class State extends EventEmitter {
 
     let oppositeTurnPlayerId = stateObject.turnPlayer === 1 ? 2 : 1;
     let swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
-    swapCard.swap();
+
     this.cards.push(swapCard);
+    // TODO maybe imporve this with two functions, setSwapped and swap.
+    swapCard.swap();
   }
 
 	/**

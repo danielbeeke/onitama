@@ -1,9 +1,9 @@
-import {EventEmitter} from '/javascript/core/EventEmitter.js';
+export class Piece {
 
-export class Piece extends EventEmitter {
+  /**
+   * A piece can be a monk or a master.
+   */
 	constructor (type, x, y, state, player) {
-		super();
-
 		this.data = {};
 
 		this.type = type;
@@ -17,46 +17,72 @@ export class Piece extends EventEmitter {
 
     ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
       this.element.addEventListener(eventName, (event) => {
-        this.state.board.emit('piece.' + eventName, this);
+        this.state.emitter.emit('piece.' + eventName, this);
       });
     });
 
     this.state.board.element.appendChild(this.element);
 	}
 
+  /**
+   * Set the owner of the piece.
+   */
 	set player (player) {
 	  this.data.player = player;
     this.element.classList.add('owner-' + this.player.id);
   }
 
+  /**
+   * Return the owner.
+   */
   get player () {
 	  return this.data.player;
   }
 
+  /**
+   * Return the x coordinate of the tile the piece is on.
+   */
   get x () {
 	  return this.data.x;
   }
 
-	set x (x) {
+  /**
+   * Set the x coordinate of the tile the piece is on.
+   * Also update the style.
+   */
+  set x (x) {
     this.data.x = x;
     this.element.style = `grid-area: ${this.data.y} / ${this.data.x} / ${this.data.y} / ${this.data.x};`;
   }
 
+  /**
+   * Return the y coordinate of the tile the piece is on.
+   */
   get y () {
     return this.data.y;
   }
 
+  /**
+   * Set the y coordinate of the tile the piece is on.
+   * Also update the style.
+   */
   set y (y) {
     this.data.y = y;
     this.element.style = `grid-area: ${this.data.y} / ${this.data.x} / ${this.data.y} / ${this.data.x};`;
   }
 
+  /**
+   * Select this piece, update that state into the player.
+   */
   select () {
 	  this.player.activePiece = this;
     this.data.selected = true;
     this.element.dataset.selected = true;
   }
 
+  /**
+   * Deselect this piece, update that state into the player.
+   */
   deselect () {
     this.player.activePiece = false;
     this.data.selected = false;
