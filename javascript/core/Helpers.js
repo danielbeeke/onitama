@@ -59,4 +59,9 @@ export class Helpers {
       y: Math.ceil(number / 5)
     }
   }
+
+
+  static xAndYToTileNumber (x, y) {
+    return ((y - 1) * 5) + x;
+  }
 }

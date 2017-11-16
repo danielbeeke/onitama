@@ -15,7 +15,7 @@ export class Game extends EventEmitter {
     this.element.appendChild(this.boardElement);
     this.board = new Board(this.boardElement);
 
-    let emptyState = new State();
+    let emptyState = new State(this.board);
     this.board.setState(emptyState);
     this.state = emptyState;
 
@@ -26,7 +26,16 @@ export class Game extends EventEmitter {
 
     // Tiles.
     this.board.on('tile.click', (tile) => {
-      // console.log(tile)
+      if (tile.highlighted === true) {
+        this.board.player1.activePiece.y = tile.y;
+        this.board.player1.activePiece.x = tile.x;
+
+        this.board.player1.activePiece.deselect();
+        this.board.player1.activeCard.swap();
+        this.board.player1.activeCard.deselect();
+
+        this.updateHighLights();
+      }
     });
 
     this.board.on('tile.mouseenter', (tile) => {
@@ -116,11 +125,6 @@ export class Game extends EventEmitter {
     card.sets.forEach((set) => {
       let setX = piece.x + set.x;
       let setY = piece.y + set.y;
-
-      if (piece.player.id === 1) {
-        setX = Helpers.flipCoordinate(setX);
-        setY = Helpers.flipCoordinate(setY);
-      }
 
       // When on the board.
       if (setX > 0 && setY > 0 && setX < 6 && setY < 6) {

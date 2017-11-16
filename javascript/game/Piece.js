@@ -1,13 +1,13 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 
 export class Piece extends EventEmitter {
-	constructor (type, x, y, board, player) {
+	constructor (type, x, y, state, player) {
 		super();
 
 		this.data = {};
 
 		this.type = type;
-		this.board = board;
+		this.state = state;
     this.element = document.createElement('div');
     this.player = player;
     this.element.classList.add('piece');
@@ -17,11 +17,13 @@ export class Piece extends EventEmitter {
 
     ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
       this.element.addEventListener(eventName, (event) => {
-        this.board.emit('piece.' + eventName, this);
+        this.state.emit('piece.' + eventName, this);
       });
     });
 
-    this.board.element.appendChild(this.element);
+    console.log(this.state)
+
+    this.state.board.element.appendChild(this.element);
 	}
 
 	set player (player) {

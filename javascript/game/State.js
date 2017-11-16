@@ -1,5 +1,7 @@
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {cards} from '/data/cards.js';
+import {Helpers} from '/javascript/core/Helpers.js';
+import {Player} from '/javascript/game/Player.js';
 
 export class State extends EventEmitter {
 
@@ -14,11 +16,40 @@ export class State extends EventEmitter {
 	 * They come in blocks of 10 for each player, first player 1 and than player 2.
    * The last number is the player that has the turn.
 	 */
-	constructor (onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx.1') {
+	constructor (board, onitamaStringNotation = 'abcde.axbxcXdxex.uxvxwXxxyx.1') {
 		super();
+		this.board = board;
 		let parsedState = this.parseNotation(onitamaStringNotation);
-		Object.assign(this, parsedState);
+		this.applyStateObject(parsedState);
 	}
+
+	applyStateObject (stateObject) {
+    Object.assign(this, stateObject);
+    this.cards = [];
+
+    this.player1 = new Player(1, this);
+    this.player2 = new Player(2, this);
+
+    let initPlayer = (data, id) => {
+      data.pieces.forEach((pieceType, pieceTile) => {
+        let tileCoordinates = Helpers.tileNumberToXandY(pieceTile);
+        this['player' + id].addPiece(pieceType, tileCoordinates.x, tileCoordinates.y);
+      });
+
+      data.cards.forEach((cardData) => {
+        let card = this['player' + id].addCard(cardData);
+        this.cards.push(card);
+      });
+    };
+
+    initPlayer(stateObject.player1, 1);
+    initPlayer(stateObject.player2, 2);
+
+    let oppositeTurnPlayerId = stateObject.turnPlayer === 1 ? 2 : 1;
+    let swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
+    swapCard.swap();
+    this.cards.push(swapCard);
+  }
 
 	/**
 	 * Parses an onitama string notation.
@@ -65,4 +96,38 @@ export class State extends EventEmitter {
 			swapCard: selectedCards.slice(4)[0],
 		}
 	}
+
+
+  /**
+   * Serializes the game state into an object.
+   */
+  serialize () {
+    let state = {};
+
+    state.turnPlayer = this.turnPlayer;
+
+    this.cards.forEach((card) => {
+      if (!card.player) {
+        state.swapCard = card.id;
+      }
+    });
+
+    let convertPlayer = (player) => {
+      let pieces = new Map();
+
+      player.pieces.forEach((piece) => {
+        pieces.set(Helpers.xAndYToTileNumber(piece.x, piece.y), piece.type);
+      });
+
+      return {
+        cards: [player.cards[0].id, player.cards[1].id],
+        pieces: pieces
+      }
+    };
+
+    state.player1 = convertPlayer(this.player1);
+    state.player2 = convertPlayer(this.player2);
+
+    return state;
+  }
 }

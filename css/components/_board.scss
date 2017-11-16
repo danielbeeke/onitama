@@ -9,9 +9,16 @@
 
   .tile {
     background-color: #cecece;
+    transition: background $speed $easing, box-shadow $speed $easing;
 
     &.highlight {
-      background-color: #b7ce7c;
+      background-color: #ffdd86;
+      box-shadow: 0 0 0 10px inset #ffdd86;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0 0 0 10px inset rgba(#b9a361, .4);
+      }
     }
   }
 }

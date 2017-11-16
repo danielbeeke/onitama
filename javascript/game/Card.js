@@ -2,7 +2,7 @@ import {EventEmitter} from '/javascript/core/EventEmitter.js';
 
 export class Card extends EventEmitter {
 
-	constructor (data, board, player) {
+	constructor (data, state, player) {
 		super();
 		Object.assign(this, data);
     this.element = document.createElement('div');
@@ -36,7 +36,7 @@ export class Card extends EventEmitter {
       }
     }
 
-    this.board = board;
+    this.state = state;
 
     this.data = {};
 		this.sets = new Set(data.sets);
@@ -51,11 +51,11 @@ export class Card extends EventEmitter {
 
 	swap () {
     let oppositePlayerId = this.player.id === 1 ? 2 : 1;
-    this.player = this.board['player' + oppositePlayerId];
+    this.player = this.state['player' + oppositePlayerId];
     this.element.dataset.swap = true;
     this.data.swap = true;
 
-    this.board.cards.forEach((card) => {
+    this.state.cards.forEach((card) => {
       if (card.id !== this.id) {
         card.element.dataset.swap = false;
         card.data.swap = false;
@@ -70,7 +70,8 @@ export class Card extends EventEmitter {
 	set player (player) {
 	  this.data.player = player;
     this.element.dataset.owner = this.player.id;
-    this.board['player' + this.player.id + 'Deck'].insertBefore(this.element, this.board['player' + this.player.id + 'Deck'].firstChild);
+    let deck = this.state.board['player' + this.player.id + 'Deck'];
+    deck.insertBefore(this.element, deck.firstChild);
   }
 
   get player () {

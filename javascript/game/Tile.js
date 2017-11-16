@@ -8,6 +8,8 @@ export class Tile extends EventEmitter {
 	    this.element = document.createElement('div');
 	    this.element.classList.add('tile');
 	    this.element.classList.add('tile-' + x + '-' + y);
+	    this.x = x;
+	    this.y = y;
 
 	    this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
 

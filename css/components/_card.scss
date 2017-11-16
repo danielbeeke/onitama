@@ -27,7 +27,7 @@
     cursor: pointer;
   }
 
-  &:hover {
+  &:not([data-swap="true"]):hover {
     border-color: #f6f8cf;
   }
 

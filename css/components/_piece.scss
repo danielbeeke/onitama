@@ -1,7 +1,8 @@
 .piece {
-  border-radius: 50%;
   z-index: 2;
   position: relative;
+  background-color: rgba(gray, 0);
+  transition: background $speed $easing;
 
   &:after {
     content: '';
@@ -21,22 +22,28 @@
   }
 }
 
-.piece.owner-1:after {
+.piece.owner-1 {
   cursor: pointer;
-  border: 2px solid $player1;
-  background-color: rgba($player1, .3);
-}
-
-
-.piece.owner-1:hover:after {
-  background-color: rgba($player1, .6);
-}
+  
+  &:after {
+    border: 2px solid $player1;
+    background-color: rgba($player1, .3);
+  }
+} 
 
 .piece.owner-2:after {
   border: 2px solid $player2;
   background-color: rgba($player2, .3);
 }
 
-.piece[data-selected="true"]:after {
-  border-width: 6px !important;
+.piece.owner-1:hover {
+  background-color: rgba(#ffdd86, .5);
+}
+
+.piece.owner-1[data-selected="true"] {
+  background-color: #ffdd86;
+
+  &:after {
+    border-width: 6px !important;
+  }
 }
