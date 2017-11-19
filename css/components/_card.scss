@@ -6,7 +6,8 @@
   justify-content: space-around;
   flex-direction: column;
   border: 5px solid white;
-  transition: border $speed $easing;
+  transition: all $speed $easing;
+  position: absolute;
 
   .title {
     margin: 5px;
