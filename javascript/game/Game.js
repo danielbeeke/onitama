@@ -46,7 +46,7 @@ export class Game {
         let activePlayer = this.state['player' + this.state.turnPlayer];
 
         if (activePlayer.activeCard) {
-          activePlayer.activeCard.swap();
+          this.animateCardSwap(activePlayer.activeCard);
           activePlayer.activeCard.deselect();
           activePlayer.activeCard = false;
         }
@@ -74,7 +74,7 @@ export class Game {
             return;
           }
           else {
-            possibleCard.swap();
+            this.animateCardSwap(possibleCard);
           }
         }
 
@@ -153,6 +153,33 @@ export class Game {
       }
       this.updateHighLights();
     });
+  }
+
+  animateCardSwap (card) {
+    let temporaryPlaceholder1 = document.createElement('div');
+    temporaryPlaceholder1.classList.add('card');
+    temporaryPlaceholder1.classList.add('invisible');
+    card.element.parentNode.insertBefore(temporaryPlaceholder1, card.element);
+
+    card.element.classList.add('animating');
+    card.element.style = `
+      width: ${temporaryPlaceholder1.offsetWidth}px; 
+      height: ${temporaryPlaceholder1.offsetHeight}px;
+    `;
+
+    card.element.remove();
+
+    setTimeout(() => {
+      card.element.classList.add('invisible');
+      this.boardElement.appendChild(card.element);
+      card.swap();
+      temporaryPlaceholder1.remove();
+      card.element.classList.remove('animating');
+
+      setTimeout(() => {
+        card.element.classList.remove('invisible');
+      }, 500);
+    }, 300);
   }
 
   /**

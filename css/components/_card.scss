@@ -6,8 +6,17 @@
   justify-content: space-around;
   flex-direction: column;
   border: 5px solid white;
-  transition: all $speed $easing;
+  transition: all $speed $easing, opacity 0s;
   position: absolute;
+
+  &.invisible {
+    opacity: 0 !important;
+  }
+
+  &.animating {
+    transition: 0s $speed $easing;
+    z-index: 10000;
+  }
 
   .title {
     margin: 5px;
