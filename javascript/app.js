@@ -10,6 +10,9 @@ class App {
     location.pathname === '/board-debug' ? this.boardDebug() : this.multiPlayerGame();
   }
 
+  /**
+   * This starts the connection logic and the onitama board.0
+   */
   multiPlayerGame () {
     this.game = null;
     this.connection = new Connection();
@@ -18,16 +21,25 @@ class App {
     this.connection.on('message', (message) => this.onMessage(message));
   }
 
+  /**
+   * A simple board without connection, for debugging css.
+   */
   boardDebug () {
     this.game = new Game('#game', this.emitter);
   }
 
+  /**
+   * If the connection has a message, we try to execute it.
+   */
   onMessage (message) {
     if (message.command && message.options) {
       this.executeCommand(message.command, message.options);
     }
   }
 
+  /**
+   * When the game starts.
+   */
   onStarted () {
     if (this.connection.role === 'initiator') {
       this.game = new Game('#game', this.emitter);
@@ -39,12 +51,18 @@ class App {
     }
   }
 
+  /**
+   * Send the turn to the other peer.
+   */
   onTurn () {
     let onitamaNotation = this.game.state.serialize();
     onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
     this.connection.sendMessage('turn', onitamaNotation);
   }
 
+  /**
+   * Execute p2p command.
+   */
   executeCommand (command, options) {
     let commands = {
       startGame: (onitamaNotation) => {

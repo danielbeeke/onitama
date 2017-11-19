@@ -35,7 +35,7 @@ export class Game {
    * Reacts on the emitter. This is the main game logic.
    */
   attachEvents () {
-
+    // On turn set.
     this.emitter.on('turn.set', (activePlayerId) => {
       this.boardElement.dataset.activePlayer = activePlayerId;
     });
@@ -100,14 +100,6 @@ export class Game {
       }
     });
 
-    this.emitter.on('tile.mouseenter', (tile) => {
-      // console.log(tile)
-    });
-
-    this.emitter.on('tile.mouseleave', (tile) => {
-      // console.log(tile)
-    });
-
     // Pieces.
     this.emitter.on('piece.click', (piece) => {
       if (this.state.turnPlayer === piece.player.id) {
@@ -165,6 +157,10 @@ export class Game {
     });
   }
 
+  /**
+   * When only using a selected piece and a clik on a tiel to move, it can happen both cards can get the piece there.
+   * Than we use this wizard to let the player choose.
+   */
   openChoosePopup (tile) {
     let activePlayer = this.state['player' + this.state.turnPlayer];
     let wizard = document.createElement('div');
@@ -199,30 +195,58 @@ export class Game {
     }, 200);
   }
 
+  /**
+   * This animates the swapping of a card. I want to improve it by really animating the card to the other side.
+   */
   animateCardSwap (card) {
+    let oppositePlayerId = this.state.turnPlayer === 1 ? 2 : 1;
+    let deck2 = this.board['player' + oppositePlayerId + 'Deck'];
+
     let temporaryPlaceholder1 = document.createElement('div');
     temporaryPlaceholder1.classList.add('card');
     temporaryPlaceholder1.classList.add('invisible');
     card.element.parentNode.insertBefore(temporaryPlaceholder1, card.element);
     card.element.classList.add('animating');
-    card.element.style = `
-      width: ${temporaryPlaceholder1.offsetWidth}px; 
-      height: ${temporaryPlaceholder1.offsetHeight}px;
-    `;
 
     card.element.remove();
 
+    let position1 = temporaryPlaceholder1.getBoundingClientRect();
+
+    card.element.style = `
+      top: ${position1.top}px; 
+      left: ${position1.left}px;
+      width: ${position1.width}px; 
+      height: ${position1.height}px;
+      transition: all .3s ease-in-out;
+      position: fixed;
+    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+
+    let temporaryPlaceholder2 = document.createElement('div');
+    temporaryPlaceholder2.classList.add('card');
+    temporaryPlaceholder2.classList.add('invisible');
+    deck2.insertBefore(temporaryPlaceholder2, deck2.firstChild);
+    this.boardElement.appendChild(card.element);
+
+    let position2 = temporaryPlaceholder2.getBoundingClientRect();
+
     setTimeout(() => {
-      card.element.classList.add('invisible');
-      this.boardElement.appendChild(card.element);
-      card.swap();
-      temporaryPlaceholder1.remove();
-      card.element.classList.remove('animating');
+      card.element.style = `
+        top: ${position2.top}px; 
+        left: ${position2.left}px;
+        width: ${position2.width}px; 
+        height: ${position2.height}px;
+        transition: all .3s ease-in-out;
+        position: fixed;
+      ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
       setTimeout(() => {
-        card.element.classList.remove('invisible');
-      }, 500);
-    }, 300);
+        temporaryPlaceholder2.remove();
+        card.swap();
+        card.element.style = '';
+        temporaryPlaceholder1.remove();
+        card.element.classList.remove('animating');
+      }, 300)
+    }, 400);
   }
 
   /**
