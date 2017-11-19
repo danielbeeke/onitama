@@ -21,51 +21,65 @@ export class State {
 		this.deserialize(onitamaStringNotation);
 	}
 
+  /**
+   * Transition from an initiated state to a next one.
+   */
+  transition (onitamaStringNotation) {
+    let stateObject = this.parseNotation(onitamaStringNotation);
+    console.log(onitamaStringNotation, stateObject)
+  }
+
+  /**
+   * Parse an onitama string notation.
+   */
+  parseNotation (onitamaStringNotation) {
+    onitamaStringNotation = onitamaStringNotation
+    .replace(/\./g, '')
+    .replace(/ /g, '');
+
+    let cardCharacters = onitamaStringNotation.substr(0, 5).split('');
+    let selectedCards = cards.filter(card => cardCharacters.includes(card.id));
+
+    let player1Pieces = onitamaStringNotation.substr(15, 10);
+    let player2Pieces = onitamaStringNotation.substr(5, 10);
+
+    let convertPlayerPieces = (onitamaStringNotationPlayerPart) => {
+      let piecesMap = new Map();
+      let chunks = onitamaStringNotationPlayerPart.match(/.{1,2}/g);
+
+      chunks.forEach((chunk) => {
+        let tileNumber = chunk.charCodeAt(0) - 96;
+        let pieceChar = chunk.substr(1);
+        let pieceType = pieceChar === pieceChar.toUpperCase() ? 'master' : 'monk';
+        piecesMap.set(tileNumber, pieceType);
+      });
+
+      return piecesMap;
+    };
+
+    let player1PiecesMap = convertPlayerPieces(player1Pieces);
+    let player2PiecesMap = convertPlayerPieces(player2Pieces);
+    let turnPlayerId = onitamaStringNotation.substr(25, 1);
+
+    return {
+      turnPlayer: parseInt(turnPlayerId),
+      player1: {
+        cards: selectedCards.slice(0, 2),
+        pieces: player1PiecesMap
+      },
+      player2: {
+        cards: selectedCards.slice(2, 4),
+        pieces: player2PiecesMap
+      },
+      swapCard: selectedCards.slice(4)[0],
+    };
+  }
+
 	/**
-	 * Parses an onitama string notation.
+	 * Applies an onitama string notation.
 	 */
 	deserialize (onitamaStringNotation) {
-		onitamaStringNotation = onitamaStringNotation
-			.replace(/\./g, '')
-			.replace(/ /g, '');
-
-		let cardCharacters = onitamaStringNotation.substr(0, 5).split('');
-		let selectedCards = cards.filter(card => cardCharacters.includes(card.id));
-
-		let player1Pieces = onitamaStringNotation.substr(15, 10);
-		let player2Pieces = onitamaStringNotation.substr(5, 10);
-
-		let convertPlayerPieces = (onitamaStringNotationPlayerPart) => {
-			let piecesMap = new Map();
-			let chunks = onitamaStringNotationPlayerPart.match(/.{1,2}/g);
-			
-			chunks.forEach((chunk) => {
-				let tileNumber = chunk.charCodeAt(0) - 96;
-				let pieceChar = chunk.substr(1);
-				let pieceType = pieceChar === pieceChar.toUpperCase() ? 'master' : 'monk';
-				piecesMap.set(tileNumber, pieceType);
-			});
-
-			return piecesMap;
-		};
-
-		let player1PiecesMap = convertPlayerPieces(player1Pieces);
-		let player2PiecesMap = convertPlayerPieces(player2Pieces);
-		let turnPlayerId = onitamaStringNotation.substr(25, 1);
-
-		let stateObject = {
-      turnPlayer: parseInt(turnPlayerId),
-			player1: {
-				cards: selectedCards.slice(0, 2),
-				pieces: player1PiecesMap
-			}, 
-			player2: {
-				cards: selectedCards.slice(2, 4),
-				pieces: player2PiecesMap
-			},
-			swapCard: selectedCards.slice(4)[0],
-		};
-
+    let stateObject = this.parseNotation(onitamaStringNotation);
     Object.assign(this, stateObject);
     this.cards = [];
 
@@ -143,6 +157,10 @@ export class State {
 
     onitamaStringNotation += createPlayerString(stateObject.player2) + '.';
     onitamaStringNotation += createPlayerString(stateObject.player1) + '.' + stateObject.turnPlayer;
+
+    console.log(this)
+
+    console.log(onitamaStringNotation)
 
     return onitamaStringNotation;
   }

@@ -52,7 +52,7 @@ export class Piece {
    */
   set x (x) {
     this.data.x = x;
-    this.element.style = `grid-area: ${this.data.y} / ${this.data.x} / ${this.data.y} / ${this.data.x};`;
+    this.updateCss();
   }
 
   /**
@@ -68,7 +68,11 @@ export class Piece {
    */
   set y (y) {
     this.data.y = y;
-    this.element.style = `grid-area: ${this.data.y} / ${this.data.x} / ${this.data.y} / ${this.data.x};`;
+    this.updateCss();
+  }
+
+  updateCss () {
+    this.element.style = `left: ${(this.data.x - 1) * 20}%; top: ${(this.data.y - 1) * 20}%;`;
   }
 
   /**

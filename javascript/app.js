@@ -4,56 +4,62 @@ import {EventEmitter} from '/javascript/core/EventEmitter.js';
 import {Connection} from '/javascript/connection/Connection.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
-let emitter = new EventEmitter();
+class App {
+  constructor () {
+    this.emitter = new EventEmitter();
+    location.pathname === '/board-debug' ? this.boardDebug() : this.multiPlayerGame();
+  }
 
-let connection = new Connection();
-let game = null;
+  multiPlayerGame () {
+    this.game = null;
+    this.connection = new Connection();
 
-let onTurn = function () {
-  // if (!definition.isReceived) {
-  //   // We need to flip al the player things.
-  //   definition.player = definition.player === 1 ? 2 : 1;
-  //   definition.x = Helpers.flipCoordinate(definition.x);
-  //   definition.y = Helpers.flipCoordinate(definition.y);
-  // }
+    this.connection.on('started', () => this.onStarted());
+    this.connection.on('message', (message) => this.onMessage(message));
+  }
 
-  // connection.sendMessage('transition', definition);
+  boardDebug () {
+    this.game = new Game('#game', this.emitter);
+  }
 
-  console.log('yo')
+  onMessage (message) {
+    if (message.command && message.options) {
+      this.executeCommand(message.command, message.options);
+    }
+  }
 
-};
+  onStarted () {
+    if (this.connection.role === 'initiator') {
+      this.game = new Game('#game', this.emitter);
 
-connection.on('started', () => {
-  if (connection.role === 'initiator') {
-    game = new Game('#game', emitter);
+      let onitamaNotation = this.game.state.serialize();
+      onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
+      this.emitter.on('turn', (definition) => this.onTurn(definition));
+      this.connection.sendMessage('startGame', onitamaNotation);
+    }
+  }
 
-    let onitamaNotation = game.state.serialize();
-
+  onTurn () {
+    let onitamaNotation = this.game.state.serialize();
     onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
-
-    emitter.on('turn', (definition) => {
-      onTurn(definition);
-    });
-
-    connection.sendMessage('startGame', {
-      state: onitamaNotation
-    });
+    this.connection.sendMessage('turn', onitamaNotation);
   }
-});
 
-let commands = {
-  startGame: (options) => {
-    game = new Game('#game', emitter, options.state);
-    emitter.on('turn', onTurn);
-  },
-  transition: (definition) => {
-    definition.isReceived = true;
-    game.transition(definition);
-  }
-};
+  executeCommand (command, options) {
+    let commands = {
+      startGame: (onitamaNotation) => {
+        this.game = new Game('#game', this.emitter, onitamaNotation);
+        this.emitter.on('turn', () => this.onTurn());
+      },
+      turn: (onitamaNotation) => {
+        this.game.externalTurn(onitamaNotation);
+      }
+    };
 
-connection.on('message', (message) => {
-  if (message.command && message.options && commands[message.command]) {
-    commands[message.command](message.options);
+    if (commands[command]) {
+      commands[command](options);
+    }
   }
-});
+}
+
+new App();

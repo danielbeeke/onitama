@@ -1,8 +1,10 @@
 .piece {
   z-index: 2;
-  position: relative;
+  position: absolute;
   background-color: rgba(gray, 0);
-  transition: background $speed $easing;
+  transition: background $speed $easing, top $speed $easing, left $speed $easing;
+  width: 20%;
+  height: 20%;
 
   &:after {
     content: '';

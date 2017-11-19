@@ -27,6 +27,10 @@ export class Game {
     this.attachEvents();
   }
 
+  externalTurn (onitamaStringNotation) {
+    this.state.transition(onitamaStringNotation);
+  }
+
   /**
    * Reacts on the emitter. This is the main game logic.
    */
@@ -62,8 +66,8 @@ export class Game {
 
     // Pieces.
     this.emitter.on('piece.click', (piece) => {
-      if (this.state.turnPlayer === 1 && piece.player.id === 1) {
-        this.state.player1.pieces.forEach((innerPiece) => {
+      if (this.state.turnPlayer === piece.player.id) {
+        piece.player.pieces.forEach((innerPiece) => {
           if (innerPiece !== piece) { innerPiece.deselect() }
         });
         piece.data.selected === true ? piece.deselect() : piece.select();
@@ -72,18 +76,18 @@ export class Game {
     });
 
     this.emitter.on('piece.mouseenter', (piece) => {
-      if (this.state.turnPlayer === 1 && piece.player.id === 1) {
-        if (!this.state.player1.activePiece) {
-          this.state.player1.activePiece = piece;
+      if (this.state.turnPlayer === piece.player.id) {
+        if (!piece.player.activePiece) {
+          piece.player.activePiece = piece;
         }
         this.updateHighLights();
       }
     });
 
     this.emitter.on('piece.mouseleave', (piece) => {
-      if (this.state.turnPlayer === 1 && piece.player.id === 1) {
-        if (this.state.player1.activePiece === piece && !piece.data.selected) {
-          this.state.player1.activePiece = false;
+      if (this.state.turnPlayer === piece.player.id) {
+        if (piece.player.activePiece === piece && !piece.data.selected) {
+          piece.player.activePiece = false;
         }
         this.updateHighLights();
       }
@@ -91,7 +95,7 @@ export class Game {
 
     // Cards.
     this.emitter.on('card.click', (card) => {
-      if (this.state.turnPlayer === 1 && card.player.id === 1 && !card.data.swap) {
+      if (this.state.turnPlayer === card.player.id && !card.data.swap) {
         this.state.cards.forEach((innerCard) => {
           if (innerCard !== card) { innerCard.deselect() }
         });
@@ -101,17 +105,17 @@ export class Game {
     });
 
     this.emitter.on('card.mouseenter', (card) => {
-      if (this.state.turnPlayer === 1 && card.player.id === 1 && !card.data.swap) {
-        if (!this.state.player1.activeCard) {
-          this.state.player1.activeCard = card;
+      if (this.state.turnPlayer === card.player.id && !card.data.swap) {
+        if (!card.player.activeCard) {
+          card.player.activeCard = card;
         }
         this.updateHighLights();
       }
     });
 
     this.emitter.on('card.mouseleave', (card) => {
-      if (this.state.player1.activeCard === card && !card.data.selected) {
-        this.state.player1.activeCard = false;
+      if (card.player.activeCard === card && !card.data.selected) {
+        card.player.activeCard = false;
       }
       this.updateHighLights();
     });
@@ -127,8 +131,10 @@ export class Game {
       }
     });
 
-    if (this.state.player1.activePiece && this.state.player1.activeCard) {
-      let tilesToHighLight = this.getHighlightTilesByPieceAndCard(this.state.player1.activePiece, this.state.player1.activeCard);
+    let activePlayer = this.state['player' + this.state.turnPlayer];
+
+    if (activePlayer.activePiece && activePlayer.activeCard) {
+      let tilesToHighLight = this.getHighlightTilesByPieceAndCard(activePlayer.activePiece, activePlayer.activeCard);
 
       tilesToHighLight.forEach((tile) => {
         tile.highlight();
@@ -141,6 +147,7 @@ export class Game {
    */
   getHighlightTilesByPieceAndCard (piece, card) {
     let highlightTiles = [];
+    let activePlayer = this.state['player' + this.state.turnPlayer];
 
     card.sets.forEach((set) => {
       let setX = piece.x + set.x;
@@ -149,7 +156,7 @@ export class Game {
       // When on the board.
       if (setX > 0 && setY > 0 && setX < 6 && setY < 6) {
         let isValid = true;
-        this.state.player1.pieces.forEach((piece) => {
+        activePlayer.pieces.forEach((piece) => {
           if (piece.x === setX && piece.y === setY) {
             isValid = false;
           }
