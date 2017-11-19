@@ -187,6 +187,7 @@ export class Game {
 
           setTimeout(() => {
             this.emitter.emit('tile.click', tile);
+            wizard.remove();
           }, 300);
         });
       }
