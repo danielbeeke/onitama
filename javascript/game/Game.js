@@ -43,15 +43,17 @@ export class Game {
     // Tiles.
     this.emitter.on('tile.click', (tile) => {
       if (tile.highlighted === true) {
-        this.state.player1.activePiece.y = tile.y;
-        this.state.player1.activePiece.x = tile.x;
+        let activePlayer = this.state['player' + this.state.turnPlayer];
 
-        this.state.player1.activePiece.deselect();
-        this.state.player1.activeCard.swap();
-        this.state.player1.activeCard.deselect();
+        activePlayer.activePiece.y = tile.y;
+        activePlayer.activePiece.x = tile.x;
 
-        this.state.player1.activeCard = false;
-        this.state.player1.activePiece = false;
+        activePlayer.activePiece.deselect();
+        activePlayer.activeCard.swap();
+        activePlayer.activeCard.deselect();
+
+        activePlayer.activeCard = false;
+        activePlayer.activePiece = false;
 
         this.state.toggleTurnPlayer();
         this.updateHighLights();
@@ -156,6 +158,11 @@ export class Game {
     card.sets.forEach((set) => {
       let setX = piece.x + set.x;
       let setY = piece.y + set.y;
+
+      if (activePlayer.id === 2) {
+        setY = piece.y - set.y;
+        setX = piece.x - set.x;
+      }
 
       // When on the board.
       if (setX > 0 && setY > 0 && setX < 6 && setY < 6) {
