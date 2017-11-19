@@ -45,6 +45,10 @@
     cursor: pointer;
   }
 
+  .piece.owner-2 {
+    pointer-events: none;
+  }
+
   .piece.owner-1:not([data-selected="true"]):hover {
     background-color: rgba(#ffdd86, .5);
   }
@@ -61,6 +65,10 @@
 [data-active-player="2"] {
   .piece.owner-2 {
     cursor: pointer;
+  }
+
+  .piece.owner-1 {
+    pointer-events: none;
   }
 
   .piece.owner-2:not([data-selected="true"]):hover {

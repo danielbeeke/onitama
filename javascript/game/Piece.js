@@ -97,4 +97,8 @@ export class Piece {
     this.data.selected = false;
     this.element.dataset.selected = false;
   }
+
+  capture () {
+    this.element.remove();
+  }
 }

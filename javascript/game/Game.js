@@ -78,6 +78,16 @@ export class Game {
           }
         }
 
+        // Check if a piece was captured.
+        let oppositePlayerId = this.state.turnPlayer === 1 ? 2 : 1;
+        let oppositePlayer = this.state['player' + oppositePlayerId];
+
+        oppositePlayer.pieces.forEach((piece) => {
+          if (piece.x === tile.x && piece.y === tile.y) {
+            piece.capture();
+          }
+        });
+
         activePlayer.activePiece.y = tile.y;
         activePlayer.activePiece.x = tile.x;
         activePlayer.activePiece.deselect();
@@ -160,7 +170,6 @@ export class Game {
     temporaryPlaceholder1.classList.add('card');
     temporaryPlaceholder1.classList.add('invisible');
     card.element.parentNode.insertBefore(temporaryPlaceholder1, card.element);
-
     card.element.classList.add('animating');
     card.element.style = `
       width: ${temporaryPlaceholder1.offsetWidth}px; 
