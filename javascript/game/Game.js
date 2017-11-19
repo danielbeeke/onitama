@@ -45,14 +45,42 @@ export class Game {
       if (tile.highlighted === true) {
         let activePlayer = this.state['player' + this.state.turnPlayer];
 
+        if (activePlayer.activeCard) {
+          activePlayer.activeCard.swap();
+          activePlayer.activeCard.deselect();
+          activePlayer.activeCard = false;
+        }
+
+        // This reduces the turn clicks from three to two.
+        else {
+          let overLeapingCards = 0;
+          let possibleCard = null;
+          activePlayer.cards.forEach((card) => {
+            if (!card.data.swap) {
+              let tilesToHighLight = this.getHighlightTilesByPieceAndCard(activePlayer.activePiece, card);
+
+              tilesToHighLight.forEach((tileToHighLight) => {
+                if (tileToHighLight === tile) {
+                  overLeapingCards++;
+                  possibleCard = card;
+                }
+              });
+            }
+          });
+
+          // The used tiles was possible with both cards.
+          if (overLeapingCards > 1) {
+            alert('pick one of the cards for this set.');
+            return;
+          }
+          else {
+            possibleCard.swap();
+          }
+        }
+
         activePlayer.activePiece.y = tile.y;
         activePlayer.activePiece.x = tile.x;
-
         activePlayer.activePiece.deselect();
-        activePlayer.activeCard.swap();
-        activePlayer.activeCard.deselect();
-
-        activePlayer.activeCard = false;
         activePlayer.activePiece = false;
 
         this.state.toggleTurnPlayer();
@@ -144,6 +172,19 @@ export class Game {
 
       tilesToHighLight.forEach((tile) => {
         tile.highlight();
+      });
+    }
+
+    // This reduces the turn clicks from three to two.
+    else if (activePlayer.activePiece && !activePlayer.activeCard) {
+      activePlayer.cards.forEach((card) => {
+        if (!card.data.swap) {
+          let tilesToHighLight = this.getHighlightTilesByPieceAndCard(activePlayer.activePiece, card);
+
+          tilesToHighLight.forEach((tile) => {
+            tile.highlight();
+          });
+        }
       });
     }
   }

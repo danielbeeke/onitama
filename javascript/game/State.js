@@ -104,11 +104,11 @@ export class State {
     this.turnPlayer = stateObject.turnPlayer;
     this.emitter.emit('turn.set', this.turnPlayer);
     let oppositeTurnPlayerId = this.turnPlayer === 1 ? 2 : 1;
-    let swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
+    this.swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
 
-    this.cards.push(swapCard);
+    this.cards.push(this.swapCard);
     // TODO maybe improve this with two functions, setSwapped and swap.
-    swapCard.swap();
+    this.swapCard.swap();
 	}
 
 	toggleTurnPlayer () {

@@ -61,7 +61,7 @@ export class Card {
     let oppositePlayerId = this.player.id === 1 ? 2 : 1;
     this.player = this.state['player' + oppositePlayerId];
 
-    this.state.cards.forEach((card, delta) => {
+    this.state.cards.forEach((card) => {
       if (card.id !== this.id) {
         card.element.dataset.swap = false;
         card.data.swap = false;
@@ -71,6 +71,18 @@ export class Card {
         card.data.swap = true;
       }
     });
+
+    this.state.player1.cards = [];
+    this.state.player2.cards = [];
+
+    this.state.cards.forEach((card) => {
+      if (card.player && card.player.id) {
+        card.player.cards.push(card);
+      }
+      else {
+        this.state.swapCard = card;
+      }
+    })
   }
 
   /**
