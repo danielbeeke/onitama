@@ -217,7 +217,7 @@ export class Game {
       left: ${position1.left}px;
       width: ${position1.width}px; 
       height: ${position1.height}px;
-      transition: all .3s ease-in-out;
+      transition: all .4s ease-in-out;
       position: fixed;
     ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
@@ -235,17 +235,21 @@ export class Game {
         left: ${position2.left}px;
         width: ${position2.width}px; 
         height: ${position2.height}px;
-        transition: all .3s ease-in-out;
+        transition: all .4s ease-in-out;
         position: fixed;
       ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
       setTimeout(() => {
-        temporaryPlaceholder2.remove();
-        card.swap();
-        card.element.style = '';
-        temporaryPlaceholder1.remove();
         card.element.classList.remove('animating');
-      }, 300)
+        temporaryPlaceholder2.classList.add('invisible');
+        temporaryPlaceholder1.remove();
+
+        setTimeout(() => {
+          card.element.style = '';
+          card.swap();
+          temporaryPlaceholder2.remove();
+        }, 300);
+      }, 600)
     }, 400);
   }
 

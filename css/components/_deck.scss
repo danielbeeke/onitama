@@ -68,11 +68,11 @@
     .card:first-child:nth-last-child(2),
     .card:first-child:nth-last-child(2) ~ .card {
       &:nth-child(1) {
-        top: 30%;
+        top: 31%;
       }
 
       &:nth-child(2) {
-        top: 70%;
+        top: 69%;
       }
     }
 
@@ -80,7 +80,7 @@
     .card:first-child:nth-last-child(3),
     .card:first-child:nth-last-child(3) ~ .card {
       &:nth-child(1) {
-        top: 18%;
+        top: 15%;
       }
 
       &:nth-child(2) {
@@ -88,7 +88,7 @@
       }
 
       &:nth-child(3) {
-        top: 82%;
+        top: 85%;
       }
     }
   }
