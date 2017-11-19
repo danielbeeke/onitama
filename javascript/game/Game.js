@@ -196,7 +196,7 @@ export class Game {
   }
 
   /**
-   * This animates the swapping of a card. I want to improve it by really animating the card to the other side.
+   * This animates the swapping of a card.
    */
   animateCardSwap (card) {
     let oppositePlayerId = this.state.turnPlayer === 1 ? 2 : 1;
