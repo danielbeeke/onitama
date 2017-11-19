@@ -73,6 +73,11 @@ export class Piece {
 
   updateCss () {
     this.element.style = `left: ${(this.data.x - 1) * 20}%; top: ${(this.data.y - 1) * 20}%;`;
+    this.element.classList.add('moving');
+
+    setTimeout(() => {
+      this.element.classList.remove('moving');
+    }, 500);
   }
 
   /**

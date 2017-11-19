@@ -22,11 +22,13 @@
   &.master:after {
     border-radius: 0;
   }
+
+  &.moving {
+    transition: background 0s $easing, top $speed $easing, left $speed $easing;
+  }
 }
 
 .piece.owner-1 {
-  cursor: pointer;
-  
   &:after {
     border: 2px solid $player1;
     background-color: rgba($player1, .3);
@@ -39,7 +41,11 @@
 }
 
 [data-active-player="1"] {
-  .piece.owner-1:hover {
+  .piece.owner-1 {
+    cursor: pointer;
+  }
+
+  .piece.owner-1:not([data-selected="true"]):hover {
     background-color: rgba(#ffdd86, .5);
   }
 
@@ -53,7 +59,11 @@
 }
 
 [data-active-player="2"] {
-  .piece.owner-2:hover {
+  .piece.owner-2 {
+    cursor: pointer;
+  }
+
+  .piece.owner-2:not([data-selected="true"]):hover {
     background-color: rgba(#ffdd86, .5);
   }
 
