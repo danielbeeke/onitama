@@ -101,7 +101,9 @@ export class State {
     initPlayer(stateObject.player1, 1);
     initPlayer(stateObject.player2, 2);
 
-    let oppositeTurnPlayerId = stateObject.turnPlayer === 1 ? 2 : 1;
+    this.turnPlayer = stateObject.turnPlayer;
+    this.emitter.emit('turn.set', this.turnPlayer);
+    let oppositeTurnPlayerId = this.turnPlayer === 1 ? 2 : 1;
     let swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
 
     this.cards.push(swapCard);
@@ -109,6 +111,10 @@ export class State {
     swapCard.swap();
 	}
 
+	toggleTurnPlayer () {
+    this.turnPlayer = this.turnPlayer === 1 ? 2 : 1;
+    this.emitter.emit('turn.set', this.turnPlayer);
+  }
 
   /**
    * Serializes the game state into an object.

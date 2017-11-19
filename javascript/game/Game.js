@@ -36,6 +36,10 @@ export class Game {
    */
   attachEvents () {
 
+    this.emitter.on('turn.set', (activePlayerId) => {
+      this.boardElement.dataset.activePlayer = activePlayerId;
+    });
+
     // Tiles.
     this.emitter.on('tile.click', (tile) => {
       if (tile.highlighted === true) {
@@ -49,7 +53,7 @@ export class Game {
         this.state.player1.activeCard = false;
         this.state.player1.activePiece = false;
 
-        this.state.turnPlayer = this.state.turnPlayer === 1 ? 2 : 1;
+        this.state.toggleTurnPlayer();
         this.updateHighLights();
 
         this.emitter.emit('turn');

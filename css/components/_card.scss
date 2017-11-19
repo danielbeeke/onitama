@@ -23,6 +23,12 @@
     }
   }
 
+  &[data-selected="true"] {
+    border-color: #f8e269 !important;
+  }
+}
+
+[data-active-player="1"] .card {
   &[data-owner="1"]:not([data-swap="true"]) {
     cursor: pointer;
   }
@@ -30,9 +36,15 @@
   &[data-owner="1"]:not([data-swap="true"]):hover {
     border-color: #f6f8cf;
   }
+}
 
-  &[data-selected="true"] {
-    border-color: #f8e269 !important;
+[data-active-player="2"] .card {
+  &[data-owner="2"]:not([data-swap="true"]) {
+    cursor: pointer;
+  }
+
+  &[data-owner="2"]:not([data-swap="true"]):hover {
+    border-color: #f6f8cf;
   }
 }
 

@@ -38,14 +38,30 @@
   background-color: rgba($player2, .3);
 }
 
-.piece.owner-1:hover {
-  background-color: rgba(#ffdd86, .5);
+[data-active-player="1"] {
+  .piece.owner-1:hover {
+    background-color: rgba(#ffdd86, .5);
+  }
+
+  .piece.owner-1[data-selected="true"] {
+    background-color: #ffdd86;
+
+    &:after {
+      border-width: 6px !important;
+    }
+  }
 }
 
-.piece.owner-1[data-selected="true"] {
-  background-color: #ffdd86;
+[data-active-player="2"] {
+  .piece.owner-2:hover {
+    background-color: rgba(#ffdd86, .5);
+  }
 
-  &:after {
-    border-width: 6px !important;
+  .piece.owner-2[data-selected="true"] {
+    background-color: #ffdd86;
+
+    &:after {
+      border-width: 6px !important;
+    }
   }
 }
