@@ -70,7 +70,7 @@ export class Game {
 
           // The used tiles was possible with both cards.
           if (overLeapingCards > 1) {
-            alert('pick one of the cards for this set.');
+            this.openChoosePopup(tile);
             return;
           }
           else {
@@ -163,6 +163,39 @@ export class Game {
       }
       this.updateHighLights();
     });
+  }
+
+  openChoosePopup (tile) {
+    let activePlayer = this.state['player' + this.state.turnPlayer];
+    let wizard = document.createElement('div');
+    wizard.classList.add('card-choose-wizard');
+    wizard.classList.add('fade-in');
+
+    activePlayer.cards.forEach((card) => {
+      if (!card.data.swap) {
+        let cardClone = card.element.cloneNode(true);
+        cardClone.style = `
+          width: ${card.element.offsetWidth}px; 
+          height: ${card.element.offsetHeight}px;
+        `;
+
+        wizard.appendChild(cardClone);
+
+        cardClone.addEventListener('click', () => {
+          activePlayer.activeCard = card;
+          wizard.classList.add('fade-in');
+
+          setTimeout(() => {
+            this.emitter.emit('tile.click', tile);
+          }, 300);
+        });
+      }
+    });
+
+    this.board.element.appendChild(wizard);
+    setTimeout(() => {
+      wizard.classList.remove('fade-in');
+    }, 200);
   }
 
   animateCardSwap (card) {
