@@ -38,7 +38,15 @@ export class State {
     .replace(/ /g, '');
 
     let cardCharacters = onitamaStringNotation.substr(0, 5).split('');
-    let selectedCards = cards.filter(card => cardCharacters.includes(card.id));
+    let selectedCards = [];
+
+    cardCharacters.forEach((cardCharacter) => {
+      let selectedCard = cards.filter(card => card.id === cardCharacter)[0];
+
+      if (selectedCard) {
+        selectedCards.push(selectedCard);
+      }
+    });
 
     let player1Pieces = onitamaStringNotation.substr(15, 10);
     let player2Pieces = onitamaStringNotation.substr(5, 10);
@@ -109,6 +117,8 @@ export class State {
     this.cards.push(this.swapCard);
     // TODO maybe improve this with two functions, setSwapped and swap.
     this.swapCard.swap();
+
+    console.log(this.turnPlayer)
 	}
 
 	toggleTurnPlayer () {
@@ -163,10 +173,6 @@ export class State {
 
     onitamaStringNotation += createPlayerString(stateObject.player2) + '.';
     onitamaStringNotation += createPlayerString(stateObject.player1) + '.' + stateObject.turnPlayer;
-
-    console.log(this)
-
-    console.log(onitamaStringNotation)
 
     return onitamaStringNotation;
   }

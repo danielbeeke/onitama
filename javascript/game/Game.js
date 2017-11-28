@@ -27,8 +27,20 @@ export class Game {
     this.attachEvents();
   }
 
-  externalTurn (onitamaStringNotation) {
-    this.state.transition(onitamaStringNotation);
+  externalTurn (turnData) {
+    let usedPiece;
+    let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
+    let activePlayer = this.state['player' + this.state.turnPlayer];
+
+    activePlayer.pieces.forEach((piece) => {
+      if (piece.x === turnData.pieceX && piece.y === turnData.pieceY) {
+        usedPiece = piece;
+      }
+    });
+
+    usedPiece.select();
+    usedTile.highlight();
+    this.emitter.emit('tile.click', usedTile, true);
   }
 
   /**
@@ -41,7 +53,7 @@ export class Game {
     });
 
     // Tiles.
-    this.emitter.on('tile.click', (tile) => {
+    this.emitter.on('tile.click', (tile, isExternal = false) => {
       if (tile.highlighted === true) {
         let activePlayer = this.state['player' + this.state.turnPlayer];
 
@@ -88,6 +100,11 @@ export class Game {
           }
         });
 
+        let usedPiece = activePlayer.activePiece;
+
+        let oldX = usedPiece.x;
+        let oldY = usedPiece.y;
+
         activePlayer.activePiece.y = tile.y;
         activePlayer.activePiece.x = tile.x;
         activePlayer.activePiece.deselect();
@@ -96,7 +113,7 @@ export class Game {
         this.state.toggleTurnPlayer();
         this.updateHighLights();
 
-        this.emitter.emit('turn');
+        this.emitter.emit('turn', usedPiece, tile, oldX, oldY, isExternal);
       }
     });
 

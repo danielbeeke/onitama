@@ -45,9 +45,8 @@ export class Helpers {
     let player1Pieces = onitamaStringNotation.substr(5, 10);
     let player2Pieces = onitamaStringNotation.substr(15, 10);
     let turn = parseInt(onitamaStringNotation.substr(25, 1));
-    let flippedTurn = turn === 1 ? 2 : 1;
 
-    return player2Cards + player1Cards + swapCard + '.' + player2Pieces + '.' + player1Pieces + '.' + flippedTurn;
+    return player2Cards + player1Cards + swapCard + '.' + player2Pieces + '.' + player1Pieces + '.' + turn;
   }
 
   /**
