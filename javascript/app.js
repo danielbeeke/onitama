@@ -50,7 +50,7 @@ class App {
    */
   onStarted () {
     if (this.connection.role === 'initiator') {
-      this.game = new Game('#game', this.emitter);
+      this.game = new Game('#game', this.emitter, this.connection.role);
       let onitamaNotation = this.game.state.serialize();
       this.emitter.on('turn', (piece, tile, card, oldX, oldY, isExternal) => this.onTurn(piece, tile, card, oldX, oldY, isExternal));
       this.connection.sendMessage('startGame', onitamaNotation);
@@ -79,7 +79,7 @@ class App {
   executeCommand (command, options) {
     let commands = {
       startGame: (onitamaNotation) => {
-        this.game = new Game('#game', this.emitter, onitamaNotation);
+        this.game = new Game('#game', this.emitter, this.connection.role, onitamaNotation);
         this.emitter.on('turn', (piece, tile, card, oldX, oldY, isExternal) => this.onTurn(piece, tile, card, oldX, oldY, isExternal));
       },
       turn: (turnData) => {
