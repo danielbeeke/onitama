@@ -3,6 +3,10 @@
   justify-content: stretch;
   align-items: stretch;
   height: 100%;
+
+  .deck.player2 {
+    transform: rotate(180deg);
+  }
 }
 
 @media (orientation: portrait) {
@@ -21,6 +25,14 @@
 [data-webrtc-role="answerer"] {
   .board {
     transform: rotate(180deg);
+  }
+
+  .deck.player1 {
+    transform: rotate(180deg);
+  }
+
+  .deck.player2 {
+    transform: rotate(0);
   }
 
   @media (orientation: portrait) {

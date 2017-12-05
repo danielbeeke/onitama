@@ -8,8 +8,9 @@ export class Game {
    * Start a new game with a div selector and an outside emitter.
    * This way we can recycle the emitter for all things inside this app.
    */
-  constructor (selector, emitter, onitamaStringNotation = null) {
+  constructor (selector, emitter, role, onitamaStringNotation = null) {
     this.emitter = emitter;
+    this.role = role;
     this.element = document.querySelector(selector);
     this.element.innerHTML = '';
     if (!this.element) { throw 'No element found for the onitama game'; }
@@ -237,7 +238,7 @@ export class Game {
       height: ${position1.height}px;
       transition: all .4s ease-in-out;
       position: fixed;
-    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
 
     let temporaryPlaceholder2 = document.createElement('div');
     temporaryPlaceholder2.classList.add('card');
@@ -255,7 +256,7 @@ export class Game {
         height: ${position2.height}px;
         transition: all .4s ease-in-out;
         position: fixed;
-      ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+      ` + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
 
       setTimeout(() => {
         card.element.classList.remove('animating');

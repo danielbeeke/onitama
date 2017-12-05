@@ -10,10 +10,6 @@
   border-radius: 5px;
   transition: border $speed $easing;
   flex-direction: row;
-
-  &.player2 {
-    transform: rotate(180deg);
-  }
 }
 
 @media (orientation: portrait) {
