@@ -1,5 +1,6 @@
 import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
+import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Game {
 
@@ -28,17 +29,16 @@ export class Game {
   }
 
   externalTurn (turnData) {
-    let usedPiece;
+    this.state.turnPlayer = turnData.player;
+
     let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
-    let activePlayer = this.state['player' + this.state.turnPlayer];
+    let activePlayer = this.state['player' + turnData.player];
+    let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
+    let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
 
-    activePlayer.pieces.forEach((piece) => {
-      if (piece.x === turnData.pieceX && piece.y === turnData.pieceY) {
-        usedPiece = piece;
-      }
-    });
-
+    usedCard.select();
     usedPiece.select();
+
     usedTile.highlight();
     this.emitter.emit('tile.click', usedTile, true);
   }
@@ -56,8 +56,10 @@ export class Game {
     this.emitter.on('tile.click', (tile, isExternal = false) => {
       if (tile.highlighted === true) {
         let activePlayer = this.state['player' + this.state.turnPlayer];
+        let usedCard;
 
         if (activePlayer.activeCard) {
+          usedCard = activePlayer.activeCard;
           this.animateCardSwap(activePlayer.activeCard);
           activePlayer.activeCard.deselect();
           activePlayer.activeCard = false;
@@ -86,6 +88,7 @@ export class Game {
             return;
           }
           else {
+            usedCard = possibleCard;
             this.animateCardSwap(possibleCard);
           }
         }
@@ -113,7 +116,7 @@ export class Game {
         this.state.toggleTurnPlayer();
         this.updateHighLights();
 
-        this.emitter.emit('turn', usedPiece, tile, oldX, oldY, isExternal);
+        this.emitter.emit('turn', usedPiece, tile, usedCard, oldX, oldY, isExternal);
       }
     });
 

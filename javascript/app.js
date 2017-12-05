@@ -46,7 +46,7 @@ class App {
 
       let onitamaNotation = this.game.state.serialize();
       onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
-      this.emitter.on('turn', (piece, tile, oldX, oldY, isExternal) => this.onTurn(piece, tile, oldX, oldY, isExternal));
+      this.emitter.on('turn', (piece, tile, card, oldX, oldY, isExternal) => this.onTurn(piece, tile, card, oldX, oldY, isExternal));
       this.connection.sendMessage('startGame', onitamaNotation);
     }
   }
@@ -54,13 +54,15 @@ class App {
   /**
    * Send the turn to the other peer.
    */
-  onTurn (piece, tile, oldX, oldY, isExternal) {
+  onTurn (piece, tile, card, oldX, oldY, isExternal) {
     if (!isExternal) {
       this.connection.sendMessage('turn', {
         pieceX: Helpers.flipCoordinate(oldX),
         pieceY: Helpers.flipCoordinate(oldY),
         tileX: Helpers.flipCoordinate(tile.x),
-        tileY: Helpers.flipCoordinate(tile.y)
+        tileY: Helpers.flipCoordinate(tile.y),
+        card: card.name,
+        player: piece.player.id
       });
     }
   }
@@ -72,7 +74,7 @@ class App {
     let commands = {
       startGame: (onitamaNotation) => {
         this.game = new Game('#game', this.emitter, onitamaNotation);
-        this.emitter.on('turn', (piece, tile, oldX, oldY, isExternal) => this.onTurn(piece, tile, oldX, oldY, isExternal));
+        this.emitter.on('turn', (piece, tile, card, oldX, oldY, isExternal) => this.onTurn(piece, tile, card, oldX, oldY, isExternal));
       },
       turn: (turnData) => {
         this.game.externalTurn(turnData);

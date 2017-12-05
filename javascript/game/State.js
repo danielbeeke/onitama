@@ -22,14 +22,6 @@ export class State {
 	}
 
   /**
-   * Transition from an initiated state to a next one.
-   */
-  transition (onitamaStringNotation) {
-    let stateObject = this.parseNotation(onitamaStringNotation);
-    console.log(onitamaStringNotation, stateObject)
-  }
-
-  /**
    * Parse an onitama string notation.
    */
   parseNotation (onitamaStringNotation) {
@@ -115,10 +107,7 @@ export class State {
     this.swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
 
     this.cards.push(this.swapCard);
-    // TODO maybe improve this with two functions, setSwapped and swap.
     this.swapCard.swap();
-
-    console.log(this.turnPlayer)
 	}
 
 	toggleTurnPlayer () {

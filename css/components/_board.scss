@@ -22,13 +22,25 @@
       }
     }
   }
+}
 
+[data-webrtc-role="initiator"] .board {
   .tile-3-5 {
     background-color: rgba($player1, .2);
   }
 
   .tile-3-1 {
     background-color: rgba($player2, .2);
+  }
+}
+
+[data-webrtc-role="answerer"] .board {
+  .tile-3-5 {
+    background-color: rgba($player2, .2);
+  }
+
+  .tile-3-1 {
+    background-color: rgba($player1, .2);
   }
 }
 
