@@ -1,30 +1,45 @@
 export class Card {
-  constructor (name, sets, color, game) {
-    this.name = name;
-    this.sets = sets;
-    this.color = color;
-    this.game = game;
-    this.ownerId = false;
-    this.delta = false;
 
+  /**
+   * A card must be initiated with the data out of cards.js. It has possible sets.
+   */
+	constructor (data, state, player) {
+		Object.assign(this, data);
     this.element = document.createElement('div');
-    let inner = `<h3 class="title">${this.name}</h3><div class="mini-board"><div class="self" style="grid-area: 3 / 3 / 3 / 3;"></div>`;
-
+    this.element.classList.add('card');
     this.element.classList.add(this.color);
+    this.element.classList.add(this.name.toLowerCase());
+
+    let inner = `<div class="mini-board"><div class="self" style="grid-area: 3 / 3 / 3 / 3;"></div>`;
 
     this.sets.forEach((set) => {
       let x = set.x + 3;
       let y = set.y + 3;
-
       inner += `<div class="set" data-x="${x}" data-y="${y}" style="grid-area: ${y} / ${x} / ${y} / ${x};"></div>`;
     });
 
-    inner += '</div>';
-
+    inner += `</div>`;
+    inner += `<h4 class="title">${this.name}</h4>`;
     this.element.innerHTML = inner;
-    this.element.classList.add('card');
 
-    this.game.element.appendChild(this.element);
+    this.createMiniBoard();
+    this.state = state;
+
+    this.data = {};
+		this.sets = new Set(data.sets);
+		this.player = player;
+
+    ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
+      this.element.addEventListener(eventName, (event) => {
+        this.state.emitter.emit('card.' + eventName, this);
+      });
+    });
+	}
+
+  /**
+   * Creates the tiles for displaying the possible sets.
+   */
+	createMiniBoard () {
     let miniBoard = this.element.querySelector('.mini-board');
 
     for (let y = 1; y < 6; y++) {
@@ -37,48 +52,71 @@ export class Card {
         miniBoard.appendChild(tile);
       }
     }
+  }
 
-    this.element.addEventListener('click', () => {
-      // Only if the cards is owned the local player.
-      if (this.ownerId === 2) {
-        this.game['player' + this.ownerId].cards.forEach((card) => {
-          if (card.name !== this.name) {
-            card.element.classList.remove('selected');
-          }
-        });
+  /**
+   * When a card is played the card gets swapped to the other player.
+   */
+	swap () {
+    let oppositePlayerId = this.player.id === 1 ? 2 : 1;
+    this.player = this.state['player' + oppositePlayerId];
 
-        // Clicking to deselect.
-        if (this.game['player' + this.ownerId].activeCard === this) {
-          this.element.classList.remove('selected');
-          this.game['player' + this.ownerId].activeCard = false;
-        }
-
-        // Selected a new card.
-        else {
-          this.game['player' + this.ownerId].activeCard = this;
-          this.element.classList.add('selected');
-
-          if (this.game['player' + this.ownerId].activePiece) {
-            this.game['player' + this.ownerId].activePiece.highlightCard(this.game['player' + this.ownerId].activeCard);
-          }
-        }
+    this.state.cards.forEach((card) => {
+      if (card.id !== this.id) {
+        card.element.dataset.swap = false;
+        card.data.swap = false;
+      }
+      else {
+        card.element.dataset.swap = true;
+        card.data.swap = true;
       }
     });
+
+    this.state.player1.cards = [];
+    this.state.player2.cards = [];
+
+    this.state.cards.forEach((card) => {
+      if (card.player && card.player.id) {
+        card.player.cards.push(card);
+      }
+      else {
+        this.state.swapCard = card;
+      }
+    })
   }
 
-  setDelta (delta = false) {
-    this.delta = delta;
-    this.element.dataset.delta = this.delta;
+  /**
+   * Sets the owner of this card.
+   */
+	set player (player) {
+	  this.data.player = player;
+    this.element.dataset.owner = this.player.id;
+    let deck = this.state.board['player' + this.player.id + 'Deck'];
+    deck.insertBefore(this.element, deck.firstChild);
   }
 
-  setOwner (owner = false) {
-    if (owner) {
-      this.ownerId = owner.id;
-    }
-    else {
-      this.ownerId = false;
-    }
+  /**
+   * Returns the owner of this card.
+   */
+  get player () {
+	  return this.data.player;
+  }
 
-    this.element.dataset.owner = this.ownerId;
+  /**
+   * Selects the card and updates that state to the player.
+   */
+  select () {
+	  this.player.activeCard = this;
+    this.data.selected = true;
+    this.element.dataset.selected = true;
+  }
+
+  /**
+   * Deselects the card and updates that state to the player.
+   */
+  deselect () {
+    this.player.activeCard = false;
+	  this.data.selected = false;
+    this.element.dataset.selected = false;
   }
 }

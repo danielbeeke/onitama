@@ -8,11 +8,6 @@ export class Connection extends EventEmitter {
     super();
     this.myGuid = Helpers.guid();
 
-    // Set the contents of the link to copy.
-    let copyText = document.querySelector('.copy-link');
-    copyText.innerText = location;
-    copyText.href = location;
-
     // Initiate the connection via an asymmetric process
     // and when done do the things that need to be done for both players.
     this.websockets(() => {

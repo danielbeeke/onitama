@@ -1,43 +1,41 @@
-import {EventEmitter} from '/javascript/core/EventEmitter.js';
+export class Tile {
 
-export class Tile extends EventEmitter {
-  constructor (x, y, game) {
-    super();
-
-    this.game = game;
-    this.board = this.game.board;
+  /**
+   * Tiles are on a board. They belong to a board.
+   */
+	constructor (x, y, board) {
+		this.board = board;
 
     this.element = document.createElement('div');
-    this.element.dataset.x = x;
-    this.element.dataset.y = y;
     this.element.classList.add('tile');
+    this.element.classList.add('tile-' + x + '-' + y);
+    this.x = x;
+    this.y = y;
+
     this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
 
-    this.element.addEventListener('click', (event) => {
-      this.game.emit('tile.click', this);
+    ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
+      this.element.addEventListener(eventName, (event) => {
+        this.board.emitter.emit('tile.' + eventName, this);
+      });
     });
 
-    this.board.appendChild(this.element);
+    this.board.element.appendChild(this.element);
+	}
+
+  /**
+   * Highlight the tile.
+   */
+	highlight () {
+	  this.highlighted = true;
+    this.element.classList.add('highlight');
   }
 
-  setStateClass (key, value) {
-    if (value) {
-      this.element.classList.add(key);
-    }
-    else {
-      this.element.classList.remove(key);
-    }
-  }
-
-  set hasPiece (boolean) {
-    this.setStateClass('has-piece', boolean);
-  }
-
-  set hasHover (boolean) {
-    this.setStateClass('hover', boolean);
-  }
-
-  set hasHighlight (boolean) {
-    this.setStateClass('highlight', boolean);
+  /**
+   * Dim the tile.
+   */
+  dim () {
+    this.highlighted = false;
+    this.element.classList.remove('highlight');
   }
 }

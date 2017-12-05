@@ -1,174 +1,104 @@
-import {Helpers} from '/javascript/core/Helpers.js';
-
 export class Piece {
-  constructor (type, x, y, player, game, index) {
-    this.type = type;
-    this.x = x;
-    this.y = y;
-    this.player = player;
-    this.game = game;
-    this.index = index;
 
+  /**
+   * A piece can be a monk or a master.
+   */
+	constructor (type, x, y, state, player) {
+		this.data = {};
+
+		this.type = type;
+		this.state = state;
     this.element = document.createElement('div');
-    this.element.dataset.x = x;
-    this.element.dataset.y = y;
+    this.player = player;
     this.element.classList.add('piece');
     this.element.classList.add(this.type);
-    this.element.dataset.owner = this.player.id;
-    this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-    this.game.board.appendChild(this.element);
+    this.x = x;
+    this.y = y;
 
-    this.game.tiles[this.x + '-' + this.y].hasPiece = true;
-
-    if (this.player.id === 2) {
-      this.element.addEventListener('mouseenter', () => {
-        if (this.game.activePlayer !== player.id) { return; }
-
-        // Hover actions while having no selected piece but a selected card.
-        if (!this.player.activePiece && this.player.activeCard) {
-          this.highlightCard(this.player.activeCard);
-        }
+    ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
+      this.element.addEventListener(eventName, (event) => {
+        this.state.emitter.emit('piece.' + eventName, this);
       });
-
-      this.element.addEventListener('mouseleave', () => {
-        if (!this.player.activePiece) {
-          this.removeHoverAndHighlights();
-        }
-      });
-
-      this.element.addEventListener('click', () => {
-        this.pieceClick();
-      });
-    }
-
-    this.game.on('tile.click', (tile) => {
-      this.tileClick(tile.element);
     });
+
+    this.state.board.element.appendChild(this.element);
+	}
+
+  /**
+   * Set the owner of the piece.
+   */
+	set player (player) {
+	  this.data.player = player;
+    this.element.classList.add('owner-' + this.player.id);
   }
 
-  pieceClick () {
-    // Click to remove selection.
-    if (this.player.activePiece && this.player.activePiece === this) {
-      this.clickToRemoveSelection();
-    }
-    else {
-      // Clean up dangling highlights.
-      this.removeHoverAndHighlights();
-
-      if (this.player.activeCard) {
-        this.highlightCard(this.player.activeCard);
-      }
-
-      // Cleaning up old active piece.
-      if (this.player.activePiece) {
-        this.player.activePiece.element.classList.remove('selected');
-      }
-
-      // Setting the new context.
-      this.player.activePiece = this;
-      this.element.classList.add('selected');
-    }
+  /**
+   * Return the owner.
+   */
+  get player () {
+	  return this.data.player;
   }
 
-  tileClick (tile) {
-    if (this.player.activePiece === this && this.player.activeCard) {
-      this.player.activeCard.sets.forEach((set) => {
-        let x = this.x + set.x;
-        let y = this.y + set.y;
+  /**
+   * Return the x coordinate of the tile the piece is on.
+   */
+  get x () {
+	  return this.data.x;
+  }
 
-        if (parseInt(tile.dataset.x) === x && parseInt(tile.dataset.y) === y) {
-          this.game.transition({
-            player: this.player.id,
-            piece: this.index,
-            card: this.player.activeCard.name,
-            x: x,
-            y: y
-          });
-        }
-      });
-    }
+  /**
+   * Set the x coordinate of the tile the piece is on.
+   * Also update the style.
+   */
+  set x (x) {
+    this.data.x = x;
+    this.updateCss();
+  }
+
+  /**
+   * Return the y coordinate of the tile the piece is on.
+   */
+  get y () {
+    return this.data.y;
+  }
+
+  /**
+   * Set the y coordinate of the tile the piece is on.
+   * Also update the style.
+   */
+  set y (y) {
+    this.data.y = y;
+    this.updateCss();
+  }
+
+  updateCss () {
+    this.element.style = `left: ${(this.data.x - 1) * 20}%; top: ${(this.data.y - 1) * 20}%;`;
+    this.element.classList.add('moving');
+
+    setTimeout(() => {
+      this.element.classList.remove('moving');
+    }, 500);
+  }
+
+  /**
+   * Select this piece, update that state into the player.
+   */
+  select () {
+	  this.player.activePiece = this;
+    this.data.selected = true;
+    this.element.dataset.selected = true;
+  }
+
+  /**
+   * Deselect this piece, update that state into the player.
+   */
+  deselect () {
+    this.player.activePiece = false;
+    this.data.selected = false;
+    this.element.dataset.selected = false;
   }
 
   capture () {
-    this.x = -1;
-    this.y = -1;
-    this.element.style = 'display: none;';
-
-    if (this.type === 'master') {
-      if (this.player.id === 1) {
-        alert('You have won')
-      }
-      else {
-        alert('You have lost')
-      }
-
-    }
-  }
-
-  clickToRemoveSelection () {
-    this.player.activePiece.element.classList.remove('selected');
-    this.player.activePiece = false;
-    this.removeHoverAndHighlights();
-  }
-
-  setPosition(x, y) {
-    this.game.tiles[this.x + '-' + this.y].hasPiece = false;
-
-    this.x = x;
-    this.y = y;
-    this.element.style = `grid-area: ${y} / ${x} / ${y} / ${x};`;
-    this.removeHoverAndHighlights();
-    if (this.player.activeCard) {
-      this.player.activeCard.element.classList.remove('selected');
-      this.game.swapCard(this.player.activeCard);
-      this.player.activeCard = false;
-    }
-
-    if (this.player.activePiece) {
-      this.player.activePiece.element.classList.remove('selected');
-      this.player.activePiece = false;
-    }
-  }
-
-  highlightCard (card) {
-    this.game.tiles[this.x + '-' + this.y].hasHover = true;
-
-    card.sets.forEach((set) => {
-      let setX = this.x + set.x;
-      let setY = this.y + set.y;
-
-      if (this.player.id === 1) {
-        setX = Helpers.flipCoordinate(setX);
-        setY = Helpers.flipCoordinate(setY);
-      }
-
-      // When on the board.
-      if (setX > 0 && setY > 0 && setX < 6 && setY < 6) {
-        let isValid = true;
-        this.game.player1.pieces.forEach((piece) => {
-          if (piece.x === setX && piece.y === setY  && this.player.id === 1) {
-            isValid = false;
-          }
-        });
-
-        this.game.player2.pieces.forEach((piece) => {
-          if (piece.x === setX && piece.y === setY && this.player.id === 2) {
-            isValid = false;
-          }
-        });
-
-        if (isValid) {
-          this.game.tiles[setX + '-' + setY].hasHighlight = true;
-        }
-      }
-    });
-  }
-
-  removeHoverAndHighlights() {
-    Object.keys(this.game.tiles).forEach((tileKey) => {
-      let tile = this.game.tiles[tileKey];
-      tile.hasHover = false;
-      tile.hasHighlight = false;
-    })
+    this.element.remove();
   }
 }
