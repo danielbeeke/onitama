@@ -17,6 +17,14 @@ class App {
     this.game = null;
     this.connection = new Connection();
 
+    let element = document.querySelector('#game');
+    element.innerHTML = `<div class="board-wrapper"><div class="waiting-message">
+        <h2>Welcome to Onitama!</h2>
+        <h4>Please wait till an other player joins.</h4>
+        <h4>You can send the following link:</h4>
+        <a class="copy-link" href="${location}" target="_blank">${location}</a>
+    </div></div>`;
+
     this.connection.on('started', () => this.onStarted());
     this.connection.on('message', (message) => this.onMessage(message));
   }
@@ -43,9 +51,7 @@ class App {
   onStarted () {
     if (this.connection.role === 'initiator') {
       this.game = new Game('#game', this.emitter);
-
       let onitamaNotation = this.game.state.serialize();
-      // onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
       this.emitter.on('turn', (piece, tile, card, oldX, oldY, isExternal) => this.onTurn(piece, tile, card, oldX, oldY, isExternal));
       this.connection.sendMessage('startGame', onitamaNotation);
     }

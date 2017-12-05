@@ -11,6 +11,7 @@ export class Game {
   constructor (selector, emitter, onitamaStringNotation = null) {
     this.emitter = emitter;
     this.element = document.querySelector(selector);
+    this.element.innerHTML = '';
     if (!this.element) { throw 'No element found for the onitama game'; }
     this.element.classList.add('onitama');
     this.boardElement = document.createElement('div');
