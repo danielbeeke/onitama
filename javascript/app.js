@@ -45,7 +45,7 @@ class App {
       this.game = new Game('#game', this.emitter);
 
       let onitamaNotation = this.game.state.serialize();
-      onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
+      // onitamaNotation = Helpers.flipPlayerInNotation(onitamaNotation);
       this.emitter.on('turn', (piece, tile, card, oldX, oldY, isExternal) => this.onTurn(piece, tile, card, oldX, oldY, isExternal));
       this.connection.sendMessage('startGame', onitamaNotation);
     }
@@ -57,10 +57,10 @@ class App {
   onTurn (piece, tile, card, oldX, oldY, isExternal) {
     if (!isExternal) {
       this.connection.sendMessage('turn', {
-        pieceX: Helpers.flipCoordinate(oldX),
-        pieceY: Helpers.flipCoordinate(oldY),
-        tileX: Helpers.flipCoordinate(tile.x),
-        tileY: Helpers.flipCoordinate(tile.y),
+        pieceX: (oldX),
+        pieceY: (oldY),
+        tileX: (tile.x),
+        tileY: (tile.y),
         card: card.name,
         player: piece.player.id
       });
