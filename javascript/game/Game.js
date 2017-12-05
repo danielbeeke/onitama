@@ -29,15 +29,10 @@ export class Game {
   }
 
   externalTurn (turnData) {
-    this.state.turnPlayer = turnData.player;
-
     let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
     let activePlayer = this.state['player' + this.state.turnPlayer];
     let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
     let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
-
-    console.log(usedTile, usedPiece, usedCard, activePlayer)
-
     usedCard.select();
     usedPiece.select();
 

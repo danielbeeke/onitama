@@ -17,3 +17,21 @@
     align-items: center;
   }
 }
+
+[data-webrtc-role="answerer"] {
+  .board {
+    transform: rotate(180deg);
+  }
+
+  @media (orientation: portrait) {
+    .board-wrapper {
+      flex-direction: column-reverse;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .board-wrapper {
+      flex-direction: row-reverse;
+    }
+  }
+}
