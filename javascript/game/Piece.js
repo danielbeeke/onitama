@@ -99,6 +99,8 @@ export class Piece {
   }
 
   capture () {
+    this.x = -1;
+    this.y = -1;
     this.element.remove();
   }
 }
