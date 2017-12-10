@@ -311,7 +311,7 @@ export class Game {
    */
   getHighlightTilesByPieceAndCard (piece, card) {
     let highlightTiles = [];
-    let activePlayer = this.state['player' + this.state.turnPlayer];
+    let activePlayer = piece.player;
 
     card.sets.forEach((set) => {
       let setX = piece.x + set.x;

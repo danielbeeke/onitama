@@ -2,7 +2,6 @@ import {Game} from '/javascript/game/Game.js';
 import {EventEmitter} from '/javascript/core/EventEmitter.js';
 
 import {Connection} from '/javascript/connection/Connection.js';
-import {Helpers} from '/javascript/core/Helpers.js';
 
 class App {
   constructor () {
@@ -33,7 +32,7 @@ class App {
    * A simple board without connection, for debugging css.
    */
   boardDebug () {
-    this.game = new Game('#game', this.emitter);
+    this.game = new Game('#game', this.emitter, 'initiator');
   }
 
   /**
