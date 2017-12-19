@@ -10,52 +10,74 @@ class App {
   }
 
   /**
-   * This starts the connection logic and the onitama board.0
+   * This starts the connection logic and the onitama board.
    */
   multiPlayerGame () {
     this.game = null;
+    location.pathname === '/' ? this.createRoomWizard() : this.createMultiplayerConnection();
+  }
 
+  /**
+   * Multiplayer when having a room name.
+   */
+  createMultiplayerConnection () {
     let element = document.querySelector('#game');
 
-    if (location.pathname === '/') {
-      element.innerHTML = `<div class="board-wrapper"><div class="waiting-message">
-        <h2>Welcome to Onitama!</h2>
-        <h4>Please create a room to play:</h4>
-        <input type="text" class="room-name-input"><br><br>
-        <a class="goto-link" href="${location}"></a>
-        </div></div>`;
-
-      document.querySelector('.room-name-input').addEventListener('keydown', function (event) {
-        if ((event.keyCode  < 65 || event.keyCode > 90 || event.shiftKey) && ![8, 9, 32, 46, 173].includes(event.keyCode)) {
-          event.preventDefault();
-        }
-        else {
-          document.querySelector('.goto-link').innerHTML = `${location.origin}/${this.value}`;
-        }
-      });
-
-      document.querySelector('.room-name-input').addEventListener('keyup', function (event) {
-        if (this.value) {
-          document.querySelector('.goto-link').innerHTML = `${location.origin}/${this.value}`;
-          document.querySelector('.goto-link').href = `${location.origin}/${this.value}`;
-        }
-        else {
-          document.querySelector('.goto-link').innerHTML = '';
-        }
-      });
-    }
-    else {
-      element.innerHTML = `<div class="board-wrapper"><div class="waiting-message">
+    element.innerHTML = `<div class="board-wrapper"><div class="waiting-message">
         <h2>Welcome to Onitama!</h2>
         <h4>Please wait till an other player joins.</h4>
         <h4>You can send the following link:</h4>
         <a class="copy-link" href="${location}" target="_blank">${location}</a>
         </div></div>`;
 
-      this.connection = new Connection(location.pathname.substr(1));
-      this.connection.on('started', () => this.onStarted());
-      this.connection.on('message', (message) => this.onMessage(message));
-    }
+    this.connection = new Connection(location.pathname.substr(1));
+    this.connection.on('started', () => this.onStarted());
+    this.connection.on('message', (message) => this.onMessage(message));
+  }
+
+  /**
+   * Multiplayer when not having a room name.
+   */
+  createRoomWizard () {
+    let element = document.querySelector('#game');
+
+    element.innerHTML = `<div class="board-wrapper"><div class="waiting-message">
+        <h2>Welcome to Onitama!</h2>
+        <h4>Please create a room to play:</h4>
+        <input type="text" class="room-name-input"><br><br>
+        <a class="goto-link" href="${location}"></a>
+        </div></div>`;
+
+    let gotoLink = document.querySelector('.goto-link');
+    let roomInput = document.querySelector('.room-name-input');
+
+    roomInput.addEventListener('keydown', function (event) {
+      // Enter press.
+      if (event.keyCode === 13) {
+        window.location = `${location.origin}/${this.value}`;
+      }
+
+      // Other things than a-z.
+      if ((event.keyCode  < 65 || event.keyCode > 90 || event.shiftKey) && ![8, 9, 32, 46, 173].includes(event.keyCode)) {
+        event.preventDefault();
+      }
+
+      // Good keys so update the link.
+      else {
+        gotoLink.innerHTML = `${location.origin}/${this.value}`;
+      }
+    });
+
+    // When letting go of the key we update the link.
+    roomInput.addEventListener('keyup', function () {
+      if (this.value) {
+        gotoLink.innerHTML = `${location.origin}/${this.value}`;
+        gotoLink.href = `${location.origin}/${this.value}`;
+      }
+      else {
+        gotoLink.innerHTML = '';
+      }
+    });
   }
 
   /**
