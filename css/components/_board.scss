@@ -1,12 +1,11 @@
 .board {
   display: grid;
   grid-gap: 2px;
-  align-items: stretch;
-  justify-items: stretch;
-  margin: 0 10px;
-  width: calc(100vmin - 20px);
-  height: calc(100vmin - 20px);
+  margin: 5px;
+  width: 40vmin;
+  height: 40vmin;
   position: relative;
+  flex: 0 0 auto;
 
   .tile {
     background-color: #cecece;
@@ -29,18 +28,5 @@
 
   .tile-3-1 {
     background-color: rgba($player2, .2);
-  }
-}
-
-@media (orientation: landscape) {
-  .board {
-    margin: 10px 0;
-  }
-}
-
-@media (min-width: 1280px) {
-  .board {
-    width: 700px;
-    height: 700px;
   }
 }

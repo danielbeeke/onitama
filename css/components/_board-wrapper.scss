@@ -1,25 +1,21 @@
 .board-wrapper {
   display: flex;
-  justify-content: stretch;
-  align-items: stretch;
   height: 100%;
+  justify-content: center;
 
   .deck.player2 {
     transform: rotate(180deg);
   }
 }
 
-@media (orientation: portrait) {
-  .board-wrapper {
-    flex-direction: column;
-  }
-}
-
-@media (min-width: 1280px) {
-  .board-wrapper {
-    justify-content: center;
-    align-items: center;
-  }
+.left-wrapper {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  justify-items: center;
 }
 
 [data-webrtc-role="answerer"] {
@@ -33,17 +29,5 @@
 
   .deck.player2 {
     transform: rotate(0);
-  }
-
-  @media (orientation: portrait) {
-    .board-wrapper {
-      flex-direction: column-reverse;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .board-wrapper {
-      flex-direction: row-reverse;
-    }
   }
 }

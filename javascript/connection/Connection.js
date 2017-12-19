@@ -23,6 +23,14 @@ export class Connection extends EventEmitter {
         this.emit('started');
       });
 
+      this.easyP2P.on('error', () => {
+        this.emit('close');
+      });
+
+      this.easyP2P.on('close', () => {
+        this.emit('close');
+      });
+
       // Connection is started.
       this.easyP2P.on('message', (jsonMessage) => {
         let message = JSON.parse(jsonMessage);

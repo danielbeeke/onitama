@@ -34,6 +34,9 @@ class App {
 
     this.connection = new Connection(location.pathname.substr(1));
     this.connection.on('started', () => this.onStarted());
+    this.connection.on('close', () => () => {
+      window.location = `${location.origin}`;
+    });
     this.connection.on('message', (message) => this.onMessage(message));
   }
 

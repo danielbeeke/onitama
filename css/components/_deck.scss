@@ -1,105 +1,14 @@
 .deck {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   position: relative;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 10px;
-  //border: 2px solid #ffffff;
-  padding: 10px;
   border-radius: 5px;
   transition: border $speed $easing;
-  flex-direction: row;
-}
 
-@media (orientation: portrait) {
-  .deck {
-    .card {
-      top: 50%;
-      height: 80%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* two items */
-    .card:first-child:nth-last-child(2),
-    .card:first-child:nth-last-child(2) ~ .card {
-      &:nth-child(1) {
-        left: 30%;
-      }
-
-      &:nth-child(2) {
-        left: 70%;
-      }
-    }
-
-    /* three items */
-    .card:first-child:nth-last-child(3),
-    .card:first-child:nth-last-child(3) ~ .card {
-      &:nth-child(1) {
-        left: 18%;
-      }
-
-      &:nth-child(2) {
-        left: 50%;
-      }
-
-      &:nth-child(3) {
-        left: 82%;
-      }
-    }
-  }
-}
-
-@media (orientation: landscape) {
-  .deck {
+  &.swap {
+    flex: 0 0 auto;
     flex-direction: column;
-
-    .card {
-      left: 50%;
-      width: 80%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* two items */
-    .card:first-child:nth-last-child(2),
-    .card:first-child:nth-last-child(2) ~ .card {
-      &:nth-child(1) {
-        top: 31%;
-      }
-
-      &:nth-child(2) {
-        top: 69%;
-      }
-    }
-
-    /* three items */
-    .card:first-child:nth-last-child(3),
-    .card:first-child:nth-last-child(3) ~ .card {
-      &:nth-child(1) {
-        top: 15%;
-      }
-
-      &:nth-child(2) {
-        top: 50%;
-      }
-
-      &:nth-child(3) {
-        top: 85%;
-      }
-    }
   }
-}
-
-@media (min-width: 1280px) and (orientation: landscape) {
-  .deck {
-    height: 700px;
-    margin: 20px 100px;
-    padding: 20px;
-    flex: 0 1 200px;
-  }
-}
-
-[data-active-player="1"] .deck.player1,
-[data-active-player="2"] .deck.player2 {
-  //border: 2px solid #9a9ebe;
 }

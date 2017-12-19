@@ -58,9 +58,6 @@ export class Card {
    * When a card is played the card gets swapped to the other player.
    */
 	swap () {
-    let oppositePlayerId = this.player.id === 1 ? 2 : 1;
-    this.player = this.state['player' + oppositePlayerId];
-
     this.state.cards.forEach((card) => {
       if (card.id !== this.id) {
         card.element.dataset.swap = false;
@@ -82,7 +79,10 @@ export class Card {
       else {
         this.state.swapCard = card;
       }
-    })
+    });
+
+    let oppositePlayerId = this.player.id === 1 ? 2 : 1;
+    this.player = this.state['player' + oppositePlayerId];
   }
 
   /**
@@ -91,7 +91,16 @@ export class Card {
 	set player (player) {
 	  this.data.player = player;
     this.element.dataset.owner = this.player.id;
-    let deck = this.state.board['player' + this.player.id + 'Deck'];
+
+    let deck = null;
+
+    if (this.data.swap === true) {
+      deck = this.state.board['swapDeck'];
+    }
+    else {
+      deck = this.state.board['player' + this.player.id + 'Deck'];
+    }
+
     deck.insertBefore(this.element, deck.firstChild);
   }
 

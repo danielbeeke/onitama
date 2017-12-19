@@ -7,7 +7,7 @@
   flex-direction: column;
   border: 5px solid white;
   transition: all $speed $easing, opacity 0s;
-  position: absolute;
+  margin: 10px;
 
   &.invisible {
     opacity: 0 !important;
@@ -56,22 +56,6 @@
 
   &[data-owner="2"]:not([data-swap="true"]):hover {
     border-color: #f6f8cf;
-  }
-}
-
-@media (orientation: portrait) {
-  .card {
-    width: 30%;
-    height: 100%;
-    max-width: 13vh;
-  }
-}
-
-@media (orientation: landscape) {
-  .card {
-    width: 100%;
-    max-width: 13vw;
-    height: 30%;
   }
 }
 

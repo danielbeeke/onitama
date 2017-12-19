@@ -1,6 +1,5 @@
 import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
-import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Game {
 
