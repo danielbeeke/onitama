@@ -1,14 +1,15 @@
 .deck {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   position: relative;
   display: flex;
   justify-content: space-around;
-  align-items: center;
   border-radius: 5px;
   transition: border $speed $easing;
 
   &.swap {
     flex: 0 0 auto;
     flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
   }
 }

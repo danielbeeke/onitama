@@ -245,6 +245,8 @@ export class Game {
     deck2.insertBefore(temporaryPlaceholder2, deck2.firstChild);
     this.boardElement.appendChild(card.element);
 
+    return;
+
     let position2 = temporaryPlaceholder2.getBoundingClientRect();
 
     setTimeout(() => {

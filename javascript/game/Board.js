@@ -53,15 +53,22 @@ export class Board {
   createInlineStyle () {
     let cardWidth, cardHeight, boardWidth, boardHeight;
 
-    console.log(window.innerWidth / window.innerHeight)
-
     // Huge width.
-    if (window.innerWidth / window.innerHeight > 0.9) {
-      boardHeight = window.innerHeight * .6;
-      boardWidth = window.innerHeight * .6;
+    if (window.innerWidth / window.innerHeight >= 0.88) {
+      boardHeight = window.innerHeight * .57;
+      boardWidth = window.innerHeight * .57;
 
       cardWidth = boardWidth / 2.3;
       cardHeight = cardWidth / 1.61803398875;
+    }
+
+    // Mid sizes.
+    else if (window.innerWidth / window.innerHeight < 0.88 && window.innerWidth / window.innerHeight > 0.68) {
+      boardWidth = window.innerWidth * .50;
+      boardHeight = window.innerWidth * .50;
+
+      cardHeight = boardWidth / 1.8;
+      cardWidth = cardHeight / 1.61803398875;
     }
 
     // Huge height.
@@ -72,7 +79,6 @@ export class Board {
       cardHeight = boardWidth / 1.8;
       cardWidth = cardHeight / 1.61803398875;
     }
-
 
     let css = `
       .card { 
@@ -85,10 +91,14 @@ export class Board {
         height: ${boardHeight}px; 
       }
     `;
-    let style = document.createElement('style');
-    style.type = 'text/css';
-    style.appendChild(document.createTextNode(css));
-    document.head.appendChild(style);
+
+    if (!this.style) {
+      this.style = document.createElement('style');
+      this.style.type = 'text/css';
+      document.head.appendChild(this.style);
+    }
+
+    this.style.innerText = css;
   }
 
   /**
