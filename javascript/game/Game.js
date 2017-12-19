@@ -176,7 +176,7 @@ export class Game {
   }
 
   /**
-   * When only using a selected piece and a clik on a tiel to move, it can happen both cards can get the piece there.
+   * When only using a selected piece and a click on a tile to move, it can happen both cards can get the piece there.
    * Than we use this wizard to let the player choose.
    */
   openChoosePopup (tile) {
@@ -219,10 +219,12 @@ export class Game {
   animateCardSwap (card) {
     let oppositePlayerId = this.state.turnPlayer === 1 ? 2 : 1;
     let deck2 = this.board['player' + oppositePlayerId + 'Deck'];
+    let swapDeck = this.board.swapDeck;
 
     let temporaryPlaceholder1 = document.createElement('div');
     temporaryPlaceholder1.classList.add('card');
     temporaryPlaceholder1.classList.add('invisible');
+    temporaryPlaceholder1.classList.add('item-1');
     card.element.parentNode.insertBefore(temporaryPlaceholder1, card.element);
     card.element.classList.add('animating');
 
@@ -242,7 +244,8 @@ export class Game {
     let temporaryPlaceholder2 = document.createElement('div');
     temporaryPlaceholder2.classList.add('card');
     temporaryPlaceholder2.classList.add('invisible');
-    deck2.insertBefore(temporaryPlaceholder2, deck2.firstChild);
+    temporaryPlaceholder2.classList.add('item-2');
+    swapDeck.insertBefore(temporaryPlaceholder2, swapDeck.firstChild);
     this.boardElement.appendChild(card.element);
 
     return;
