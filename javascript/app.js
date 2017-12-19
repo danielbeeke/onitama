@@ -3,6 +3,8 @@ import {EventEmitter} from '/javascript/core/EventEmitter.js';
 
 import {Connection} from '/javascript/connection/Connection.js';
 
+window.es6Loaded = true;
+
 class App {
   constructor () {
     this.emitter = new EventEmitter();
