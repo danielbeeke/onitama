@@ -4,8 +4,9 @@ import {EasyP2P} from '/javascript/connection/EasyP2P.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 
 export class Connection extends EventEmitter {
-  constructor () {
+  constructor (roomName) {
     super();
+    this.roomName = roomName;
     this.myGuid = Helpers.guid();
 
     // Initiate the connection via an asymmetric process
@@ -37,7 +38,7 @@ export class Connection extends EventEmitter {
    * @param done
    */
   websockets (done) {
-    this.ws = new WebSocket('wss://connect.opengroup.io' + location.pathname);
+    this.ws = new WebSocket('wss://connect.opengroup.io/' + this.roomName);
 
     this.ws.onopen = () => {
       this.ws.send(JSON.stringify({
