@@ -30,3 +30,43 @@
     background-color: rgba($player2, .2);
   }
 }
+
+$board-size: 64vh;
+
+.board {
+  width: $board-size;
+  height: $board-size;
+}
+
+.card {
+  width: calc(#{$board-size} / 1.8);
+  height: calc(#{$board-size} / 1.8 / 1.618033988);
+}
+
+@media (min-aspect-ratio: 3 / 2) {
+  $board-size: 57vh;
+
+  .board {
+    width: $board-size;
+    height: $board-size;
+  }
+
+  .card {
+    width: calc(#{$board-size} / 2.3);
+    height: calc(#{$board-size} / 2.3 / 1.618033988);
+  }
+}
+
+@media (max-aspect-ratio: 3 / 4) {
+  $board-size: 50vw;
+
+  .board {
+    width: $board-size;
+    height: $board-size;
+  }
+
+  .card {
+    width: calc(#{$board-size} / 1.8);
+    height: calc(#{$board-size} / 1.8 / 1.618033988);
+  }
+}

@@ -20,8 +20,6 @@ export class Board {
     this.createTiles();
     this.createDecks();
 
-    this.createInlineStyle();
-
     window.addEventListener('resize', () => {
       this.createInlineStyle();
     })
@@ -45,60 +43,6 @@ export class Board {
     this.player1Deck.classList.add('deck');
     this.player1Deck.classList.add('player1');
     this.middleWrapper.appendChild(this.player1Deck);
-  }
-
-  /**
-   * A bit of styling is dynamic.
-   */
-  createInlineStyle () {
-    let cardWidth, cardHeight, boardWidth, boardHeight;
-
-    // Huge width.
-    if (window.innerWidth / window.innerHeight >= 0.88) {
-      boardHeight = window.innerHeight * .57;
-      boardWidth = window.innerHeight * .57;
-
-      cardWidth = boardWidth / 2.3;
-      cardHeight = cardWidth / 1.61803398875;
-    }
-
-    // Mid sizes.
-    else if (window.innerWidth / window.innerHeight < 0.88 && window.innerWidth / window.innerHeight > 0.68) {
-      boardWidth = window.innerWidth * .50;
-      boardHeight = window.innerWidth * .50;
-
-      cardHeight = boardWidth / 1.8;
-      cardWidth = cardHeight / 1.61803398875;
-    }
-
-    // Huge height.
-    else {
-      boardWidth = window.innerWidth * .64;
-      boardHeight = window.innerWidth * .64;
-
-      cardHeight = boardWidth / 1.8;
-      cardWidth = cardHeight / 1.61803398875;
-    }
-
-    let css = `
-      .card { 
-        width: ${cardWidth}px;
-        height: ${cardHeight}px; 
-      }
-    
-      .board { 
-        width: ${boardWidth}px;
-        height: ${boardHeight}px; 
-      }
-    `;
-
-    if (!this.style) {
-      this.style = document.createElement('style');
-      this.style.type = 'text/css';
-      document.head.appendChild(this.style);
-    }
-
-    this.style.innerText = css;
   }
 
   /**
