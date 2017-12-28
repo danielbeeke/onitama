@@ -31,7 +31,7 @@
   }
 }
 
-$board-size: 64vh;
+$board-size: 48vmin;
 
 .board {
   width: $board-size;
@@ -43,7 +43,7 @@ $board-size: 64vh;
   height: calc(#{$board-size} / 1.8 / 1.618033988);
 }
 
-@media (min-aspect-ratio: 3 / 2) {
+@media (min-aspect-ratio: 3 / 3) {
   $board-size: 57vh;
 
   .board {
@@ -57,8 +57,8 @@ $board-size: 64vh;
   }
 }
 
-@media (max-aspect-ratio: 3 / 4) {
-  $board-size: 50vw;
+@media (max-aspect-ratio: 5 / 8) {
+  $board-size: 66vw;
 
   .board {
     width: $board-size;
@@ -66,7 +66,7 @@ $board-size: 64vh;
   }
 
   .card {
-    width: calc(#{$board-size} / 1.8);
-    height: calc(#{$board-size} / 1.8 / 1.618033988);
+    height: calc(#{$board-size} / 1.8);
+    width: calc(#{$board-size} / 1.8 / 1.618033988);
   }
 }
