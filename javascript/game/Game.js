@@ -217,15 +217,16 @@ export class Game {
    * This animates the swapping of a card.
    */
   animateCardSwap (card) {
-    let oppositePlayerId = this.state.turnPlayer === 1 ? 2 : 1;
-    let deck2 = this.board['player' + oppositePlayerId + 'Deck'];
     let swapDeck = this.board.swapDeck;
+    let activePlayer = this.state['player' + this.state.turnPlayer];
+    let playerDeck = this.board['player' + this.state.turnPlayer + 'Deck'];
 
     let temporaryPlaceholder1 = document.createElement('div');
     temporaryPlaceholder1.classList.add('card');
     temporaryPlaceholder1.classList.add('invisible');
     temporaryPlaceholder1.classList.add('item-1');
     card.element.parentNode.insertBefore(temporaryPlaceholder1, card.element);
+
     card.element.classList.add('animating');
 
     card.element.remove();
@@ -239,41 +240,71 @@ export class Game {
       height: ${position1.height}px;
       transition: all .4s ease-in-out;
       position: fixed;
-    ` + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+    `; //  + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+
+    this.boardElement.appendChild(card.element);
 
     let temporaryPlaceholder2 = document.createElement('div');
     temporaryPlaceholder2.classList.add('card');
     temporaryPlaceholder2.classList.add('invisible');
     temporaryPlaceholder2.classList.add('item-2');
     swapDeck.insertBefore(temporaryPlaceholder2, swapDeck.firstChild);
-    this.boardElement.appendChild(card.element);
 
-    return;
+    this.state.swapCard.element.classList.add('animating');
+    this.state.swapCard.element.remove();
 
     let position2 = temporaryPlaceholder2.getBoundingClientRect();
 
+    this.state.swapCard.element.style = `
+      top: ${position2.top}px;
+      left: ${position2.left}px;
+      width: ${position2.width}px;
+      height: ${position2.height}px;
+      transition: all .4s ease-in-out;
+      position: fixed;
+    `; // + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+
+    this.boardElement.appendChild(this.state.swapCard.element);
+
     setTimeout(() => {
-      card.element.style = `
-        top: ${position2.top}px; 
-        left: ${position2.left}px;
-        width: ${position2.width}px; 
-        height: ${position2.height}px;
-        transition: all .4s ease-in-out;
-        position: fixed;
-      ` + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+      let onTransitionEnd = () => {
+        this.state.swapCard.element.removeEventListener('transitionend', onTransitionEnd);
+        swapDeck.appendChild(card.element);
+        playerDeck.appendChild(this.state.swapCard.element);
 
-      setTimeout(() => {
-        card.element.classList.remove('animating');
-        temporaryPlaceholder2.classList.add('invisible');
         temporaryPlaceholder1.remove();
+        temporaryPlaceholder2.remove();
 
-        setTimeout(() => {
-          card.element.style = '';
-          card.swap();
-          temporaryPlaceholder2.remove();
-        }, 300);
-      }, 600)
-    }, 400);
+        card.element.classList.remove('animating');
+        this.state.swapCard.element.classList.remove('animating');
+
+        card.element.style = '';
+        this.state.swapCard.element.style = '';
+
+        card.swap();
+      };
+
+      this.state.swapCard.element.addEventListener('transitionend', onTransitionEnd);
+
+      card.element.style = `
+      top: ${position2.top}px; 
+      left: ${position2.left}px;
+      width: ${position2.width}px; 
+      height: ${position2.height}px;
+      transition: all .4s ease-in-out;
+      position: fixed;
+    `; //  + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+
+      this.state.swapCard.element.style = `
+      top: ${position1.top}px;
+      left: ${position1.left}px;
+      width: ${position1.width}px;
+      height: ${position1.height}px;
+      transition: all .4s ease-in-out;
+      position: fixed;
+    `; //  + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+
+    }, 100);
   }
 
   /**

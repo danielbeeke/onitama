@@ -7,7 +7,6 @@
   flex-direction: column;
   border: 5px solid white;
   transition: all $speed $easing, opacity 0s;
-  margin: 10px;
 
   &.invisible {
     opacity: 0 !important;

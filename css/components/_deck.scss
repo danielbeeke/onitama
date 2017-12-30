@@ -5,6 +5,7 @@
   justify-content: space-around;
   border-radius: 5px;
   transition: border $speed $easing;
+  padding: 20px 0;
 
   &.swap {
     flex: 0 0 auto;

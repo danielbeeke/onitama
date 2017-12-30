@@ -19,10 +19,6 @@ export class Board {
 
     this.createTiles();
     this.createDecks();
-
-    window.addEventListener('resize', () => {
-      this.createInlineStyle();
-    })
   }
 
   /**
