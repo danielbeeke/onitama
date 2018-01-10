@@ -5,19 +5,20 @@
   left: 0;
   top: 0;
   z-index: 20;
-  background-color: rgba(#eee, .7);
+  background-color: rgba(black, .5);
   transition: opacity $speed $easing;
 
   .card {
+    position: absolute;
+    left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
 
     &:nth-child(1) {
-      left: 20%;
+      transform: translate(-50%, -50%) translateX(-55%);
     }
 
     &:nth-child(2) {
-      left: 80%;
+      transform: translate(-50%, -50%) translateX(55%);
     }
   }
 

@@ -115,7 +115,7 @@ export class Game {
 
         this.emitter.emit('turn', usedPiece, tile, usedCard, oldX, oldY, isExternal);
 
-        // this.state.toggleTurnPlayer();
+        this.state.toggleTurnPlayer();
       }
     });
 
@@ -218,6 +218,7 @@ export class Game {
    * This animates the swapping of a card.
    */
   animateCardSwap (card) {
+    let transition = 'transition: all .4s ease-in-out';
     let swapDeck = this.board.swapDeck;
     let activePlayer = this.state['player' + this.state.turnPlayer];
     let playerDeck = this.board['player' + this.state.turnPlayer + 'Deck'];
@@ -247,9 +248,9 @@ export class Game {
       left: ${position1.left}px;
       width: ${position1.width}px; 
       height: ${position1.height}px;
-      transition: all .4s ease-in-out;
+      ${transition};
       position: fixed;
-    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(0deg);' : 'transform: rotate(180deg);');
 
     this.boardElement.appendChild(card.element);
 
@@ -269,15 +270,13 @@ export class Game {
       left: ${position2.left}px;
       width: ${position2.width}px;
       height: ${position2.height}px;
-      transition: all .4s ease-in-out;
+      ${transition};
       position: fixed;
-    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(0deg);' : 'transform: rotate(180deg);');
 
     this.boardElement.appendChild(this.state.swapCard.element);
 
     setTimeout(() => {
-      this.state.toggleTurnPlayer();
-
       let onTransitionEnd = () => {
         this.state.swapCard.element.removeEventListener('transitionend', onTransitionEnd);
         swapDeck.appendChild(card.element);
@@ -304,18 +303,18 @@ export class Game {
       left: ${position2.left}px;
       width: ${position2.width}px; 
       height: ${position2.height}px;
-      transition: all .4s ease-in-out;
+      ${transition};
       position: fixed;
-    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(0deg);' : 'transform: rotate(180deg);');
 
       this.state.swapCard.element.style = `
       top: ${position1.top}px;
       left: ${position1.left}px;
       width: ${position1.width}px;
       height: ${position1.height}px;
-      transition: all .4s ease-in-out;
+      ${transition};
       position: fixed;
-    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(180deg);' : 'transform: rotate(0deg);');
 
     }, 100);
   }
