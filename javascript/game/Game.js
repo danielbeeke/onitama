@@ -111,10 +111,11 @@ export class Game {
         activePlayer.activePiece.deselect();
         activePlayer.activePiece = false;
 
-        this.state.toggleTurnPlayer();
         this.updateHighLights();
 
         this.emitter.emit('turn', usedPiece, tile, usedCard, oldX, oldY, isExternal);
+
+        // this.state.toggleTurnPlayer();
       }
     });
 
@@ -248,7 +249,7 @@ export class Game {
       height: ${position1.height}px;
       transition: all .4s ease-in-out;
       position: fixed;
-    `; //  + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
     this.boardElement.appendChild(card.element);
 
@@ -270,11 +271,13 @@ export class Game {
       height: ${position2.height}px;
       transition: all .4s ease-in-out;
       position: fixed;
-    `; // + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
     this.boardElement.appendChild(this.state.swapCard.element);
 
     setTimeout(() => {
+      this.state.toggleTurnPlayer();
+
       let onTransitionEnd = () => {
         this.state.swapCard.element.removeEventListener('transitionend', onTransitionEnd);
         swapDeck.appendChild(card.element);
@@ -303,7 +306,7 @@ export class Game {
       height: ${position2.height}px;
       transition: all .4s ease-in-out;
       position: fixed;
-    `; //  + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
       this.state.swapCard.element.style = `
       top: ${position1.top}px;
@@ -312,7 +315,7 @@ export class Game {
       height: ${position1.height}px;
       transition: all .4s ease-in-out;
       position: fixed;
-    `; //  + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 2 ? 'transform: rotate(180deg);' : '');
 
     }, 100);
   }

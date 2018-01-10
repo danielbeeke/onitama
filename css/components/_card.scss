@@ -58,6 +58,12 @@
   }
 }
 
+[data-active-player="2"] {
+  .card[data-swap="true"] {
+    transform: rotate(180deg);
+  }
+}
+
 @media (min-width: 450px) {
   .card {
     .title {
