@@ -1,5 +1,6 @@
 import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
+import {EndScreen} from '/javascript/game/EndScreen.js';
 
 export class Game {
 
@@ -48,6 +49,19 @@ export class Game {
     // On turn set.
     this.emitter.on('turn.set', (activePlayerId) => {
       this.boardElement.dataset.activePlayer = activePlayerId;
+    });
+
+    this.emitter.on('player.defeated', (player) => {
+
+      // Winner
+      if (player.id === this.state.turnPlayer) {
+        new EndScreen('Loser!');
+      }
+
+      // Loser
+      else {
+        new EndScreen('Winner!');
+      }
     });
 
     // Tiles.

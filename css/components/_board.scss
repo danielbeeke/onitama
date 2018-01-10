@@ -39,8 +39,8 @@ $board-size: 48vmin;
 }
 
 .card {
-  width: calc(#{$board-size} / 1.8);
-  height: calc(#{$board-size} / 1.8 / 1.618033988);
+  width: calc(#{$board-size} / 2.2);
+  height: calc(#{$board-size} / 2.2 / 1.618033988);
 }
 
 @media (min-aspect-ratio: 3 / 3) {

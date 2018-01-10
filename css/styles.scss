@@ -15,3 +15,21 @@ $breakpoint: 940px;
 @import 'components/card';
 @import 'components/mini-board';
 @import 'components/card-choose-wizard';
+@import 'components/endscreen';
+
+body {
+  --color-text: #fff;
+  --color-bg: #101010;
+  --color-link: #fff;
+  --color-link-hover: #fff473;
+  --color-nav: #fff;
+  --color-bg-slide-1: #4cabef;
+  --color-bg-slide-2: #0406e6;
+  --color-bg-slide-3: #272526;
+  --color-bg-slide-4: #b9b9b9;
+  --color-bg-slide-5: #5900ce;
+  --color-bg-slide-6: #1b1a1a;
+  --color-bg-slide-7: #bf2525;
+  --color-bg-slide-8: #d6d1d1;
+  --color-bg-slide-9: #000000;
+}

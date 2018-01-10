@@ -12,6 +12,8 @@ body {
   padding: 0;
   height: 100%;
   background-color: #eee;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3 {
