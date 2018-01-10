@@ -221,6 +221,14 @@ export class Game {
     let activePlayer = this.state['player' + this.state.turnPlayer];
     let playerDeck = this.board['player' + this.state.turnPlayer + 'Deck'];
 
+    let swapPosition = 0;
+
+    playerDeck.childNodes.forEach((deckCard, delta) => {
+      if (deckCard === card.element) {
+        swapPosition = delta;
+      }
+    });
+
     let temporaryPlaceholder1 = document.createElement('div');
     temporaryPlaceholder1.classList.add('card');
     temporaryPlaceholder1.classList.add('invisible');
@@ -277,11 +285,13 @@ export class Game {
 
         card.element.classList.remove('animating');
         this.state.swapCard.element.classList.remove('animating');
-
         card.element.style = '';
         this.state.swapCard.element.style = '';
 
+        this.state.swapCard.unswap(activePlayer, swapPosition);
         card.swap();
+
+        card.player = false;
       };
 
       this.state.swapCard.element.addEventListener('transitionend', onTransitionEnd);
