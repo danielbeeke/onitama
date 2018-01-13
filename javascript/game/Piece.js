@@ -104,7 +104,10 @@ export class Piece {
     this.element.remove();
 
     if (this.type === 'master') {
-      this.state.emitter.emit('player.defeated', this.player);
+      this.state.emitter.emit('player.defeated', this);
+    }
+    else {
+      this.state.emitter.emit('piece.captured', this);
     }
   }
 }

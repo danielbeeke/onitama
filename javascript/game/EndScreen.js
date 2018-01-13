@@ -1,19 +1,19 @@
 export class EndScreen {
 
-  constructor (text) {
+  constructor (text, duration, effect = 'endscreen') {
 
     this.element = document.createElement('div');
     this.element.classList.add('endscreen');
     this.element.innerHTML = `<h2 class="word">${text}</h2>`;
     document.body.appendChild(this.element);
 
-    this.effect = {
+    this.endscreen = {
       options: {
         shapeColors: ['#35c394','#9985ee','#f54665','#4718f5','#f5aa18'],
       },
       hide: {
         lettersAnimationOpts: {
-          duration: 300,
+          duration: duration,
           delay: (t,i)  => (t.parentNode.children.length-i-1)*30,
           easing: 'easeOutExpo',
           opacity: 0,
@@ -36,7 +36,7 @@ export class EndScreen {
       },
       show: {
         lettersAnimationOpts: {
-          duration: 400,
+          duration: duration,
           delay: (t,i)  => (t.parentNode.children.length-i-1)*80,
           easing: 'easeOutElastic',
           opacity: {
@@ -69,20 +69,87 @@ export class EndScreen {
           rotate: () => anime.random(-90,90),
           opacity: {
             value: 0.6,
-            duration: 1000,
+            duration: duration * 1.4,
             easing: 'linear'
           }
         }
       }
     };
 
-    let word = new Word(this.element, this.effect.options);
+    this.capture = {
+      options: {
+        shapeColors: ['#0671e6'],
+        shapeTypes: ['circle'],
+        shapeFill: false,
+        shapeStrokeWidth: 3
+      },
+      hide: {
+        lettersAnimationOpts: {
+          duration: 300,
+          delay: (t,i,total) => i*25,
+          easing: 'easeOutQuad',
+          opacity: {
+            value: 0,
+            duration: 100,
+            delay: (t,i,total) => i*25,
+            easing: 'linear'
+          },
+          translateY: ['0%','-50%']
+        },
+        shapesAnimationOpts: {
+          duration: 300,
+          delay: (t,i) => i*20,
+          easing: 'easeOutExpo',
+          translateX: t => anime.random(-10,10),
+          translateY: t => -1*anime.random(400,800),
+          scale: [0.3,0.3],
+          opacity: [
+            {
+              value: 1,
+              duration:1,
+              delay: (t,i) => i*20
+            },
+            {
+              value: 0,
+              duration: 300,
+              easing: 'linear'
+            }
+          ]
+        }
+      },
+      show: {
+        lettersAnimationOpts: {
+          duration: 800,
+          delay: (t,i,total) => Math.abs(total/2-i)*60,
+          easing: 'easeOutElastic',
+          opacity: [0,1],
+          translateY: ['50%', '0%']
+        },
+        shapesAnimationOpts: {
+          duration: 700,
+          delay: (t,i) => i*60,
+          easing: 'easeOutExpo',
+          translateX: () => {
+            const rand = anime.random(-100,100);
+            return [rand,rand];
+          },
+          translateY: () => {
+            const rand = anime.random(-100,100);
+            return [rand,rand];
+          },
+          scale: () => [randomBetween(0.1,0.3),randomBetween(0.5,0.8)],
+          opacity: [{value: 1, duration:1, delay: (t,i) => i*80}, {value:0,duration: 700, easing: 'easeOutQuad',delay: 100}]
+        }
+      }
+    };
+
+    let word = new Word(this.element, this[effect].options);
 
     this.element.classList.add('visible');
 
-    word.show(this.effect.show).then(() => {
+    word.show(this[effect].show).then(() => {
       setTimeout(() => {
-        word.hide(this.effect.hide).then(() => {
+        word.hide(this[effect].hide).then(() => {
           this.element.addEventListener('transitionend', () => {
             word.DOM.svg.remove();
             this.element.remove();
@@ -90,7 +157,7 @@ export class EndScreen {
 
           this.element.classList.remove('visible');
         })
-      }, 1500);
+      }, duration);
     });
   }
 }

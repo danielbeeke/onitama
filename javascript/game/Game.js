@@ -51,17 +51,21 @@ export class Game {
       this.boardElement.dataset.activePlayer = activePlayerId;
     });
 
-    this.emitter.on('player.defeated', (player) => {
+    this.emitter.on('player.defeated', (piece) => {
 
       // Winner
-      if (player.id === this.state.turnPlayer) {
-        new EndScreen('Loser!');
+      if (piece.player.id === this.state.turnPlayer) {
+        new EndScreen('Loser!', 1000);
       }
 
       // Loser
       else {
-        new EndScreen('Winner!');
+        new EndScreen('Winner!', 1000);
       }
+    });
+
+    this.emitter.on('piece.captured', (piece) => {
+        new EndScreen('Oops!', 300, 'capture');
     });
 
     // Tiles.

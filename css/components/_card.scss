@@ -14,7 +14,7 @@
 
   &.animating {
     transition: 0s $speed $easing;
-    z-index: 10000;
+    z-index: 99;
   }
 
   .title {
