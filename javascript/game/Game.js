@@ -1,6 +1,8 @@
 import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
-import {Helpers} from '/javascript/core/Helpers.js';
+import {Audio} from '/javascript/game/Audio.js';
+import {TextScreen} from '/javascript/game/TextScreen.js';
+import {Inactivity} from '/javascript/game/Inactivity.js';
 
 export class Game {
 
@@ -11,6 +13,9 @@ export class Game {
   constructor (selector, emitter, role, onitamaStringNotation = null) {
     this.emitter = emitter;
     this.role = role;
+    this.localPlayerId = this.role === 'answerer' ? 2 : 1;
+    this.inactivityTurn = false;
+
     this.element = document.querySelector(selector);
     this.element.innerHTML = '';
     if (!this.element) { throw 'No element found for the onitama game'; }
@@ -18,6 +23,8 @@ export class Game {
     this.boardElement = document.createElement('div');
     this.element.appendChild(this.boardElement);
     this.board = new Board(this.boardElement, this.emitter);
+    this.audio = new Audio(this.emitter);
+    this.inactivity = new Inactivity(this.emitter);
 
     if (onitamaStringNotation) {
       this.state = new State(this.board, this.emitter, onitamaStringNotation);
@@ -31,24 +38,95 @@ export class Game {
   }
 
   externalTurn (turnData) {
-    let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
-    let activePlayer = this.state['player' + this.state.turnPlayer];
-    let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
-    let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
-    usedCard.select();
-    usedPiece.select();
+    if (document.hidden) {
+      this.inactivityTurn = turnData;
+      this.emitter.emit('inactivity.turn');
+    }
+    else {
+      let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
+      let activePlayer = this.state['player' + this.state.turnPlayer];
+      let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
+      let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
 
-    usedTile.highlight();
-    this.emitter.emit('tile.click', usedTile, true);
+      if (usedCard && usedPiece && usedTile) {
+        usedCard.select();
+        usedPiece.select();
+        usedTile.highlight();
+
+        setTimeout(() => {
+          this.emitter.emit('tile.click', usedTile, true);
+        }, 1700);
+      }
+
+    }
+  }
+
+  winner () {
+    new TextScreen('Winner!', 1000,'textscreen', () => {
+      window.location.reload(false);
+    });
+  }
+
+  loser () {
+    new TextScreen('Loser!', 1000, 'textscreen', () => {
+      window.location.reload(false);
+    });
   }
 
   /**
    * Reacts on the emitter. This is the main game logic.
    */
   attachEvents () {
+    document.addEventListener('visibilitychange', () => {
+      if (this.inactivityTurn && !document.hidden) {
+        this.externalTurn(this.inactivityTurn);
+        this.inactivityTurn = false;
+      }
+    });
+
     // On turn set.
     this.emitter.on('turn.set', (activePlayerId) => {
       this.boardElement.dataset.activePlayer = activePlayerId;
+    });
+
+    this.emitter.on('turn', (usedPiece, tile, usedCard, oldX, oldY, isExternal) => {
+      if (tile.x === 3 && tile.y === 1) {
+        if (usedPiece.player.id === this.localPlayerId) {
+          this.winner();
+        }
+        else {
+          this.loser();
+        }
+      }
+
+      if (tile.x === 3 && tile.y === 5) {
+        if (usedPiece.player.id === this.localPlayerId) {
+          this.winner();
+        }
+        else {
+          this.loser();
+        }
+      }
+    });
+
+    this.emitter.on('player.defeated', (piece) => {
+      if (piece.player.id === this.localPlayerId) {
+        this.loser();
+      }
+
+      else {
+        this.winner();
+      }
+    });
+
+    this.emitter.on('piece.captured', (piece) => {
+      if (piece.player.id === this.localPlayerId) {
+        new TextScreen('Oops!', 300, 'capture');
+      }
+
+      else {
+        new TextScreen('Woop woop!', 300, 'capture');
+      }
     });
 
     // Tiles.
@@ -112,10 +190,11 @@ export class Game {
         activePlayer.activePiece.deselect();
         activePlayer.activePiece = false;
 
-        this.state.toggleTurnPlayer();
         this.updateHighLights();
 
         this.emitter.emit('turn', usedPiece, tile, usedCard, oldX, oldY, isExternal);
+
+        this.state.toggleTurnPlayer();
       }
     });
 
@@ -177,7 +256,7 @@ export class Game {
   }
 
   /**
-   * When only using a selected piece and a clik on a tiel to move, it can happen both cards can get the piece there.
+   * When only using a selected piece and a click on a tile to move, it can happen both cards can get the piece there.
    * Than we use this wizard to let the player choose.
    */
   openChoosePopup (tile) {
@@ -218,13 +297,25 @@ export class Game {
    * This animates the swapping of a card.
    */
   animateCardSwap (card) {
-    let oppositePlayerId = this.state.turnPlayer === 1 ? 2 : 1;
-    let deck2 = this.board['player' + oppositePlayerId + 'Deck'];
+    let transition = 'transition: all .4s ease-in-out';
+    let swapDeck = this.board.swapDeck;
+    let activePlayer = this.state['player' + this.state.turnPlayer];
+    let playerDeck = this.board['player' + this.state.turnPlayer + 'Deck'];
+
+    let swapPosition = 0;
+
+    playerDeck.childNodes.forEach((deckCard, delta) => {
+      if (deckCard === card.element) {
+        swapPosition = delta;
+      }
+    });
 
     let temporaryPlaceholder1 = document.createElement('div');
     temporaryPlaceholder1.classList.add('card');
     temporaryPlaceholder1.classList.add('invisible');
+    temporaryPlaceholder1.classList.add('item-1');
     card.element.parentNode.insertBefore(temporaryPlaceholder1, card.element);
+
     card.element.classList.add('animating');
 
     card.element.remove();
@@ -236,40 +327,75 @@ export class Game {
       left: ${position1.left}px;
       width: ${position1.width}px; 
       height: ${position1.height}px;
-      transition: all .4s ease-in-out;
+      ${transition};
       position: fixed;
-    ` + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(0deg);' : 'transform: rotate(180deg);');
+
+    this.boardElement.appendChild(card.element);
 
     let temporaryPlaceholder2 = document.createElement('div');
     temporaryPlaceholder2.classList.add('card');
     temporaryPlaceholder2.classList.add('invisible');
-    deck2.insertBefore(temporaryPlaceholder2, deck2.firstChild);
-    this.boardElement.appendChild(card.element);
+    temporaryPlaceholder2.classList.add('item-2');
+    swapDeck.insertBefore(temporaryPlaceholder2, swapDeck.firstChild);
+
+    this.state.swapCard.element.classList.add('animating');
+    this.state.swapCard.element.remove();
 
     let position2 = temporaryPlaceholder2.getBoundingClientRect();
 
+    this.state.swapCard.element.style = `
+      top: ${position2.top}px;
+      left: ${position2.left}px;
+      width: ${position2.width}px;
+      height: ${position2.height}px;
+      ${transition};
+      position: fixed;
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(0deg);' : 'transform: rotate(180deg);');
+
+    this.boardElement.appendChild(this.state.swapCard.element);
+
     setTimeout(() => {
-      card.element.style = `
-        top: ${position2.top}px; 
-        left: ${position2.left}px;
-        width: ${position2.width}px; 
-        height: ${position2.height}px;
-        transition: all .4s ease-in-out;
-        position: fixed;
-      ` + (this.state.turnPlayer === 2 && this.role === 'initiator' || this.state.turnPlayer === 1 && this.role === 'answerer' ? 'transform: rotate(180deg);' : '');
+      let onTransitionEnd = () => {
+        this.state.swapCard.element.removeEventListener('transitionend', onTransitionEnd);
+        swapDeck.appendChild(card.element);
+        playerDeck.appendChild(this.state.swapCard.element);
 
-      setTimeout(() => {
-        card.element.classList.remove('animating');
-        temporaryPlaceholder2.classList.add('invisible');
         temporaryPlaceholder1.remove();
+        temporaryPlaceholder2.remove();
 
-        setTimeout(() => {
-          card.element.style = '';
-          card.swap();
-          temporaryPlaceholder2.remove();
-        }, 300);
-      }, 600)
-    }, 400);
+        card.element.classList.remove('animating');
+        this.state.swapCard.element.classList.remove('animating');
+        card.element.style = '';
+        this.state.swapCard.element.style = '';
+
+        this.state.swapCard.unswap(activePlayer, swapPosition);
+        card.swap();
+
+        card.player = false;
+      };
+
+      this.state.swapCard.element.addEventListener('transitionend', onTransitionEnd);
+
+      card.element.style = `
+      top: ${position2.top}px; 
+      left: ${position2.left}px;
+      width: ${position2.width}px; 
+      height: ${position2.height}px;
+      ${transition};
+      position: fixed;
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(0deg);' : 'transform: rotate(180deg);');
+
+      this.state.swapCard.element.style = `
+      top: ${position1.top}px;
+      left: ${position1.left}px;
+      width: ${position1.width}px;
+      height: ${position1.height}px;
+      ${transition};
+      position: fixed;
+    ` + (this.state.turnPlayer === 1 && this.role === 'initiator' || this.state.turnPlayer === 2 && this.role === 'answerer' ? 'transform: rotate(180deg);' : 'transform: rotate(0deg);');
+
+    }, 100);
   }
 
   /**

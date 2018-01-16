@@ -1,6 +1,7 @@
 import {cards} from '/data/cards.js';
 import {Helpers} from '/javascript/core/Helpers.js';
 import {Player} from '/javascript/game/Player.js';
+import {Card} from '/javascript/game/Card.js';
 
 export class State {
 
@@ -103,8 +104,7 @@ export class State {
 
     this.turnPlayer = stateObject.turnPlayer;
     this.emitter.emit('turn.set', this.turnPlayer);
-    let oppositeTurnPlayerId = this.turnPlayer === 1 ? 2 : 1;
-    this.swapCard = this['player' + oppositeTurnPlayerId].addCard(stateObject.swapCard);
+    this.swapCard = new Card(stateObject.swapCard, this, false);
 
     this.cards.push(this.swapCard);
     this.swapCard.swap();

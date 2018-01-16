@@ -102,5 +102,12 @@ export class Piece {
     this.x = -1;
     this.y = -1;
     this.element.remove();
+
+    if (this.type === 'master') {
+      this.state.emitter.emit('player.defeated', this);
+    }
+    else {
+      this.state.emitter.emit('piece.captured', this);
+    }
   }
 }

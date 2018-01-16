@@ -27,7 +27,9 @@ export class Card {
 
     this.data = {};
 		this.sets = new Set(data.sets);
-		this.player = player;
+		if (player) {
+      this.player = player;
+    }
 
     ['click', 'mouseenter', 'mouseleave'].forEach((eventName) => {
       this.element.addEventListener(eventName, (event) => {
@@ -57,32 +59,42 @@ export class Card {
   /**
    * When a card is played the card gets swapped to the other player.
    */
+  unswap (player, position) {
+    this.element.dataset.swap = false;
+    this.data.swap = false;
+    this.state.swapCard = false;
+
+    this.data.player = player;
+    this.element.dataset.owner = this.player.id;
+    this.data.player.cards.push(this);
+
+    let deck = this.state.board['player' + this.player.id + 'Deck'];
+
+    if (position === 0) {
+      deck.insertBefore(this.element, deck.firstChild);
+    }
+    else {
+      deck.appendChild(this.element);
+    }
+  }
+
+  /**
+   * When a card is played the card gets swapped to the other player.
+   */
 	swap () {
-    let oppositePlayerId = this.player.id === 1 ? 2 : 1;
-    this.player = this.state['player' + oppositePlayerId];
+    this.element.dataset.swap = true;
+    this.data.swap = true;
+    this.state.swapCard = this;
 
-    this.state.cards.forEach((card) => {
-      if (card.id !== this.id) {
-        card.element.dataset.swap = false;
-        card.data.swap = false;
-      }
-      else {
-        card.element.dataset.swap = true;
-        card.data.swap = true;
-      }
-    });
+    if (this.player) {
+      this.player.cards.forEach((card, delta) => {
+        if (card === this) {
+          this.player.cards.splice(delta, 1);
+        }
+      });
+    }
 
-    this.state.player1.cards = [];
-    this.state.player2.cards = [];
-
-    this.state.cards.forEach((card) => {
-      if (card.player && card.player.id) {
-        card.player.cards.push(card);
-      }
-      else {
-        this.state.swapCard = card;
-      }
-    })
+    this.player = false;
   }
 
   /**
@@ -91,8 +103,19 @@ export class Card {
 	set player (player) {
 	  this.data.player = player;
     this.element.dataset.owner = this.player.id;
-    let deck = this.state.board['player' + this.player.id + 'Deck'];
-    deck.insertBefore(this.element, deck.firstChild);
+
+    let deck = null;
+
+    if (this.data.swap === true) {
+      deck = this.state.board['swapDeck'];
+    }
+    else {
+      deck = this.state.board['player' + this.player.id + 'Deck'];
+    }
+
+    if (deck) {
+      deck.insertBefore(this.element, deck.firstChild);
+    }
   }
 
   /**
@@ -115,7 +138,9 @@ export class Card {
    * Deselects the card and updates that state to the player.
    */
   deselect () {
-    this.player.activeCard = false;
+    if (this.player) {
+      this.player.activeCard = false;
+    }
 	  this.data.selected = false;
     this.element.dataset.selected = false;
   }
