@@ -62,15 +62,19 @@ export class Game {
   }
 
   winner () {
-    new TextScreen('Winner!', 1000,'textscreen', () => {
-      window.location.reload(false);
-    });
+    setTimeout(() => {
+      new TextScreen('Winner!', 1000,'textscreen', () => {
+        window.location.reload(false);
+      });
+    }, 500);
   }
 
   loser () {
-    new TextScreen('Loser!', 1000, 'textscreen', () => {
-      window.location.reload(false);
-    });
+    setTimeout(() => {
+      new TextScreen('Loser!', 1000, 'textscreen', () => {
+        window.location.reload(false);
+      });
+    }, 500);
   }
 
   /**
@@ -90,7 +94,10 @@ export class Game {
     });
 
     this.emitter.on('turn', (usedPiece, tile, usedCard, oldX, oldY, isExternal) => {
-      if (tile.x === 3 && tile.y === 1) {
+
+      // TODO bugs.
+
+      if (tile.x === 3 && tile.y === 1 && usedPiece.type === 'master' && usedPiece.player.id === 1) {
         if (usedPiece.player.id === this.localPlayerId) {
           this.winner();
         }
@@ -99,12 +106,12 @@ export class Game {
         }
       }
 
-      if (tile.x === 3 && tile.y === 5) {
+      if (tile.x === 3 && tile.y === 5 && usedPiece.type === 'master' && usedPiece.player.id === 2) {
         if (usedPiece.player.id === this.localPlayerId) {
-          this.winner();
+          this.loser();
         }
         else {
-          this.loser();
+          this.winner();
         }
       }
     });
@@ -120,13 +127,15 @@ export class Game {
     });
 
     this.emitter.on('piece.captured', (piece) => {
-      if (piece.player.id === this.localPlayerId) {
-        new TextScreen('Oops!', 300, 'capture');
-      }
+      setTimeout(() => {
+        if (piece.player.id === this.localPlayerId) {
+          new TextScreen('Oops!', 300, 'capture');
+        }
 
-      else {
-        new TextScreen('Woop woop!', 300, 'capture');
-      }
+        else {
+          new TextScreen('Woop woop!', 300, 'capture');
+        }
+      }, 500);
     });
 
     // Tiles.

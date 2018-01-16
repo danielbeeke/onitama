@@ -20,7 +20,8 @@
 
 [data-webrtc-role="answerer"] {
   .left-wrapper,
-  .deck.swap {
+  .deck.swap,
+  .card-choose-wizard {
     transform: rotate(180deg);
   }
 
