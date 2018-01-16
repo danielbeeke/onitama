@@ -11,9 +11,16 @@ export class Inactivity {
       }
     });
 
+    Notification.requestPermission();
+
     this.emitter.on('inactivity.turn', () => {
       if (document.hidden) {
         this.animateTabTitle('New activity! - - - New activity! - - - New activity! - - - ');
+
+        if (window.Notification && Notification.permission !== 'denied') {
+          new Notification('There is Onitama activity!');
+        }
+
       }
     });
   }
@@ -30,7 +37,7 @@ export class Inactivity {
 
         setTimeout(() => {
           doStep();
-        }, 300);
+        }, 100);
       }
     };
 
