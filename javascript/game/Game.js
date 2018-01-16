@@ -209,7 +209,7 @@ export class Game {
 
     // Pieces.
     this.emitter.on('piece.click', (piece) => {
-      if (this.state.turnPlayer === piece.player.id) {
+      if (this.state.turnPlayer === piece.player.id && piece.player.id === this.localPlayerId) {
         piece.player.pieces.forEach((innerPiece) => {
           if (innerPiece !== piece) { innerPiece.deselect() }
         });
@@ -219,7 +219,7 @@ export class Game {
     });
 
     this.emitter.on('piece.mouseenter', (piece) => {
-      if (this.state.turnPlayer === piece.player.id) {
+      if (this.state.turnPlayer === piece.player.id && piece.player.id === this.localPlayerId) {
         if (!piece.player.activePiece) {
           piece.player.activePiece = piece;
         }
@@ -228,7 +228,7 @@ export class Game {
     });
 
     this.emitter.on('piece.mouseleave', (piece) => {
-      if (this.state.turnPlayer === piece.player.id) {
+      if (this.state.turnPlayer === piece.player.id && piece.player.id === this.localPlayerId) {
         if (piece.player.activePiece === piece && !piece.data.selected) {
           piece.player.activePiece = false;
         }
@@ -238,7 +238,7 @@ export class Game {
 
     // Cards.
     this.emitter.on('card.click', (card) => {
-      if (this.state.turnPlayer === card.player.id && !card.data.swap) {
+      if (this.state.turnPlayer === card.player.id && !card.data.swap && card.player.id === this.localPlayerId) {
         this.state.cards.forEach((innerCard) => {
           if (innerCard !== card) { innerCard.deselect() }
         });
@@ -248,7 +248,7 @@ export class Game {
     });
 
     this.emitter.on('card.mouseenter', (card) => {
-      if (this.state.turnPlayer === card.player.id && !card.data.swap) {
+      if (this.state.turnPlayer === card.player.id && !card.data.swap && card.player.id === this.localPlayerId) {
         if (!card.player.activeCard) {
           card.player.activeCard = card;
         }
@@ -257,7 +257,7 @@ export class Game {
     });
 
     this.emitter.on('card.mouseleave', (card) => {
-      if (card.player.activeCard === card && !card.data.selected) {
+      if (card.player.activeCard === card && !card.data.selected && card.player.id === this.localPlayerId) {
         card.player.activeCard = false;
       }
       this.updateHighLights();
