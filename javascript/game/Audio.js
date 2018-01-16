@@ -5,6 +5,7 @@ export class Audio {
     this.emitter = emitter;
     let moves = this.loadAudio('move', 9);
     let captures = this.loadAudio('capture', 6);
+    let atenttions = this.loadAudio('inactivity', 4);
 
     this.emitter.on('turn', () => {
       this.playRandomItem(moves);
@@ -16,6 +17,12 @@ export class Audio {
 
     this.emitter.on('piece.captured', (piece) => {
       this.playRandomItem(captures);
+    });
+
+    this.emitter.on('inactivity.turn', () => {
+      if (document.hidden) {
+        this.playRandomItem(atenttions);
+      }
     });
   }
 

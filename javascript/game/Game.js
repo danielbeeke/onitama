@@ -2,6 +2,7 @@ import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
 import {Audio} from '/javascript/game/Audio.js';
 import {TextScreen} from '/javascript/game/TextScreen.js';
+import {Inactivity} from '/javascript/game/Inactivity.js';
 
 export class Game {
 
@@ -13,6 +14,7 @@ export class Game {
     this.emitter = emitter;
     this.role = role;
     this.localPlayerId = this.role === 'answerer' ? 2 : 1;
+    this.inactivityTurn = false;
 
     this.element = document.querySelector(selector);
     this.element.innerHTML = '';
@@ -22,6 +24,7 @@ export class Game {
     this.element.appendChild(this.boardElement);
     this.board = new Board(this.boardElement, this.emitter);
     this.audio = new Audio(this.emitter);
+    this.inactivity = new Inactivity(this.emitter);
 
     if (onitamaStringNotation) {
       this.state = new State(this.board, this.emitter, onitamaStringNotation);
@@ -35,16 +38,26 @@ export class Game {
   }
 
   externalTurn (turnData) {
-    let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
-    let activePlayer = this.state['player' + this.state.turnPlayer];
-    let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
-    let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
+    if (document.hidden) {
+      this.inactivityTurn = turnData;
+      this.emitter.emit('inactivity.turn');
+    }
+    else {
+      let usedTile = this.board.tiles.get(turnData.tileX + '-' + turnData.tileY);
+      let activePlayer = this.state['player' + this.state.turnPlayer];
+      let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
+      let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
 
-    if (usedCard && usedPiece && usedTile) {
-      usedCard.select();
-      usedPiece.select();
-      usedTile.highlight();
-      this.emitter.emit('tile.click', usedTile, true);
+      if (usedCard && usedPiece && usedTile) {
+        usedCard.select();
+        usedPiece.select();
+        usedTile.highlight();
+
+        setTimeout(() => {
+          this.emitter.emit('tile.click', usedTile, true);
+        }, 1700);
+      }
+
     }
   }
 
@@ -64,6 +77,13 @@ export class Game {
    * Reacts on the emitter. This is the main game logic.
    */
   attachEvents () {
+    document.addEventListener('visibilitychange', () => {
+      if (this.inactivityTurn && !document.hidden) {
+        this.externalTurn(this.inactivityTurn);
+        this.inactivityTurn = false;
+      }
+    });
+
     // On turn set.
     this.emitter.on('turn.set', (activePlayerId) => {
       this.boardElement.dataset.activePlayer = activePlayerId;

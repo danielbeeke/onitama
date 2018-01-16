@@ -2,7 +2,7 @@
   z-index: 2;
   position: absolute;
   background-color: rgba(gray, 0);
-  transition: background $speed $easing, top $speed $easing, left $speed $easing;
+  transition: background $speed $easing, top .6s $easing, left .6s $easing;
   width: 20%;
   height: 20%;
 
