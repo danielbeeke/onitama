@@ -1,0 +1,10 @@
+{
+  "npm:jspm-nodelibs-process@0.2.1": {
+    "deps": {},
+    "peerDeps": {}
+  },
+  "npm:systemjs-plugin-babel@0.0.25": {
+    "deps": {},
+    "peerDeps": {}
+  }
+}
