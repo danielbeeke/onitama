@@ -1,6 +1,7 @@
 import {Board} from '/javascript/game/Board.js';
 import {State} from '/javascript/game/State.js';
-import {EndScreen} from '/javascript/game/EndScreen.js';
+import {Audio} from '/javascript/game/Audio.js';
+import {TextScreen} from '/javascript/game/TextScreen.js';
 
 export class Game {
 
@@ -11,6 +12,8 @@ export class Game {
   constructor (selector, emitter, role, onitamaStringNotation = null) {
     this.emitter = emitter;
     this.role = role;
+    this.localPlayerId = this.role === 'answerer' ? 2 : 1;
+
     this.element = document.querySelector(selector);
     this.element.innerHTML = '';
     if (!this.element) { throw 'No element found for the onitama game'; }
@@ -18,6 +21,7 @@ export class Game {
     this.boardElement = document.createElement('div');
     this.element.appendChild(this.boardElement);
     this.board = new Board(this.boardElement, this.emitter);
+    this.audio = new Audio(this.emitter);
 
     if (onitamaStringNotation) {
       this.state = new State(this.board, this.emitter, onitamaStringNotation);
@@ -35,11 +39,25 @@ export class Game {
     let activePlayer = this.state['player' + this.state.turnPlayer];
     let usedPiece = activePlayer.pieces.find(piece => piece.x === turnData.pieceX && piece.y === turnData.pieceY);
     let usedCard = activePlayer.cards.find(card => card.name === turnData.card);
-    usedCard.select();
-    usedPiece.select();
 
-    usedTile.highlight();
-    this.emitter.emit('tile.click', usedTile, true);
+    if (usedCard && usedPiece && usedTile) {
+      usedCard.select();
+      usedPiece.select();
+      usedTile.highlight();
+      this.emitter.emit('tile.click', usedTile, true);
+    }
+  }
+
+  winner () {
+    new TextScreen('Winner!', 1000,'textscreen', () => {
+      window.location.reload(false);
+    });
+  }
+
+  loser () {
+    new TextScreen('Loser!', 1000, 'textscreen', () => {
+      window.location.reload(false);
+    });
   }
 
   /**
@@ -51,21 +69,44 @@ export class Game {
       this.boardElement.dataset.activePlayer = activePlayerId;
     });
 
-    this.emitter.on('player.defeated', (piece) => {
-
-      // Winner
-      if (piece.player.id === this.state.turnPlayer) {
-        new EndScreen('Loser!', 1000);
+    this.emitter.on('turn', (usedPiece, tile, usedCard, oldX, oldY, isExternal) => {
+      if (tile.x === 3 && tile.y === 1) {
+        if (usedPiece.player.id === this.localPlayerId) {
+          this.winner();
+        }
+        else {
+          this.loser();
+        }
       }
 
-      // Loser
+      if (tile.x === 3 && tile.y === 5) {
+        if (usedPiece.player.id === this.localPlayerId) {
+          this.winner();
+        }
+        else {
+          this.loser();
+        }
+      }
+    });
+
+    this.emitter.on('player.defeated', (piece) => {
+      if (piece.player.id === this.localPlayerId) {
+        this.loser();
+      }
+
       else {
-        new EndScreen('Winner!', 1000);
+        this.winner();
       }
     });
 
     this.emitter.on('piece.captured', (piece) => {
-        new EndScreen('Oops!', 300, 'capture');
+      if (piece.player.id === this.localPlayerId) {
+        new TextScreen('Oops!', 300, 'capture');
+      }
+
+      else {
+        new TextScreen('Woop woop!', 300, 'capture');
+      }
     });
 
     // Tiles.

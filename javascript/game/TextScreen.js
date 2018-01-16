@@ -1,13 +1,13 @@
-export class EndScreen {
+export class TextScreen {
 
-  constructor (text, duration, effect = 'endscreen') {
+  constructor (text, duration, effect = 'textscreen', callback) {
 
     this.element = document.createElement('div');
-    this.element.classList.add('endscreen');
+    this.element.classList.add('textscreen');
     this.element.innerHTML = `<h2 class="word">${text}</h2>`;
     document.body.appendChild(this.element);
 
-    this.endscreen = {
+    this.textscreen = {
       options: {
         shapeColors: ['#35c394','#9985ee','#f54665','#4718f5','#f5aa18'],
       },
@@ -153,6 +153,10 @@ export class EndScreen {
           this.element.addEventListener('transitionend', () => {
             word.DOM.svg.remove();
             this.element.remove();
+
+            if (typeof callback === 'function') {
+              callback();
+            }
           });
 
           this.element.classList.remove('visible');
